@@ -269,7 +269,7 @@ body.oscuro .formF .malF input, body.oscuro .formF .malF select { background: #4
 <body>
 <header>
   <h1><svg class="logo" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="#005a9c"/><g fill="#e9d3a8"><rect x="12" y="14" width="8" height="24" rx="1"/><rect x="22" y="18" width="7" height="20" rx="1"/><rect x="31" y="12" width="9" height="26" rx="1"/><rect x="42" y="20" width="10" height="18" rx="1"/></g><rect x="8" y="38" width="48" height="4" fill="#fff"/><rect x="8" y="50" width="48" height="4" fill="#fff"/></svg>
-    Ludoteca <span class="por">— Por Eloi A.A.</span> <span class="ver" id="verPrograma">v0.3</span></h1>
+    Ludoteca <span class="por">— Por Eloi A.A.</span> <span class="ver" id="verPrograma">v0.4</span></h1>
   <input id="nombreTrabajo" value="Ludoteca del club" title="Nombre de la asociación o de la ludoteca: sale en los listados y en el nombre de los archivos">
   <span class="ver" id="estGuardado" title="Dónde y cuándo se han guardado los datos (clic: ver Archivo)">…</span>
   <span class="hueco"></span>
@@ -313,6 +313,7 @@ body.oscuro .formF .malF input, body.oscuro .formF .malF select { background: #4
       <button class="b chico" id="bImpCsvJ">📥 Importar CSV / Excel</button>
       <button class="b chico" id="bExpCsvJ">⬇ Exportar CSV</button>
       <button class="b chico" id="bExpXlsx" title="Excel con las fotos de portada">⬇ Excel (.xlsx) con fotos</button>
+      <button class="b chico p" id="bPublicar" title="Genera catalogo.json para la versión de lectores (catalogo.html)">📢 Publicar para lectores</button>
     </div>
     <div class="tablaWrap"><table class="datos" id="tabla"><colgroup id="cols"></colgroup><thead id="cabT"></thead><tbody id="cuerpoT"></tbody></table></div>
     <p class="nota">Edita directamente en las celdas (Intro baja a la fila siguiente) o abre la ficha completa con ✏️ (o haciendo clic en la foto). Para poner una foto, arrastra la imagen encima de la fila. Clic en la cabecera para ordenar. 📍 lleva el juego al plano. En <span style="background:#fdecec;padding:0 4px">rojo</span>, datos obligatorios que faltan o no cuadran; en <span style="background:#fff7e0;padding:0 4px">amarillo</span>, juegos aún sin estante o nivel. El <b>lomo</b> es el grosor de la caja colocada de canto: sirve para calcular cuánto ocupa cada balda (si está vacío se usan <span id="txtLomo">7</span> cm).</p>
@@ -435,6 +436,10 @@ body.oscuro .formF .malF input, body.oscuro .formF .malF select { background: #4
         <div class="accion"><div class="t"><b>Listados en PDF</b><span>Inventario por estanterías, juegos por dueño, catálogo, carteles y etiquetas QR</span></div><button class="b p" data-hacer="pdf">🖨️ PDF</button></div>
         <div class="accion"><div class="t"><b>Plano compartido</b><span>Plano + estanterías en un .json que abre el Distribuidor de Eventos (por si no van en la misma carpeta)</span></div><button class="b" data-hacer="plano">⬇ .json</button></div>
       </div>
+      <div class="tarjeta puente"><h3>📢 Versión para lectores <span class="etq">catalogo.html</span></h3>
+        <p class="nota" style="margin:0 0 6px">Los socios consultan los juegos en <b>catalogo.html</b> (foto, jugadores, duración, edad, categoría, estante y nivel con plano, dueño y anotaciones), sin poder cambiar nada. Los QR de las cajas abren ese catálogo.</p>
+        <div class="accion"><div class="t"><b>Publicar</b><span id="txtPublicado">Genera catalogo.json con los juegos que están en el club. Después hay que subirlo al repositorio de GitHub.</span></div><button class="b p" data-hacer="publicar">📢 Publicar…</button></div>
+      </div>
       <div class="tarjeta"><h3>Dónde se guardan los datos <span class="etq">base de datos</span></h3>
         <p class="nota" style="margin:0 0 6px">Cada cambio se guarda solo en la <b>base de datos del navegador</b> (IndexedDB): no se pierde al recargar ni al cerrar. Además se hace una <b>copia diaria</b> (se guardan los 30 últimos días).</p>
         <div class="accion"><div class="t"><b>Archivo vinculado</b><span id="txtArchivo">Para tener los datos también en una carpeta del ordenador (o en una carpeta sincronizada con la nube), vincula un archivo .json: cada cambio se escribe en él. Chrome y Edge.</span></div><button class="b p" id="bVincular">🔗 Vincular…</button></div>
@@ -446,7 +451,7 @@ body.oscuro .formF .malF input, body.oscuro .formF .malF select { background: #4
         <div class="campo"><label>Acceso delante de una estantería nueva <span class="u">(cm)</span></label><input id="oAcceso"></div>
         <div class="campo" style="grid-template-columns:1fr 1.3fr"><label>Archivo del Distribuidor <small>(en la misma carpeta)</small></label><input id="oUrl"></div>
         <div class="campo"><label>Llevar <b>préstamos</b> a socios <small>(muestra la pestaña Préstamos)</small></label><input type="checkbox" id="oPrest"></div>
-        <div class="campo" style="grid-template-columns:1fr"><label>Dirección web de la Ludoteca para los <b>QR</b> <small>(al escanear la etiqueta se abre esta dirección)</small></label><input id="oUrlQR" class="ent"></div>
+        <div class="campo" style="grid-template-columns:1fr"><label>Dirección que abren los <b>QR</b> <small>(por defecto, el catálogo de lectores)</small></label><input id="oUrlQR" class="ent"></div>
         <div class="campo" style="grid-template-columns:1fr"><label>Condiciones de los juegos <small>(una por línea; se usan en la ficha y en los filtros)</small></label><textarea id="oCond" rows="7" class="ent" style="resize:vertical"></textarea></div>
       </div>
       <div class="tarjeta"><h3>Atajos del plano</h3>
@@ -477,7 +482,7 @@ body.oscuro .formF .malF input, body.oscuro .formF .malF select { background: #4
    Comparte el plano con el Distribuidor de Eventos (mismas coordenadas)
    ════════════════════════════════════════════════════════════════════ */
 'use strict';
-const VERSION = '0.3', FORMATO = 'trabajo-Ludoteca', APP = 'Ludoteca', OTRA = 'Distribuidor de Eventos', FORMATO_OTRA = 'trabajo-Distribuidor-Eventos';
+const VERSION = '0.4', FORMATO = 'trabajo-Ludoteca', APP = 'Ludoteca', OTRA = 'Distribuidor de Eventos', FORMATO_OTRA = 'trabajo-Distribuidor-Eventos';
 const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const num = v => parseFloat(String(v).replace(',', '.'));
@@ -3113,7 +3118,8 @@ const fFecha = s => s ? s.split('-').reverse().join('/') : '';
 const diasDesde = s => s ? Math.floor((new Date(hoy()) - new Date(s)) / 864e5) : 0;
 const sumaDias = (s, n) => { const d = new Date((s || hoy()) + 'T12:00:00'); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
 const fHora = s => s ? new Date(s).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' }) : '—';
-const URL_QR_DEF = 'https://eloiaa-hub.github.io/ludoteca/ludoteca.html';
+const URL_QR_DEF = 'https://eloiaa-hub.github.io/ludoteca/catalogo.html', URL_QR_V03 = 'https://eloiaa-hub.github.io/ludoteca/ludoteca.html';
+const URL_SUBIR = 'https://github.com/eloiaa-hub/ludoteca/upload/main';
 const CONDICIONES_DEF = ['Nuevo', 'Como nuevo', 'Bueno', 'Usado', 'Con desgaste', 'Faltan piezas', 'Dañado', 'Retirado'];
 const condiciones = () => (L.opc.condiciones && L.opc.condiciones.length ? L.opc.condiciones : CONDICIONES_DEF);
 // clave, título, tipo, ancho (px)
@@ -3376,9 +3382,9 @@ function pintarExt() {
   $('gExt').innerHTML = s;
 }
 let BUSCA = new Set();
-function svgEstanterias(paraImprimir) {
+function svgEstanterias(paraImprimir, sinAcceso) {
   let s = '';
-  const verAcc = paraImprimir || $('cAcc').checked, verOcup = !paraImprimir && $('cOcup').checked;
+  const verAcc = !sinAcceso && (paraImprimir || $('cAcc').checked), verOcup = !paraImprimir && $('cOcup').checked;
   if (verAcc) for (const e of L.estanterias) if (e.acc > 0) s += `<path d="${pathPoli(accPts(e), true)}" fill="#f39c12" fill-opacity=".07" stroke="#f39c12" stroke-opacity=".6" stroke-dasharray="6 4" stroke-width="1" vector-effect="non-scaling-stroke"/>`;
   for (const e of L.estanterias) {
     const pts = estPts(e), sel = !paraImprimir && SEL && SEL.id === e.id, hit = !paraImprimir && BUSCA.has(e.id);
@@ -3870,6 +3876,7 @@ function exportarCsv() {
 $('bImpCsvJ').onclick = () => $('fCsv').click();
 $('bExpCsvJ').onclick = exportarCsv;
 $('bExpXlsx').onclick = () => exportarXlsx();
+$('bPublicar').onclick = () => publicarCatalogo();
 $('fCsv').onchange = e => { if (e.target.files[0]) importarCsv(e.target.files[0]); e.target.value = ''; };
 
 // ════════════════ Préstamos ════════════════
@@ -4056,7 +4063,8 @@ $('bImpPlano').onclick = () => $('fPlano').click();
 $('fPlano').onchange = e => { if (e.target.files[0]) abrirTrabajo(e.target.files[0]); e.target.value = ''; };
 
 // ════════════════ Archivo ════════════════
-function leerOpc() { $('oLomo').value = fmt(L.opc.lomoDef, 1); $('oAcceso').value = fmt(L.opc.accesoDef); $('oUrl').value = L.opc.url || ''; $('oCond').value = condiciones().join('\n'); $('oPrest').checked = !!L.opc.prestamos; $('oUrlQR').value = L.opc.urlQR || URL_QR_DEF; pintarCopias(); }
+function leerOpc() { $('oLomo').value = fmt(L.opc.lomoDef, 1); $('oAcceso').value = fmt(L.opc.accesoDef); $('oUrl').value = L.opc.url || ''; $('oCond').value = condiciones().join('\n'); $('oPrest').checked = !!L.opc.prestamos; $('oUrlQR').value = L.opc.urlQR || URL_QR_DEF; pintarCopias(); txtPublicado(); }
+function txtPublicado() { const t = $('txtPublicado'); if (t && L.opc.publicado) t.innerHTML = `Última publicación: <b>${fHora(L.opc.publicado)}</b> (${L.opc.publicadoN} juegos). Vuelve a publicar después de cada tanda de cambios.`; }
 $('oPrest').onchange = e => { L.opc.prestamos = e.target.checked; guardarPaso(); modoPrestamos(); snack(e.target.checked ? 'Préstamos activados: pestaña 🤝 Préstamos y columna «Prestado a»' : 'Préstamos ocultos (los datos se conservan)'); };
 $('oUrlQR').onchange = e => { L.opc.urlQR = e.target.value.trim() || URL_QR_DEF; guardarPaso(); };
 /** Muestra u oculta todo lo de préstamos */
@@ -4079,6 +4087,7 @@ function cargarEstado(o) {
   delete o.dxfEnts; delete o.fecha; delete o.fotos;
   const base = estadoVacio(); L = Object.assign(base, o); L.opc = Object.assign(estadoVacio().opc, o.opc || {}); L.plano = Object.assign(estadoVacio().plano, o.plano || {});
   L.plano.dxfs = L.plano.dxfs.filter(d => ENTS[d.id]);
+  if (!L.opc.urlQR || L.opc.urlQR === URL_QR_V03) L.opc.urlQR = URL_QR_DEF;
   for (const j of L.juegos) { if (j.fDev == null) j.fDev = ''; if (!j.creado) j.creado = j.actualizado = ahora(); if (j.pEnt == null) j.pEnt = ''; if (j.pDev == null) j.pDev = ''; }
   if (ver < 3) { // hasta la v0.2 las fechas eran del préstamo; ahora son de la cesión del dueño
     for (const j of L.juegos) { if (j.prestadoA) { j.pEnt = j.fPrest; j.pDev = j.fDev; } j.fPrest = ''; j.fDev = ''; }
@@ -4150,7 +4159,7 @@ $('bDeshacer').onclick = deshacer; $('bRehacer').onclick = rehacer;
 $('nombreTrabajo').addEventListener('change', e => { L.nombre = e.target.value; guardarPaso(); });
 document.querySelectorAll('[data-hacer]').forEach(b => b.onclick = () => ({
   nuevo: nuevoTrabajo, abrir: () => $('fTrabajo').click(), guardar: () => guardarTrabajo(true), ejemplo: cargarEjemplo,
-  impDxf: () => $('fDxf').click(), impCsv: () => $('fCsv').click(), csv: exportarCsv, xlsx: exportarXlsx, plano: exportarPlanoCompartido,
+  impDxf: () => $('fDxf').click(), impCsv: () => $('fCsv').click(), csv: exportarCsv, xlsx: exportarXlsx, plano: exportarPlanoCompartido, publicar: publicarCatalogo,
   pdf: () => { verPestana('listados'); $('bPdf').click(); },
 })[b.dataset.hacer]());
 $('bTema').onclick = () => { document.body.classList.toggle('oscuro'); try { localStorage.setItem('dev_tema', document.body.classList.contains('oscuro') ? 'o' : 'c'); } catch (e) {} if (pestana === 'plano') pintarTodo(); };
@@ -4226,6 +4235,36 @@ function abrirDesdeQR() {
   const j = juegoDe(p.get('j')) || L.juegos.find(x => x.cod && x.cod === p.get('c') && norm(x.titulo) === norm(p.get('t')));
   if (j) { verPestana('juegos'); abrirFicha(j); return; }
   preguntar('📚 ' + (p.get('t') || 'Juego del club'), `<b>Dueño:</b> ${esc(p.get('d') || '—')}<br><b>Estante:</b> ${esc(p.get('u') || '—')}<br><b>Código:</b> ${esc(p.get('c') || '—')}<br><br><span style="font-size:12px">Son los datos de la etiqueta. Esta Ludoteca no tiene el juego en su base de datos (cada dispositivo guarda la suya).</span>`, null);
+}
+
+// ════════════════ Publicar para lectores (catalogo.json → catalogo.html) ════════════════
+/** Reduce una foto ya guardada (data URL) a una miniatura para el catálogo */
+function miniatura(url, lado, q) {
+  return new Promise(ok => {
+    const im = new Image();
+    im.onload = () => { const k = Math.min(1, lado / Math.max(im.naturalWidth, im.naturalHeight)), c = document.createElement('canvas'); c.width = Math.round(im.naturalWidth * k); c.height = Math.round(im.naturalHeight * k); const x = c.getContext('2d'); x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height); x.drawImage(im, 0, 0, c.width, c.height); ok(c.toDataURL('image/jpeg', q)); };
+    im.onerror = () => ok(''); im.src = url;
+  });
+}
+async function construirCatalogo() {
+  const js = L.juegos.filter(j => enClub(j) && j.estado !== 'Retirado');
+  const juegos = [];
+  for (const j of js) juegos.push({ id: j.id, cod: j.cod, titulo: j.titulo, jmin: j.jmin, jmax: j.jmax, dur: j.dur, edad: j.edad, cat: j.cat, prop: j.prop, notas: j.notas, est: j.est, balda: j.balda, foto: FOTOS[j.id] ? await miniatura(FOTOS[j.id], 240, .78) : '' });
+  const usadas = new Set(js.map(j => j.est));
+  const estanterias = L.estanterias.map(e => ({ id: e.id, cod: e.cod, nombre: e.nombre || '', baldas: e.baldas, color: e.color, pts: estPts(e).map(p => p.map(r1)), juegos: usadas.has(e.id) }));
+  let plano = null; const c = cajaTodo();
+  if (c) { const m = 60, x0 = c.x0 - m, y0 = c.y0 - m, w = c.x1 - c.x0 + 2 * m, h = c.y1 - c.y0 + 2 * m; plano = { vb: [r1(x0), r1(-y0 - h), r1(w), r1(h)], svg: `<g transform="scale(1,-1)">${svgDxf('#9aa5b1')}${svgFondo(true)}${svgEstanterias(true, true)}</g>${textosEstanterias('#1c2733', '#ffffff')}` }; }
+  return { formato: 'catalogo-Ludoteca', version: 1, nombre: L.nombre, fecha: ahora(), juegos, estanterias, plano };
+}
+async function publicarCatalogo() {
+  L.nombre = $('nombreTrabajo').value;
+  const sinFoto = L.juegos.filter(j => enClub(j) && !FOTOS[j.id]).length, inc = L.juegos.filter(j => enClub(j) && !validar(j).completo).length;
+  const o = await construirCatalogo();
+  const texto = JSON.stringify(o);
+  descargar(texto, 'catalogo.json', 'application/json');
+  L.opc.publicado = o.fecha; L.opc.publicadoN = o.juegos.length; guardarPaso(); txtPublicado();
+  await preguntar('📢 Catálogo listo para subir', `Se ha descargado <b>catalogo.json</b> (${o.juegos.length} juegos, ${(texto.length / 1048576).toFixed(1).replace('.', ',')} MB).${inc ? `<br><span style="color:var(--aviso)">${inc} juegos tienen datos incompletos.</span>` : ''}${sinFoto ? `<br>${sinFoto} juegos no tienen foto.` : ''}<br><br>Para que lo vean los socios:<ol style="margin:6px 0 0;padding-left:20px"><li>Abre <a href="${URL_SUBIR}" target="_blank" rel="noopener">la página de subida del repositorio</a> (con la cuenta de GitHub de la asociación).</li><li>Arrastra <b>catalogo.json</b> y pulsa <b>Commit changes</b>. Si ya había uno, se sustituye.</li><li>En uno o dos minutos está en <a href="${(L.opc.urlQR || URL_QR_DEF).replace(/#.*$/, '')}" target="_blank" rel="noopener">el catálogo</a>.</li></ol>`, null);
+  return o;
 }
 
 // ════════════════ Exportar a Excel (.xlsx) con fotos ════════════════

@@ -1,8 +1,10 @@
 # Ludoteca · Juegos, estanterías y mesas del club
 
-Dos programas para una asociación de juegos de mesa que comparten el mismo plano del local:
+Programas para una asociación de juegos de mesa que comparten el mismo plano del local:
 
-- **Ludoteca** (`ludoteca.html`): control de los juegos del club (de quién es cada uno y en qué estante y nivel está), con fotos de portada, etiquetas QR, estanterías sobre el plano y listados.
+- **Catálogo de juegos** (`catalogo.html`): versión para los socios, solo consulta, pensada para el móvil. Lee `catalogo.json`, que publica el editor.
+
+- **Ludoteca, editor** (`ludoteca.html`): control de los juegos del club (de quién es cada uno y en qué estante y nivel está), con fotos de portada, etiquetas QR, estanterías sobre el plano y listados.
 - **Distribuidor de Eventos** (`distribuidor_eventos.html`): reparto de mesas, sillas y personas en la sala para jornadas y torneos.
 
 **Web:** https://eloiaa-hub.github.io/ludoteca/
@@ -14,7 +16,9 @@ Son archivos HTML de un solo fichero: funcionan sin instalar nada y sin internet
 | Archivo | Qué es |
 |---|---|
 | `index.html` | Página principal |
-| `ludoteca.html` | Ludoteca v0.3 |
+| `catalogo.html` | Catálogo de juegos para los socios (lectores) |
+| `catalogo.json` | Datos del catálogo; lo genera el editor con «Publicar para lectores» y se sube aquí |
+| `ludoteca.html` | Ludoteca (editor) v0.4 |
 | `manual_ludoteca.html` / `.pdf` | Manual de la Ludoteca: instalación, uso y cómo está hecho |
 | `distribuidor_eventos.html` | Distribuidor de Eventos v0.3 |
 | `manual_distribuidor_eventos.html` / `.pdf` | Manual del Distribuidor de Eventos (v0.3) |
@@ -25,7 +29,8 @@ Son archivos HTML de un solo fichero: funcionan sin instalar nada y sin internet
 
 - **Juegos:** ficha de cada juego con foto de portada: juego, mínimo y máximo de jugadores, dueño (la Asociación o el socio que lo cede), condición, fecha de entrega al club, fecha de devolución al dueño, estante #, nivel y anotaciones, más editorial, duración, edad, categoría, idioma y lomo. Campos obligatorios y comprobaciones (máximo ≥ mínimo, devolución ≥ entrega). ID único y fechas de creación y de último cambio. Tabla editable como una hoja de cálculo, búsqueda, filtros por jugadores, duración, condición, estante, dueño y situación (en el club / devuelto).
 - **Fotos de portada:** desde un archivo, la cámara del móvil, arrastrando la imagen o pegándola. Salen en la tabla, la ficha, los listados y el Excel.
-- **Etiquetas QR** (21 por A4, 63 × 38 mm): al escanearlas se abre la ficha del juego; en un móvil sin datos se ve su dueño y su estante.
+- **Etiquetas QR** (21 por A4, 63 × 38 mm): al escanearlas se abre la ficha del juego en el catálogo, con su estante marcado en el plano.
+- **Publicar para lectores:** genera `catalogo.json` (juegos en el club, miniaturas y plano). Se sube al repo con *Add file → Upload files* y el catálogo se actualiza en uno o dos minutos.
 - **Excel (.xlsx) con fotos**, CSV y copia completa en `.json`. Importa CSV de Excel/LibreOffice o de BoardGameGeek.
 - **Datos:** se guardan solos en la base de datos del navegador (IndexedDB), con una copia por día (30 días) y, en Chrome/Edge, también en un archivo `.json` vinculado de tu carpeta.
 - **Plano y estanterías:** DXF del local, estanterías con largo, fondo, baldas, giro y zona de acceso delante; imán entre estanterías; ocupación de cada balda según el lomo de las cajas; arrastrar juegos a una estantería o balda; buscador «¿Dónde está…?».

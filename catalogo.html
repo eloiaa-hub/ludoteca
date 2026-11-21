@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#005a9c">
+<title>Catálogo de juegos — Ludoteca</title>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<style>
+:root { --acento: #005a9c; --acento-cl: #e6f0f8; --naranja: #e67e22; --texto: #1c2733; --sec: #6b7684; --borde: #dfe3e8; --bg: #f4f6f8; --panel: #fff; }
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { font: 15px/1.45 system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; color: var(--texto); background: var(--bg); }
+header { background: var(--acento); color: #fff; padding: 14px 16px 12px; position: sticky; top: 0; z-index: 5; box-shadow: 0 2px 8px #0002; }
+header .fila1 { display: flex; align-items: center; gap: 10px; max-width: 1200px; margin: 0 auto; }
+header svg.logo { width: 30px; height: 30px; flex: none; }
+header h1 { margin: 0; font-size: 18px; line-height: 1.15; }
+header h1 small { display: block; font-weight: 400; font-size: 12px; opacity: .85; }
+.busca { max-width: 1200px; margin: 10px auto 0; display: flex; gap: 8px; }
+.busca input { flex: 1; min-width: 0; font: inherit; padding: 9px 12px; border-radius: 10px; border: none; outline: none; }
+.busca button { font: inherit; border: none; border-radius: 10px; padding: 0 12px; background: #ffffff22; color: #fff; cursor: pointer; white-space: nowrap; }
+.busca button.on { background: #fff; color: var(--acento); }
+#filtros { max-width: 1200px; margin: 8px auto 0; display: none; flex-wrap: wrap; gap: 8px; }
+#filtros.ver { display: flex; }
+#filtros label { display: flex; align-items: center; gap: 5px; font-size: 13px; }
+#filtros select, #filtros input { font: inherit; font-size: 14px; padding: 6px 8px; border-radius: 8px; border: none; max-width: 180px; }
+#filtros input { width: 58px; }
+main { max-width: 1200px; margin: 0 auto; padding: 12px 12px 40px; }
+#resumen { font-size: 13px; color: var(--sec); margin: 2px 2px 10px; display: flex; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+#resumen a { color: var(--acento); cursor: pointer; text-decoration: underline; }
+#lista { display: grid; grid-template-columns: repeat(auto-fill, minmax(165px, 1fr)); gap: 12px; }
+.carta { background: var(--panel); border: 1px solid var(--borde); border-radius: 12px; overflow: hidden; cursor: pointer; display: flex; flex-direction: column; transition: transform .1s, box-shadow .1s; }
+.carta:hover { transform: translateY(-2px); box-shadow: 0 6px 16px #0001; }
+.carta .img { aspect-ratio: 1; background: #eef1f4; display: grid; place-items: center; font-size: 42px; color: #c3cbd3; }
+.carta .img img { width: 100%; height: 100%; object-fit: contain; }
+.carta .tx { padding: 8px 10px 10px; display: flex; flex-direction: column; gap: 3px; flex: 1; }
+.carta b { font-size: 14.5px; line-height: 1.2; }
+.carta .dat { font-size: 12.5px; color: var(--sec); }
+.carta .ub { margin-top: auto; padding-top: 4px; font-size: 12.5px; font-weight: 700; color: var(--acento); }
+.carta .du { font-size: 12px; color: var(--sec); }
+.chip { display: inline-block; font-size: 11.5px; background: var(--acento-cl); color: var(--acento); border-radius: 20px; padding: 1px 8px; align-self: flex-start; }
+.vacio { background: var(--panel); border: 1px solid var(--borde); border-radius: 12px; padding: 28px 20px; text-align: center; color: var(--sec); }
+.vacio b { color: var(--texto); display: block; font-size: 17px; margin-bottom: 6px; }
+.vacio .b { margin-top: 14px; }
+.b { font: inherit; border: 1px solid var(--borde); background: var(--panel); border-radius: 9px; padding: 8px 14px; cursor: pointer; color: var(--texto); text-decoration: none; display: inline-block; }
+.b.p { background: var(--acento); color: #fff; border-color: var(--acento); }
+/* ficha */
+#ficha { position: fixed; inset: 0; background: #0007; display: none; z-index: 20; overflow: auto; padding: 20px 10px; }
+#ficha.ver { display: block; }
+#ficha .caja { max-width: 760px; margin: 0 auto; background: var(--panel); border-radius: 14px; overflow: hidden; box-shadow: 0 10px 40px #0004; }
+#ficha .cab { display: flex; align-items: flex-start; gap: 10px; padding: 14px 16px; border-bottom: 1px solid var(--borde); }
+#ficha .cab h2 { margin: 0; flex: 1; font-size: 20px; line-height: 1.2; }
+#ficha .cab button { font-size: 22px; line-height: 1; border: none; background: none; cursor: pointer; color: var(--sec); padding: 0 4px; }
+#ficha .cuerpo { padding: 14px 16px 18px; display: grid; grid-template-columns: 220px 1fr; gap: 16px; }
+#ficha .foto { aspect-ratio: 1; background: #eef1f4; border-radius: 10px; display: grid; place-items: center; font-size: 60px; color: #c3cbd3; overflow: hidden; }
+#ficha .foto img { width: 100%; height: 100%; object-fit: contain; }
+#ficha dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 6px 12px; font-size: 14.5px; align-content: start; }
+#ficha dt { color: var(--sec); }
+#ficha dd { margin: 0; font-weight: 600; }
+#ficha .donde { grid-column: 1 / -1; background: var(--acento-cl); border-radius: 10px; padding: 10px 12px; }
+#ficha .donde b { color: var(--acento); font-size: 16px; }
+#ficha .plano { grid-column: 1 / -1; }
+#ficha .plano svg { width: 100%; height: auto; max-height: 52vh; display: block; background: #fbfcfd; border: 1px solid var(--borde); border-radius: 10px; }
+#ficha .notas { grid-column: 1 / -1; white-space: pre-wrap; font-size: 14px; background: #fafbfc; border: 1px solid var(--borde); border-radius: 10px; padding: 10px 12px; }
+#ficha .pie { grid-column: 1 / -1; display: flex; gap: 10px; justify-content: space-between; flex-wrap: wrap; font-size: 12.5px; color: var(--sec); align-items: center; }
+#ficha .pie a { color: var(--sec); }
+.aviso { grid-column: 1 / -1; background: #fff4e5; border-left: 4px solid var(--naranja); padding: 8px 12px; border-radius: 6px; font-size: 13px; }
+@keyframes latido { 0%, 100% { stroke-opacity: .9; } 50% { stroke-opacity: .25; } }
+.marca { animation: latido 1.2s ease-in-out infinite; }
+footer { text-align: center; font-size: 12px; color: var(--sec); padding: 0 10px 24px; }
+footer a { color: var(--sec); }
+@media (max-width: 620px) {
+  header h1 { font-size: 16px; }
+  #lista { grid-template-columns: repeat(2, 1fr); gap: 9px; }
+  #ficha { padding: 0; }
+  #ficha .caja { border-radius: 0; min-height: 100%; }
+  #ficha .cuerpo { grid-template-columns: 1fr; }
+  #ficha .foto { max-width: 260px; width: 100%; justify-self: center; }
+}
+</style>
+</head>
+<body>
+<header>
+  <div class="fila1">
+    <svg class="logo" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="#ffffff22"/><g fill="#e9d3a8"><rect x="12" y="14" width="8" height="24" rx="1"/><rect x="22" y="18" width="7" height="20" rx="1"/><rect x="31" y="12" width="9" height="26" rx="1"/><rect x="42" y="20" width="10" height="18" rx="1"/></g><rect x="8" y="38" width="48" height="4" fill="#fff"/><rect x="8" y="50" width="48" height="4" fill="#fff"/></svg>
+    <h1 id="titulo">Catálogo de juegos<small id="subtitulo">Cargando…</small></h1>
+  </div>
+  <div class="busca">
+    <input id="q" type="search" placeholder="🔎 Buscar un juego…" autocomplete="off">
+    <button id="bFiltros" title="Filtrar por jugadores, duración, categoría, dueño o estante">Filtros</button>
+  </div>
+  <div id="filtros">
+    <label>Jugadores <input id="fJug" inputmode="numeric"></label>
+    <label>Máx. <input id="fDur" inputmode="numeric"> min</label>
+    <select id="fCat"></select>
+    <select id="fDueno"></select>
+    <select id="fEst"></select>
+  </div>
+</header>
+<main>
+  <div id="resumen"></div>
+  <div id="lista"></div>
+</main>
+<footer>Ludoteca · <span id="pieClub"></span> · <a href="./">Inicio</a></footer>
+<div id="ficha" role="dialog" aria-modal="true"><div class="caja"><div class="cab"><h2 id="fTit"></h2><button id="fCerrar" title="Cerrar">✕</button></div><div class="cuerpo" id="fCuerpo"></div></div></div>
+<input type="file" id="fArchivo" accept=".json" hidden>
+<script>
+/* ════════════════════════════════════════════════════════════════════
+   Catálogo de juegos (versión para lectores de la Ludoteca)
+   © 2026 Eloi A.A. — EUPL-1.2
+   Lee catalogo.json, que publica el editor (ludoteca.html → Publicar para lectores).
+   Solo consulta: no guarda ni cambia nada.
+   ════════════════════════════════════════════════════════════════════ */
+'use strict';
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const norm = s => String(s == null ? '' : s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+const num = v => { const n = parseFloat(String(v).replace(',', '.')); return isFinite(n) ? n : NaN; };
+let C = null; // el catálogo
+const estDe = id => C && C.estanterias.find(e => e.id === id);
+
+function jugadores(j) { if (!j.jmin && !j.jmax) return ''; return (j.jmin && j.jmax && +j.jmin !== +j.jmax ? j.jmin + '–' + j.jmax : (j.jmin || j.jmax)) + ' jug.'; }
+function datos(j) { return [jugadores(j), j.dur ? j.dur + ' min' : '', j.edad ? j.edad + '+ años' : ''].filter(Boolean).join(' · '); }
+function donde(j) { const e = estDe(j.est); return e ? 'Estante ' + e.cod + (j.balda ? ' · nivel ' + j.balda : '') : ''; }
+
+function rellenarFiltros() {
+  const op = (lista, todos) => `<option value="">${todos}</option>` + lista.map(([v, t]) => `<option value="${esc(v)}">${esc(t)}</option>`).join('');
+  const uniq = k => [...new Set(C.juegos.map(j => j[k]).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'es'));
+  $('fCat').innerHTML = op(uniq('cat').map(c => [c, c]), 'Todas las categorías');
+  $('fDueno').innerHTML = op(uniq('prop').map(c => [c, c]), 'Cualquier dueño');
+  $('fEst').innerHTML = op(C.estanterias.slice().sort((a, b) => a.cod.localeCompare(b.cod, 'es', { numeric: true })).map(e => [e.id, 'Estante ' + e.cod + (e.nombre ? ' · ' + e.nombre : '')]), 'Cualquier estante');
+}
+function filtrados() {
+  const q = norm($('q').value.trim()), nj = num($('fJug').value), dm = num($('fDur').value), cat = $('fCat').value, du = $('fDueno').value, es = $('fEst').value;
+  return C.juegos.filter(j => {
+    if (q && !norm([j.titulo, j.cat, j.prop, j.notas, j.cod].join(' ')).includes(q)) return false;
+    if (nj > 0 && !((+j.jmin || 1) <= nj && (+j.jmax || +j.jmin || 99) >= nj)) return false;
+    if (dm > 0 && !(+j.dur > 0 && +j.dur <= dm)) return false;
+    if (cat && j.cat !== cat) return false;
+    if (du && j.prop !== du) return false;
+    if (es && j.est !== es) return false;
+    return true;
+  }).sort((a, b) => a.titulo.localeCompare(b.titulo, 'es'));
+}
+function pintar() {
+  const l = filtrados(), hay = $('q').value || $('fJug').value || $('fDur').value || $('fCat').value || $('fDueno').value || $('fEst').value;
+  $('resumen').innerHTML = `<span>${l.length === C.juegos.length ? C.juegos.length + ' juegos' : l.length + ' de ' + C.juegos.length + ' juegos'}${hay ? ' · <a id="quitar">quitar filtros</a>' : ''}</span><span>Actualizado el ${new Date(C.fecha).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}</span>`;
+  const qq = $('quitar'); if (qq) qq.onclick = () => { ['q', 'fJug', 'fDur', 'fCat', 'fDueno', 'fEst'].forEach(id => $(id).value = ''); pintar(); };
+  $('lista').innerHTML = l.length ? l.map(j => `<div class="carta" data-id="${esc(j.id)}" tabindex="0">
+      <div class="img">${j.foto ? `<img src="${j.foto}" alt="" loading="lazy">` : '🎲'}</div>
+      <div class="tx"><b>${esc(j.titulo)}</b><span class="dat">${esc(datos(j))}</span>${j.cat ? `<span class="chip">${esc(j.cat)}</span>` : ''}
+      <span class="ub">${donde(j) ? '📚 ' + esc(donde(j)) : '📚 sin estante'}</span>${j.prop ? `<span class="du">${esc(j.prop)}</span>` : ''}</div></div>`).join('')
+    : '<div class="vacio" style="grid-column:1/-1"><b>Ningún juego con esos filtros</b>Prueba a quitar alguno.</div>';
+}
+$('lista').addEventListener('click', e => { const c = e.target.closest('.carta'); if (c) abrir(c.dataset.id); });
+$('lista').addEventListener('keydown', e => { if (e.key === 'Enter') { const c = e.target.closest('.carta'); if (c) abrir(c.dataset.id); } });
+['q', 'fJug', 'fDur'].forEach(id => $(id).addEventListener('input', pintar));
+['fCat', 'fDueno', 'fEst'].forEach(id => $(id).addEventListener('change', pintar));
+$('bFiltros').onclick = () => { $('filtros').classList.toggle('ver'); $('bFiltros').classList.toggle('on'); };
+
+// ── Ficha ──
+function planoCon(e) {
+  const p = C.plano; if (!p || !p.vb) return '';
+  let marca = '';
+  if (e && e.pts) {
+    const pts = e.pts.map(q => q[0] + ',' + (-q[1])).join(' ');
+    const xs = e.pts.map(q => q[0]), ys = e.pts.map(q => -q[1]), cx = (Math.min(...xs) + Math.max(...xs)) / 2, cy = (Math.min(...ys) + Math.max(...ys)) / 2;
+    const r = Math.max(p.vb[2], p.vb[3]) * .035;
+    marca = `<circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#e67e22" stroke-width="${r * .25}" class="marca"/><polygon points="${pts}" fill="#e67e22" fill-opacity=".55" stroke="#e67e22" stroke-width="${r * .18}"/>`;
+  }
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${p.vb.join(' ')}">${p.svg}${marca}</svg>`;
+}
+function abrir(id, respaldo) {
+  let j = C && C.juegos.find(x => x.id === id), aviso = '';
+  if (!j && respaldo) { j = respaldo; aviso = C ? '<div class="aviso">Este juego no está en el catálogo publicado (puede que se publicara antes de darlo de alta). Son los datos de su etiqueta.</div>' : '<div class="aviso">No se ha podido cargar el catálogo. Son los datos de la etiqueta.</div>'; }
+  if (!j) return;
+  const e = estDe(j.est);
+  $('fTit').textContent = j.titulo;
+  const fila = (t, v) => v ? `<dt>${t}</dt><dd>${esc(v)}</dd>` : '';
+  $('fCuerpo').innerHTML = aviso + `<div class="foto">${j.foto ? `<img src="${j.foto}" alt="Portada de ${esc(j.titulo)}">` : '🎲'}</div>
+    <dl>${fila('Jugadores', jugadores(j).replace(' jug.', ''))}${fila('Duración', j.dur ? j.dur + ' minutos' : '')}${fila('Edad', j.edad ? 'desde ' + j.edad + ' años' : '')}${fila('Categoría', j.cat)}${fila('Dueño', j.prop)}${fila('Código', j.cod)}</dl>
+    <div class="donde">📚 ${e ? `<b>Estante ${esc(e.cod)}</b>${e.nombre ? ' · ' + esc(e.nombre) : ''}${j.balda ? `<br>Nivel <b>${esc(j.balda)}</b>${e.baldas ? ' de ' + e.baldas + ' (el 1 es el de arriba)' : ''}` : ''}` : (j.ubic ? `<b>${esc(j.ubic)}</b>` : 'Sin estante asignado')}</div>
+    ${e ? `<div class="plano">${planoCon(e)}</div>` : ''}
+    ${j.notas ? `<div class="notas">${esc(j.notas)}</div>` : ''}
+    <div class="pie"><span>${C ? esc(C.nombre) : ''}</span><a href="ludoteca.html#j=${encodeURIComponent(j.id)}" title="Para quien lleva la ludoteca">✏️ Abrir en el editor</a></div>`;
+  $('ficha').classList.add('ver'); document.body.style.overflow = 'hidden';
+  if (location.hash !== '#j=' + id) history.replaceState(null, '', '#j=' + encodeURIComponent(id));
+}
+function cerrar() { $('ficha').classList.remove('ver'); document.body.style.overflow = ''; history.replaceState(null, '', location.pathname + location.search); }
+$('fCerrar').onclick = cerrar;
+$('ficha').addEventListener('click', e => { if (e.target.id === 'ficha') cerrar(); });
+addEventListener('keydown', e => { if (e.key === 'Escape') cerrar(); });
+function desdeEnlace() {
+  if (!/^#j=/.test(location.hash)) return;
+  const p = new URLSearchParams(location.hash.slice(1)), id = p.get('j');
+  const respaldo = p.get('t') ? { id, cod: p.get('c') || '', titulo: p.get('t'), prop: p.get('d') || '', ubic: p.get('u') || '' } : null;
+  abrir(id, respaldo);
+}
+addEventListener('hashchange', desdeEnlace);
+
+// ── Carga ──
+function usar(o) {
+  if (!o || o.formato !== 'catalogo-Ludoteca') throw new Error('no es un catálogo de la Ludoteca');
+  C = o; C.juegos = C.juegos || []; C.estanterias = C.estanterias || [];
+  document.title = 'Catálogo de juegos — ' + C.nombre;
+  $('titulo').innerHTML = esc(C.nombre) + '<small>Catálogo de juegos · ' + C.juegos.length + ' juegos</small>';
+  $('pieClub').textContent = C.nombre;
+  rellenarFiltros(); pintar(); desdeEnlace();
+}
+function sinCatalogo(motivo) {
+  $('subtitulo').textContent = 'Sin catálogo';
+  $('lista').innerHTML = `<div class="vacio" style="grid-column:1/-1"><b>Todavía no hay catálogo publicado</b>${esc(motivo)}<br>Quien lleva la ludoteca lo publica desde el editor con «Publicar para lectores».<div class="b"><button class="b" id="bAbrir">📂 Abrir un catalogo.json</button></div></div>`;
+  $('bAbrir').onclick = () => $('fArchivo').click();
+  desdeEnlace();
+}
+$('fArchivo').onchange = e => { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => { try { usar(JSON.parse(r.result)); } catch (err) { alert('No se ha podido abrir: ' + err.message); } }; r.readAsText(f); };
+fetch('catalogo.json', { cache: 'no-cache' })
+  .then(r => { if (!r.ok) throw new Error(r.status === 404 ? 'No se encuentra catalogo.json.' : 'Error ' + r.status); return r.json(); })
+  .then(usar)
+  .catch(e => sinCatalogo(location.protocol === 'file:' ? 'Abierto desde el ordenador: el navegador no deja leer catalogo.json solo.' : e.message));
+</script>
+</body>
+</html>
