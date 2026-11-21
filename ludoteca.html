@@ -1,0 +1,1720 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ludoteca — Por Eloi A.A.</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%23005a9c'/%3E%3Cg fill='%23e9d3a8'%3E%3Crect x='12' y='14' width='8' height='24' rx='1'/%3E%3Crect x='22' y='18' width='7' height='20' rx='1'/%3E%3Crect x='31' y='12' width='9' height='26' rx='1'/%3E%3Crect x='42' y='20' width='10' height='18' rx='1'/%3E%3C/g%3E%3Crect x='8' y='38' width='48' height='4' fill='%23fff'/%3E%3Crect x='8' y='50' width='48' height='4' fill='%23fff'/%3E%3C/svg%3E">
+<style>
+:root {
+  --bg: #f4f6f8; --panel: #ffffff; --borde: #dfe3e8; --texto: #1c2733; --sec: #6b7684;
+  --acento: #005a9c; --acento-cl: #e6f0f8; --ok: #27ae60; --aviso: #e67e22; --mal: #d84343;
+  --sombra: 0 4px 18px rgba(0,0,0,.10); --lienzo: #fbfcfd; --rejilla: #e8ecf0;
+}
+body.oscuro {
+  --bg: #1a1a1e; --panel: #252528; --borde: #3a3a3f; --texto: #e8e8ec; --sec: #8a8a94; --acento-cl: #1a2a3a;
+  --sombra: 0 4px 18px rgba(0,0,0,.45); --lienzo: #1f1f23; --rejilla: #2c2c31;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; }
+body { font: 14px system-ui, -apple-system, 'Segoe UI', sans-serif; background: var(--bg); color: var(--texto); display: flex; flex-direction: column; overflow: hidden; }
+button, input, select { font: inherit; color: inherit; }
+header { display: flex; align-items: center; gap: 10px; padding: 8px 14px; background: var(--panel); border-bottom: 1px solid var(--borde); }
+header h1 { font-size: 16px; margin: 0; white-space: nowrap; display: flex; align-items: center; gap: 8px; }
+header h1 .logo { width: 26px; height: 26px; }
+header h1 .por { font-weight: 400; color: var(--sec); font-size: 13px; }
+header .ver { font-size: 11px; color: var(--sec); border: 1px solid var(--borde); border-radius: 10px; padding: 1px 7px; }
+#nombreTrabajo { border: 1px solid var(--borde); background: var(--bg); border-radius: 6px; padding: 5px 9px; min-width: 200px; }
+.hueco { flex: 1; }
+.b { border: 1px solid var(--borde); background: var(--panel); border-radius: 7px; padding: 6px 12px; cursor: pointer; white-space: nowrap; }
+.b:hover { background: var(--acento-cl); }
+.b.p { background: var(--acento); border-color: var(--acento); color: #fff; }
+.b.p:hover { filter: brightness(1.1); }
+.b.peligro:hover { background: #fdecec; border-color: var(--mal); }
+.b:disabled { opacity: .45; cursor: default; background: var(--panel); }
+.b.chico { padding: 3px 8px; font-size: 12.5px; }
+nav { display: flex; align-items: stretch; gap: 2px; padding: 0 10px; background: var(--panel); border-bottom: 1px solid var(--borde); overflow-x: auto; }
+nav button { border: none; background: none; padding: 10px 14px 9px; cursor: pointer; border-bottom: 3px solid transparent; color: var(--sec); display: flex; align-items: center; gap: 7px; white-space: nowrap; }
+nav button .n { display: inline-grid; place-items: center; width: 20px; height: 20px; border-radius: 50%; background: var(--borde); color: var(--texto); font-size: 11px; font-weight: 600; }
+nav button:hover { color: var(--texto); }
+nav button.activa { color: var(--acento); border-bottom-color: var(--acento); font-weight: 600; }
+nav button.activa .n { background: var(--acento); color: #fff; }
+nav .flecha { align-self: center; color: var(--borde); font-size: 12px; }
+nav .sep { flex: 1; }
+main { flex: 1; position: relative; min-height: 0; }
+.vista { position: absolute; inset: 0; visibility: hidden; overflow: auto; }
+.vista.activa { visibility: visible; }
+.pagina { max-width: 1200px; margin: 0 auto; padding: 22px 22px 60px; }
+.pagina h2 { margin: 0 0 4px; font-size: 20px; }
+.intro { color: var(--sec); margin: 0 0 18px; max-width: 860px; line-height: 1.45; }
+.tarjeta { background: var(--panel); border: 1px solid var(--borde); border-radius: 12px; padding: 14px 16px; box-shadow: var(--sombra); }
+.tarjeta h3 { margin: 0 0 10px; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+.rejilla { display: grid; gap: 16px; }
+.campo { display: grid; grid-template-columns: 1fr 110px; align-items: center; gap: 8px; margin-bottom: 7px; }
+.campo label small, .campo label .u { color: var(--sec); font-size: 12px; }
+.campo input, .campo select, .ent { width: 100%; padding: 5px 7px; border: 1px solid var(--borde); border-radius: 6px; background: var(--bg); }
+.campo input[type=checkbox] { width: auto; justify-self: start; }
+.campo input[type=color] { padding: 1px; height: 30px; }
+.campo.doble { grid-template-columns: 1fr 70px 70px; }
+.nota { font-size: 12.5px; color: var(--sec); line-height: 1.45; margin: 8px 0 0; }
+.aviso { font-size: 12.5px; color: var(--aviso); margin: 6px 0 0; line-height: 1.4; }
+.mal { color: var(--mal); }
+.okc { color: var(--ok); }
+.etq { font-size: 10.5px; text-transform: uppercase; letter-spacing: .05em; background: var(--acento-cl); color: var(--acento); border-radius: 8px; padding: 1px 6px; font-weight: 600; }
+
+/* Editor */
+#v_editor { display: grid; grid-template-columns: 340px 1fr; overflow: hidden; }
+#lateral { border-right: 1px solid var(--borde); background: var(--panel); overflow-y: auto; padding: 12px 12px 40px; }
+.panelTab { display: none; }
+.panelTab.activo { display: block; }
+.panelTab h2 { font-size: 16px; margin: 2px 0 4px; }
+.panelTab .intro { font-size: 12.5px; margin-bottom: 10px; }
+.bloque { border: 1px solid var(--borde); border-radius: 10px; padding: 10px; margin-bottom: 10px; background: var(--panel); }
+.bloque > h4 { margin: 0 0 8px; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; color: var(--sec); display: flex; align-items: center; gap: 6px; }
+.herr { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; }
+.herr button { border: 1px solid var(--borde); background: var(--bg); border-radius: 8px; padding: 6px 4px; cursor: pointer; font-size: 12px; display: flex; flex-direction: column; align-items: center; gap: 2px; line-height: 1.15; text-align: center; }
+.herr button .i { font-size: 18px; }
+.herr button:hover { border-color: var(--acento); }
+.herr button.activa { background: var(--acento); color: #fff; border-color: var(--acento); }
+.fila { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+.lista .it { border: 1px solid var(--borde); border-radius: 8px; padding: 7px 8px; margin-bottom: 6px; }
+.lista .it.sel { border-color: var(--acento); box-shadow: 0 0 0 2px var(--acento-cl); }
+.lista .it .cab { display: flex; align-items: center; gap: 6px; }
+.lista .it .cab b { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 13px; }
+.lista .it .cuerpo { margin-top: 7px; }
+.mini { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 4px; }
+.mini label { font-size: 11px; color: var(--sec); display: flex; flex-direction: column; gap: 2px; }
+.mini input, .mini select { width: 100%; padding: 3px 5px; border: 1px solid var(--borde); border-radius: 5px; background: var(--bg); font-size: 12.5px; }
+.capas { max-height: 160px; overflow: auto; font-size: 12px; margin-top: 6px; border-top: 1px dashed var(--borde); padding-top: 5px; }
+.capas label { display: flex; gap: 5px; align-items: center; }
+#zonaLienzo { position: relative; display: flex; flex-direction: column; min-width: 0; min-height: 0; }
+#barraVista { display: flex; align-items: center; gap: 6px; padding: 5px 8px; background: var(--panel); border-bottom: 1px solid var(--borde); flex-wrap: wrap; font-size: 12.5px; }
+#barraVista label { display: flex; align-items: center; gap: 3px; cursor: pointer; color: var(--sec); }
+#barraVista .sepv { width: 1px; height: 20px; background: var(--borde); margin: 0 4px; }
+#lienzoCaja { flex: 1; position: relative; min-height: 0; background: var(--lienzo); overflow: hidden; }
+#lienzo { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; user-select: none; }
+#estado { display: flex; gap: 14px; padding: 4px 10px; font-size: 12px; color: var(--sec); background: var(--panel); border-top: 1px solid var(--borde); white-space: nowrap; overflow: hidden; }
+#estado #ayudaHerr { color: var(--texto); overflow: hidden; text-overflow: ellipsis; flex: 1; }
+#entradaDist { position: absolute; display: none; z-index: 8; background: var(--panel); border: 1px solid var(--acento); border-radius: 6px; padding: 3px 6px; box-shadow: var(--sombra); font-size: 12px; }
+#entradaDist input { width: 90px; border: none; background: transparent; outline: none; font-weight: 600; }
+#progreso { position: absolute; left: 50%; top: 40%; transform: translate(-50%,-50%); background: var(--panel); border: 1px solid var(--borde); border-radius: 12px; padding: 16px 22px; box-shadow: var(--sombra); display: none; z-index: 9; min-width: 280px; text-align: center; }
+#progreso .barra { height: 8px; background: var(--borde); border-radius: 4px; overflow: hidden; margin-top: 10px; }
+#progreso .barra i { display: block; height: 100%; width: 0; background: var(--acento); transition: width .1s; }
+.leyenda { position: absolute; right: 10px; bottom: 10px; background: var(--panel); border: 1px solid var(--borde); border-radius: 8px; padding: 6px 9px; font-size: 11.5px; box-shadow: var(--sombra); pointer-events: none; opacity: .93; }
+.leyenda div { display: flex; align-items: center; gap: 6px; }
+.leyenda i { width: 14px; height: 10px; display: inline-block; border-radius: 2px; }
+
+/* Propuestas */
+.prop { border: 1px solid var(--borde); border-radius: 9px; padding: 7px; margin-bottom: 7px; cursor: pointer; display: grid; grid-template-columns: 74px 1fr; gap: 8px; align-items: center; }
+.prop:hover { border-color: var(--acento); }
+.prop.sel { border-color: var(--acento); box-shadow: 0 0 0 2px var(--acento-cl); background: var(--acento-cl); }
+.prop svg { width: 74px; height: 56px; background: var(--lienzo); border-radius: 5px; }
+.prop b { font-size: 13px; display: block; }
+.prop .num { font-size: 12px; color: var(--sec); line-height: 1.4; }
+.prop .num strong { color: var(--texto); }
+.estrella { color: #e0a800; }
+.seg { display: inline-flex; border: 1px solid var(--borde); border-radius: 7px; overflow: hidden; }
+.seg button { border: none; background: var(--panel); padding: 4px 10px; cursor: pointer; font-size: 12.5px; }
+.seg button.activa { background: var(--acento); color: #fff; }
+
+/* Mesas */
+.mesas { grid-template-columns: repeat(auto-fill, minmax(270px, 1fr)); }
+.mesaT .prev { width: 100%; height: 170px; display: block; background: var(--lienzo); border-radius: 8px; margin-bottom: 8px; }
+.mesaT.inactiva { opacity: .55; }
+.mesaT .cap { font-size: 12.5px; color: var(--sec); margin-top: 4px; line-height: 1.45; }
+.ergo { grid-template-columns: 1fr 1fr; }
+.tablaErgo { width: 100%; border-collapse: collapse; font-size: 13px; }
+.tablaErgo th { text-align: left; font-size: 11px; text-transform: uppercase; color: var(--sec); padding: 5px 4px; border-bottom: 1px solid var(--borde); }
+.tablaErgo td { padding: 4px; border-bottom: 1px solid var(--borde); }
+.tablaErgo input { width: 78px; padding: 3px 5px; border: 1px solid var(--borde); border-radius: 5px; background: var(--bg); }
+.tablaErgo td small { color: var(--sec); }
+
+/* Archivo */
+.archivo { grid-template-columns: repeat(auto-fill, minmax(330px, 1fr)); }
+.accion { display: flex; gap: 10px; align-items: flex-start; padding: 9px 0; border-top: 1px solid var(--borde); }
+.accion:first-of-type { border-top: none; }
+.accion .t { flex: 1; }
+.accion .t b { display: block; font-weight: 600; }
+.accion .t span { color: var(--sec); font-size: 12.5px; }
+
+/* Informe */
+#informe { background: #fff; color: #1c2733; max-width: 210mm; margin: 0 auto; padding: 14mm 14mm; box-shadow: var(--sombra); border-radius: 4px; font-size: 12px; }
+#informe h1 { font-size: 20px; margin: 0 0 2px; color: #005a9c; }
+#informe h2 { font-size: 14px; margin: 16px 0 6px; color: #005a9c; border-bottom: 1.5px solid #005a9c; padding-bottom: 2px; }
+#informe .sub { color: #6b7684; margin-bottom: 8px; }
+#informe table { width: 100%; border-collapse: collapse; margin: 4px 0 8px; }
+#informe th, #informe td { border: 1px solid #c9d0d8; padding: 3px 5px; text-align: left; vertical-align: top; }
+#informe th { background: #e6f0f8; font-size: 11px; }
+#informe td.n, #informe th.n { text-align: right; }
+#informe tr.elegida td { background: #fff7d6; font-weight: 600; }
+#informe .dibujo { border: 1px solid #c9d0d8; border-radius: 4px; padding: 4px; }
+#informe .dibujo svg { width: 100%; height: auto; display: block; }
+#informe .kpi { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; margin: 6px 0; }
+#informe .kpi div { border: 1px solid #c9d0d8; border-radius: 6px; padding: 6px 8px; }
+#informe .kpi b { display: block; font-size: 18px; color: #005a9c; }
+#informe .kpi span { font-size: 10.5px; color: #6b7684; }
+#informe .pie { margin-top: 14px; font-size: 10px; color: #6b7684; border-top: 1px solid #c9d0d8; padding-top: 5px; }
+#informe .salto { page-break-before: always; }
+.barraInforme { position: sticky; top: 0; z-index: 3; display: flex; gap: 8px; flex-wrap: wrap; padding: 10px 0 12px; background: var(--bg); }
+
+#soltar { position: fixed; inset: 0; background: rgba(0,90,156,.18); border: 3px dashed var(--acento); z-index: 50; display: none; place-items: center; font-size: 22px; font-weight: 600; color: var(--acento); pointer-events: none; }
+#soltar.ver { display: grid; }
+#snack { position: fixed; left: 50%; bottom: 26px; transform: translateX(-50%) translateY(20px); background: #1c2733; color: #fff; padding: 10px 18px; border-radius: 8px; opacity: 0; transition: .25s; z-index: 60; max-width: 80vw; pointer-events: none; }
+#snack.ver { opacity: 1; transform: translateX(-50%); }
+dialog { border: 1px solid var(--borde); border-radius: 12px; background: var(--panel); color: var(--texto); box-shadow: var(--sombra); padding: 18px 20px; max-width: 420px; }
+dialog::backdrop { background: rgba(0,0,0,.3); }
+dialog h3 { margin: 0 0 8px; }
+dialog .fila { justify-content: flex-end; margin-top: 12px; }
+/* ── Ludoteca ── */
+#v_plano { display: grid; grid-template-columns: 340px 1fr; overflow: hidden; }
+.pagina.ancha { max-width: none; }
+.filtros { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 10px; }
+.filtros input, .filtros select { padding: 5px 7px; border: 1px solid var(--borde); border-radius: 6px; background: var(--panel); }
+.filtros label { display: flex; align-items: center; gap: 4px; font-size: 12.5px; color: var(--sec); }
+.kpis { display: flex; gap: 10px; flex-wrap: wrap; margin: 0 0 12px; }
+.kpis div { background: var(--panel); border: 1px solid var(--borde); border-radius: 10px; padding: 6px 12px; font-size: 12px; color: var(--sec); }
+.kpis b { display: block; font-size: 18px; color: var(--texto); }
+.tablaWrap { background: var(--panel); border: 1px solid var(--borde); border-radius: 10px; overflow: auto; max-height: calc(100vh - 300px); }
+table.datos { border-collapse: separate; border-spacing: 0; font-size: 13px; table-layout: fixed; }
+table.datos th { position: sticky; top: 0; z-index: 2; background: var(--acento-cl); text-align: left; font-size: 11.5px; padding: 6px; border-bottom: 1px solid var(--borde); border-right: 1px solid var(--borde); cursor: pointer; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; user-select: none; }
+table.datos th.ord::after { content: ' ▲'; color: var(--acento); }
+table.datos th.ord.desc::after { content: ' ▼'; }
+table.datos td { border-bottom: 1px solid var(--borde); border-right: 1px solid var(--borde); padding: 0; height: 28px; background: var(--panel); }
+table.datos td input, table.datos td select { width: 100%; height: 28px; border: none; background: transparent; padding: 0 6px; outline: none; font-size: 13px; }
+table.datos td input:focus, table.datos td select:focus { background: var(--acento-cl); box-shadow: inset 0 0 0 2px var(--acento); }
+table.datos tr:hover td { background: var(--bg); }
+table.datos tr.marcada td { background: var(--acento-cl); }
+table.datos td.ctr { text-align: center; }
+table.datos td.ctr input[type=checkbox], table.datos th input[type=checkbox] { width: auto; height: auto; vertical-align: middle; }
+table.datos td.ctr button { border: none; background: none; cursor: pointer; padding: 2px 4px; font-size: 14px; }
+table.datos tr.prest input[data-k=prestadoA] { color: var(--aviso); font-weight: 600; }
+table.datos tr.vencido input[data-k=prestadoA], table.datos tr.vencido input[data-k=fPrest] { color: var(--mal); font-weight: 600; }
+.chip { display: block; font-size: 12px; background: var(--bg); border: 1px solid var(--borde); border-radius: 5px; padding: 2px 6px; margin: 2px 0; cursor: grab; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.chip small { color: var(--sec); }
+.chip:hover { border-color: var(--acento); }
+.chip.hit { border-color: #e67e22; background: #fdf1e3; color: #1c2733; }
+.balda { border: 1px dashed var(--borde); border-radius: 6px; padding: 4px 5px; margin-bottom: 5px; min-height: 36px; }
+.balda.sobre, #listaSin.sobre { border-color: var(--acento); background: var(--acento-cl); }
+.balda .cabB { display: flex; justify-content: space-between; font-size: 11px; color: var(--sec); }
+.barraO { height: 4px; background: var(--borde); border-radius: 2px; overflow: hidden; margin: 2px 0 3px; }
+.barraO i { display: block; height: 100%; }
+#listaSin { max-height: 320px; overflow: auto; border: 1px dashed transparent; border-radius: 6px; padding: 2px; }
+.tablaP { width: 100%; border-collapse: collapse; font-size: 13px; }
+.tablaP th { text-align: left; font-size: 11px; text-transform: uppercase; color: var(--sec); padding: 5px 4px; border-bottom: 1px solid var(--borde); }
+.tablaP td { padding: 5px 4px; border-bottom: 1px solid var(--borde); }
+.prestamos { grid-template-columns: 360px 1fr; align-items: start; }
+.puente { background: var(--acento-cl); border-color: var(--acento); }
+.puente a { color: inherit; }
+@media print {
+  @page { size: A4; margin: 10mm; }
+  body { display: block; overflow: visible; background: #fff; height: auto; }
+  header, nav, .barraInforme, #snack, #soltar, dialog { display: none !important; }
+  main { position: static; }
+  .vista { display: none !important; }
+  #v_listados { display: block !important; visibility: visible !important; position: static; overflow: visible; }
+  #v_listados .pagina { padding: 0; max-width: none; }
+  #informe { box-shadow: none; padding: 0; max-width: none; border-radius: 0; }
+  #informe h2 { break-after: avoid; }
+  #informe tr, #informe .dibujo, #informe .kpi { break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+<header>
+  <h1><svg class="logo" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="#005a9c"/><g fill="#e9d3a8"><rect x="12" y="14" width="8" height="24" rx="1"/><rect x="22" y="18" width="7" height="20" rx="1"/><rect x="31" y="12" width="9" height="26" rx="1"/><rect x="42" y="20" width="10" height="18" rx="1"/></g><rect x="8" y="38" width="48" height="4" fill="#fff"/><rect x="8" y="50" width="48" height="4" fill="#fff"/></svg>
+    Ludoteca <span class="por">— Por Eloi A.A.</span> <span class="ver" id="verPrograma">v0.1</span></h1>
+  <input id="nombreTrabajo" value="Ludoteca del club" title="Nombre de la asociación o de la ludoteca: sale en los listados y en el nombre de los archivos">
+  <span class="hueco"></span>
+  <button class="b" id="bOtra" title="Abre el Distribuidor de Eventos con este mismo plano (y las estanterías como obstáculos)">🍽️ Distribuidor de mesas</button>
+  <button class="b" id="bDeshacer" title="Deshacer (Ctrl+Z)">↶</button>
+  <button class="b" id="bRehacer" title="Rehacer (Ctrl+Y)">↷</button>
+  <button class="b" id="bAbrir" title="Abre una ludoteca guardada (.json)">📂 Abrir</button>
+  <button class="b p" id="bGuardar" title="Guarda juegos, estanterías y plano en un .json (Ctrl+S)">💾 Guardar</button>
+  <button class="b" id="bTema" title="Modo claro / oscuro">🌓</button>
+</header>
+<nav id="pestanas">
+  <button data-v="juegos">📚 Juegos</button>
+  <button data-v="plano">🗺️ Plano y estanterías</button>
+  <button data-v="prestamos">🤝 Préstamos</button>
+  <button data-v="listados">📄 Listados</button>
+  <span class="sep"></span>
+  <button data-v="archivo">💾 Archivo</button>
+</nav>
+<main>
+  <!-- ═══ Juegos ═══ -->
+  <section class="vista" id="v_juegos"><div class="pagina ancha">
+    <div class="kpis" id="kpis"></div>
+    <div class="filtros">
+      <input id="fTexto" placeholder="🔎 Buscar título, editorial, notas…" style="min-width:240px">
+      <label>Jugadores <input id="fJug" style="width:46px" title="Juegos que admiten este número de jugadores"></label>
+      <label>Duración máx. <input id="fDur" style="width:52px" title="Minutos"> min</label>
+      <select id="fCat"></select>
+      <select id="fEstado"></select>
+      <select id="fEst"></select>
+      <label><input type="checkbox" id="fPrest"> Solo prestados</label>
+      <button class="b chico" id="bLimpiar">✕ Quitar filtros</button>
+      <span class="hueco"></span>
+    </div>
+    <div class="filtros">
+      <button class="b p" id="bNuevoJuego">＋ Juego</button>
+      <span class="nota" style="margin:0" id="txtMarcados"></span>
+      <select id="selMover"></select><button class="b chico" id="bMover">Mover marcados</button>
+      <button class="b chico peligro" id="bBorrarMarcados">🗑 Borrar marcados</button>
+      <span class="hueco"></span>
+      <button class="b chico" id="bImpCsvJ">📥 Importar CSV / Excel</button>
+      <button class="b chico" id="bExpCsvJ">⬇ Exportar CSV</button>
+    </div>
+    <div class="tablaWrap"><table class="datos" id="tabla"><colgroup id="cols"></colgroup><thead id="cabT"></thead><tbody id="cuerpoT"></tbody></table></div>
+    <p class="nota">Edita directamente en las celdas (Intro baja a la fila siguiente). Clic en la cabecera para ordenar. 📍 lleva el juego al plano. El <b>lomo</b> es el grosor de la caja colocada de canto: sirve para calcular cuánto ocupa cada balda (si está vacío se usan <span id="txtLomo">7</span> cm).</p>
+    <datalist id="dlCat"></datalist><datalist id="dlEdit"></datalist><datalist id="dlIdioma"></datalist><datalist id="dlProp"></datalist>
+  </div></section>
+
+  <!-- ═══ Plano ═══ -->
+  <section class="vista" id="v_plano">
+    <aside id="lateral">
+      <div class="bloque puente"><h4>🍽️ Plano compartido</h4>
+        <p class="nota" style="margin:0 0 8px">El plano (DXF, zona útil, columnas, paredes y puertas) es el mismo que el del <b>Distribuidor de Eventos</b>. Dibújalo allí y tráelo aquí, o al revés.</p>
+        <div class="fila"><button class="b p chico" id="bOtra2">↔ Abrir el Distribuidor con este plano</button></div>
+        <div class="fila" style="margin-top:6px"><button class="b chico" id="bTraer" title="Coge el plano del último trabajo del Distribuidor abierto en este navegador">📥 Traer plano del Distribuidor</button><button class="b chico" id="bImpPlano" title="Trabajo .json del Distribuidor o plano compartido .json">📂 .json…</button></div>
+        <div id="infoPlano" class="nota"></div>
+      </div>
+      <div class="bloque"><h4>Planos DXF</h4>
+        <div class="fila"><button class="b chico" id="bImpDxf">📂 Importar DXF…</button><button class="b chico" id="bLocal" title="Sin plano: dibuja el local como un rectángulo">▭ Local sin plano</button></div>
+        <div class="lista" id="listaDxf" style="margin-top:8px"></div>
+      </div>
+      <div class="bloque"><h4>Estanterías</h4>
+        <div class="herr" id="herrPlano">
+          <button data-h="sel"><span class="i">🖱️</span>Mover / elegir</button>
+          <button data-h="est"><span class="i">📚</span>Añadir estantería</button>
+          <button data-h="medir"><span class="i">📏</span>Medir</button>
+        </div>
+        <div id="opcHerr" style="margin-top:8px"></div>
+        <div id="resEst" class="nota"></div>
+      </div>
+      <div class="bloque" id="propsEst"></div>
+      <div class="bloque"><h4>Juegos sin ubicar <span class="etq" id="nSin">0</span></h4>
+        <input class="ent" id="fSin" placeholder="🔎 Filtrar…" style="margin-bottom:6px">
+        <div id="listaSin"></div>
+        <p class="nota">Arrastra un juego a una estantería del plano o a una balda de la estantería elegida. Para quitarlo de su sitio, arrástralo aquí.</p>
+      </div>
+    </aside>
+    <div id="zonaLienzo">
+      <div id="barraVista">
+        <button class="b chico" id="vAjustar" title="Ver todo (F)">⤢ Ajustar</button>
+        <button class="b chico" id="vMas">＋</button>
+        <button class="b chico" id="vMenos">－</button>
+        <span class="sepv"></span>
+        <label title="Las estanterías se pegan entre sí y a la rejilla de 5 cm"><input type="checkbox" id="sIman" checked>Imán</label>
+        <span class="sepv"></span>
+        <b style="color:var(--sec)">Ver:</b>
+        <label><input type="checkbox" id="cDxf" checked>DXF</label>
+        <label><input type="checkbox" id="cZona" checked>Zona útil</label>
+        <label title="Zona libre delante de cada estantería para coger juegos"><input type="checkbox" id="cAcc" checked>Acceso</label>
+        <label title="Las mesas del Distribuidor de Eventos"><input type="checkbox" id="cMesas" checked>Mesas</label>
+        <label title="Barra de ocupación de cada estantería"><input type="checkbox" id="cOcup" checked>Ocupación</label>
+        <span class="sepv"></span>
+        <input id="buscaPlano" placeholder="🔎 ¿Dónde está…?" style="width:170px;padding:3px 7px;border:1px solid var(--borde);border-radius:6px;background:var(--bg)">
+      </div>
+      <div id="lienzoCaja">
+        <svg id="lienzo" xmlns="http://www.w3.org/2000/svg">
+          <g id="mundo" transform="scale(1,-1)">
+            <g id="gRejilla"></g><g id="gFondo"></g><g id="gDxf"></g><g id="gExt"></g><g id="gEst"></g><g id="gCotas"></g>
+          </g>
+          <g id="gTextos"></g><g id="gUI"></g>
+        </svg>
+        <div class="leyenda" id="leyenda"></div>
+      </div>
+      <div id="estado"><span id="coords">x — y —</span><span id="ayudaHerr"></span><span id="zoomTxt"></span></div>
+    </div>
+  </section>
+
+  <!-- ═══ Préstamos ═══ -->
+  <section class="vista" id="v_prestamos"><div class="pagina">
+    <h2>🤝 Préstamos</h2>
+    <p class="intro">Presta un juego a un socio y márcalo como devuelto cuando vuelva. Los que pasan del plazo salen en rojo.</p>
+    <div class="rejilla prestamos">
+      <div class="tarjeta"><h3>Prestar un juego</h3>
+        <div class="campo" style="grid-template-columns:1fr"><input id="pJuego" list="dlLibres" placeholder="Juego (escribe para buscar)"></div>
+        <div class="campo" style="grid-template-columns:1fr"><input id="pPersona" list="dlPersonas" placeholder="Socio / persona"></div>
+        <div class="campo"><label>Fecha</label><input type="date" id="pFecha"></div>
+        <div class="fila" style="justify-content:flex-end"><button class="b p" id="bPrestar">Prestar</button></div>
+        <div class="campo" style="margin-top:14px"><label>Plazo de devolución <span class="u">(días)</span></label><input id="oDias"></div>
+        <datalist id="dlLibres"></datalist><datalist id="dlPersonas"></datalist>
+      </div>
+      <div class="tarjeta"><h3>Prestados ahora <span class="etq" id="nPrest">0</span></h3><div id="tablaPrest"></div></div>
+    </div>
+    <div class="tarjeta" style="margin-top:16px"><h3>Historial</h3><div id="tablaHist"></div></div>
+  </div></section>
+
+  <!-- ═══ Listados ═══ -->
+  <section class="vista" id="v_listados"><div class="pagina">
+    <div class="barraInforme">
+      <button class="b p" id="bPdf" title="Abre el diálogo de impresión: elige «Guardar como PDF»">🖨️ Guardar en PDF</button>
+      <button class="b" id="bSvg">⬇ Plano SVG</button>
+      <label class="nota" style="display:flex;align-items:center;gap:5px;margin:0"><input type="checkbox" id="lPlano" checked> Plano</label>
+      <label class="nota" style="display:flex;align-items:center;gap:5px;margin:0"><input type="checkbox" id="lInv" checked> Inventario por estanterías</label>
+      <label class="nota" style="display:flex;align-items:center;gap:5px;margin:0"><input type="checkbox" id="lCat"> Catálogo alfabético</label>
+      <label class="nota" style="display:flex;align-items:center;gap:5px;margin:0"><input type="checkbox" id="lPre" checked> Préstamos</label>
+      <label class="nota" style="display:flex;align-items:center;gap:5px;margin:0"><input type="checkbox" id="lEtq"> Carteles de estantería</label>
+    </div>
+    <div id="informe"></div>
+  </div></section>
+
+  <!-- ═══ Archivo ═══ -->
+  <section class="vista" id="v_archivo"><div class="pagina">
+    <h2>💾 Archivo</h2>
+    <p class="intro">Guardar y abrir la ludoteca completa (juegos, estanterías, préstamos y plano). Puedes arrastrar a la ventana archivos .json, .csv y .dxf.</p>
+    <div class="rejilla archivo">
+      <div class="tarjeta"><h3>Ludoteca <span class="etq">.json propio</span></h3>
+        <div class="accion"><div class="t"><b>Nueva</b><span>Vacía juegos, estanterías, préstamos y plano</span></div><button class="b peligro" data-hacer="nuevo">Nueva</button></div>
+        <div class="accion"><div class="t"><b>Abrir</b><span>Una ludoteca guardada, un trabajo del Distribuidor (solo el plano) o un plano compartido</span></div><button class="b" data-hacer="abrir">📂 Abrir…</button></div>
+        <div class="accion"><div class="t"><b>Guardar</b><span>Todo en un solo archivo .json (los DXF van dentro)</span></div><button class="b p" data-hacer="guardar">💾 Guardar</button></div>
+        <div class="accion"><div class="t"><b>Ejemplo</b><span>Un local de 14 × 9 m con 7 estanterías y 30 juegos, para probar</span></div><button class="b" data-hacer="ejemplo">Cargar ejemplo</button></div>
+      </div>
+      <div class="tarjeta"><h3>Importar</h3>
+        <div class="accion"><div class="t"><b>Juegos desde CSV</b><span>De Excel/LibreOffice (guardar como CSV) o la colección exportada de BoardGameGeek. Reconoce las columnas por su nombre.</span></div><button class="b" data-hacer="impCsv">CSV…</button></div>
+        <div class="accion"><div class="t"><b>Plano DXF</b><span>Como fondo para colocar las estanterías</span></div><button class="b" data-hacer="impDxf">DXF…</button></div>
+      </div>
+      <div class="tarjeta"><h3>Exportar</h3>
+        <div class="accion"><div class="t"><b>Juegos en CSV</b><span>Para abrir en Excel o LibreOffice Calc (separado por «;»)</span></div><button class="b" data-hacer="csv">⬇ CSV</button></div>
+        <div class="accion"><div class="t"><b>Listados en PDF</b><span>Inventario por estanterías, catálogo, préstamos y carteles</span></div><button class="b p" data-hacer="pdf">🖨️ PDF</button></div>
+        <div class="accion"><div class="t"><b>Plano compartido</b><span>Plano + estanterías en un .json que abre el Distribuidor de Eventos (por si no van en la misma carpeta)</span></div><button class="b" data-hacer="plano">⬇ .json</button></div>
+      </div>
+      <div class="tarjeta"><h3>Opciones</h3>
+        <div class="campo"><label>Lomo por defecto <span class="u">(cm)</span></label><input id="oLomo"></div>
+        <div class="campo"><label>Acceso delante de una estantería nueva <span class="u">(cm)</span></label><input id="oAcceso"></div>
+        <div class="campo" style="grid-template-columns:1fr 1.3fr"><label>Archivo del Distribuidor <small>(en la misma carpeta)</small></label><input id="oUrl"></div>
+      </div>
+      <div class="tarjeta"><h3>Atajos del plano</h3>
+        <p class="nota" style="margin:0;line-height:1.7">
+          <b>Rueda</b>: zoom · <b>botón central</b>, <b>derecho</b> o <b>Espacio + arrastrar</b>: mover la vista · <b>F</b>: ajustar<br>
+          <b>R</b>: girar 90° (<b>Mayús+R</b>: 15°) · <b>Supr</b>: borrar · <b>Ctrl+D</b>: duplicar · <b>flechas</b>: mover 1 cm (Mayús: 10 cm)<br>
+          <b>Ctrl+Z / Ctrl+Y</b>: deshacer / rehacer · <b>Ctrl+S</b>: guardar
+        </p>
+      </div>
+    </div>
+  </div></section>
+</main>
+<input type="file" id="fTrabajo" accept=".json" hidden>
+<input type="file" id="fPlano" accept=".json" hidden>
+<input type="file" id="fDxf" accept=".dxf" multiple hidden>
+<input type="file" id="fCsv" accept=".csv,.txt,.tsv" hidden>
+<div id="soltar">Suelta el archivo (.json, .csv o .dxf)</div>
+<div id="snack"></div>
+<dialog id="dlg"><h3 id="dlgTit"></h3><p id="dlgTxt" class="nota"></p><input id="dlgEnt" class="ent"><div class="fila"><button class="b" id="dlgNo">Cancelar</button><button class="b p" id="dlgSi">Aceptar</button></div></dialog>
+<script>
+/* ════════════════════════════════════════════════════════════════════
+   Ludoteca — base de datos de juegos y estanterías sobre el plano del local
+   © 2026 Eloi A.A. — EUPL-1.2 · Unidades internas: centímetros, eje Y hacia arriba
+   Comparte el plano con el Distribuidor de Eventos (mismas coordenadas)
+   ════════════════════════════════════════════════════════════════════ */
+'use strict';
+const VERSION = '0.1', FORMATO = 'trabajo-Ludoteca', APP = 'Ludoteca', OTRA = 'Distribuidor de Eventos', FORMATO_OTRA = 'trabajo-Distribuidor-Eventos';
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const num = v => parseFloat(String(v).replace(',', '.'));
+const r1 = v => Math.round(v * 10) / 10;
+const fmt = (v, d = 0) => (isFinite(v) ? v : 0).toLocaleString('es-ES', { minimumFractionDigits: d, maximumFractionDigits: d });
+const fm = cm => fmt(cm / 100, 2) + ' m';
+const fcm = cm => fmt(cm, 0) + ' cm';
+const uid = () => Math.random().toString(36).slice(2, 9);
+const nombreArchivo = s => (String(s || '').trim() || 'evento').replace(/[\\/:*?"<>|]/g, '_');
+const RAD = Math.PI / 180;
+
+/** Lee una longitud escrita por el usuario: «540», «5,4m», «5400mm», «54dm». Devuelve cm. */
+function leerLargo(t) {
+  const m = String(t).trim().toLowerCase().replace(',', '.').match(/^(-?[\d.]+)\s*(mm|cm|dm|m)?$/);
+  if (!m) return NaN;
+  const v = parseFloat(m[1]);
+  return v * ({ mm: .1, cm: 1, dm: 10, m: 100 }[m[2] || 'cm']);
+}
+
+function snack(t, ms) { const s = $('snack'); s.textContent = t; s.classList.add('ver'); clearTimeout(snack.t); snack.t = setTimeout(() => s.classList.remove('ver'), ms || 3600); }
+function descargar(contenido, nombre, tipo) {
+  const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([contenido], { type: tipo || 'application/octet-stream' })); a.download = nombre;
+  document.body.appendChild(a); a.click(); setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 800);
+}
+const leerArchivo = f => f.text().then(t => t.charCodeAt(0) === 0xFEFF ? t.slice(1) : t);
+
+/** Diálogo propio (pregunta un valor). Devuelve la cadena o null. */
+function preguntar(tit, txt, val) {
+  return new Promise(ok => {
+    const d = $('dlg'); $('dlgTit').textContent = tit; $('dlgTxt').innerHTML = txt; const e = $('dlgEnt');
+    e.style.display = val == null ? 'none' : ''; e.value = val == null ? '' : val;
+    const fin = r => { d.close(); $('dlgSi').onclick = $('dlgNo').onclick = e.onkeydown = null; ok(r); };
+    $('dlgSi').onclick = () => fin(val == null ? true : e.value);
+    $('dlgNo').onclick = () => fin(null);
+    e.onkeydown = ev => { if (ev.key === 'Enter') { ev.preventDefault(); fin(e.value); } };
+    d.oncancel = () => fin(null);
+    d.showModal(); if (val != null) { e.focus(); e.select(); }
+  });
+}
+// ════════════════ Geometría ════════════════
+const dist = (a, b) => Math.hypot(a[0] - b[0], a[1] - b[1]);
+const rotar = (p, a) => { const c = Math.cos(a), s = Math.sin(a); return [p[0] * c - p[1] * s, p[0] * s + p[1] * c]; };
+function distPuntoSeg(p, a, b) {
+  const dx = b[0] - a[0], dy = b[1] - a[1], l2 = dx * dx + dy * dy;
+  let t = l2 ? ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / l2 : 0; t = Math.max(0, Math.min(1, t));
+  return Math.hypot(p[0] - a[0] - t * dx, p[1] - a[1] - t * dy);
+}
+function puntoMasCercanoSeg(p, a, b) {
+  const dx = b[0] - a[0], dy = b[1] - a[1], l2 = dx * dx + dy * dy;
+  let t = l2 ? ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / l2 : 0; t = Math.max(0, Math.min(1, t));
+  return [a[0] + t * dx, a[1] + t * dy];
+}
+function segCruzan(a, b, c, d) {
+  const o = (p, q, r) => (q[0] - p[0]) * (r[1] - p[1]) - (q[1] - p[1]) * (r[0] - p[0]);
+  const d1 = o(c, d, a), d2 = o(c, d, b), d3 = o(a, b, c), d4 = o(a, b, d);
+  return ((d1 > 0) !== (d2 > 0)) && ((d3 > 0) !== (d4 > 0)) && d1 && d2 && d3 && d4;
+}
+function distSegSeg(a, b, c, d) {
+  if (segCruzan(a, b, c, d)) return 0;
+  return Math.min(distPuntoSeg(a, c, d), distPuntoSeg(b, c, d), distPuntoSeg(c, a, b), distPuntoSeg(d, a, b));
+}
+function dentroPoli(p, pts) {
+  let d = false;
+  for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) {
+    const a = pts[i], b = pts[j];
+    if ((a[1] > p[1]) !== (b[1] > p[1]) && p[0] < (b[0] - a[0]) * (p[1] - a[1]) / (b[1] - a[1]) + a[0]) d = !d;
+  }
+  return d;
+}
+function areaPoli(pts) { let s = 0; for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) s += (pts[j][0] + pts[i][0]) * (pts[j][1] - pts[i][1]); return Math.abs(s / 2); }
+function perimPoli(pts) { let s = 0; for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) s += dist(pts[i], pts[j]); return s; }
+function cajaDe(pts) { let x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity; for (const p of pts) { if (p[0] < x0) x0 = p[0]; if (p[0] > x1) x1 = p[0]; if (p[1] < y0) y0 = p[1]; if (p[1] > y1) y1 = p[1]; } return { x0, y0, x1, y1 }; }
+function rectPts(cx, cy, w, h, ang) { // rectángulo centrado y girado (ang en rad)
+  return [[-w / 2, -h / 2], [w / 2, -h / 2], [w / 2, h / 2], [-w / 2, h / 2]].map(p => { const q = rotar(p, ang); return [q[0] + cx, q[1] + cy]; });
+}
+function rectExtPts(cx, cy, xl, xr, yb, yt, ang) { // rectángulo con extensiones distintas por lado
+  return [[-xl, -yb], [xr, -yb], [xr, yt], [-xl, yt]].map(p => { const q = rotar(p, ang); return [q[0] + cx, q[1] + cy]; });
+}
+
+/* Formas: { c:[x,y], r } círculo · { p:[[x,y]…] } polígono convexo (con caja b) */
+const circ = (c, r) => ({ c, r, b: { x0: c[0] - r, y0: c[1] - r, x1: c[0] + r, y1: c[1] + r } });
+const poli = p => ({ p, b: cajaDe(p) });
+function distPuntoForma(q, f) {
+  if (f.r != null) return Math.max(0, dist(q, f.c) - f.r);
+  if (dentroPoli(q, f.p)) return 0;
+  let m = Infinity; const p = f.p;
+  for (let i = 0, j = p.length - 1; i < p.length; j = i++) m = Math.min(m, distPuntoSeg(q, p[j], p[i]));
+  return m;
+}
+function distFormaSeg(f, a, b) {
+  if (f.r != null) return Math.max(0, distPuntoSeg(f.c, a, b) - f.r);
+  const p = f.p; if (dentroPoli(a, p)) return 0;
+  let m = Infinity;
+  for (let i = 0, j = p.length - 1; i < p.length; j = i++) { m = Math.min(m, distSegSeg(a, b, p[j], p[i])); if (!m) return 0; }
+  return m;
+}
+function distFormas(f, g) {
+  if (f.r != null && g.r != null) return Math.max(0, dist(f.c, g.c) - f.r - g.r);
+  if (f.r != null) return Math.max(0, distPuntoForma(f.c, g) - f.r);
+  if (g.r != null) return Math.max(0, distPuntoForma(g.c, f) - g.r);
+  if (dentroPoli(f.p[0], g.p) || dentroPoli(g.p[0], f.p)) return 0;
+  let m = Infinity; const p = f.p;
+  for (let i = 0, j = p.length - 1; i < p.length; j = i++) { m = Math.min(m, distFormaSeg(g, p[j], p[i])); if (!m) return 0; }
+  return m;
+}
+const cajasLejos = (a, b, m) => a.x1 + m < b.x0 || b.x1 + m < a.x0 || a.y1 + m < b.y0 || b.y1 + m < a.y0;
+/** ¿La forma f está dentro del polígono (no convexo) con un margen m al borde? */
+function dentroConMargen(f, pts, m) {
+  if (f.r != null) {
+    if (!dentroPoli(f.c, pts)) return false;
+    for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) if (distPuntoSeg(f.c, pts[j], pts[i]) < f.r + m) return false;
+    return true;
+  }
+  for (const v of f.p) if (!dentroPoli(v, pts)) return false;
+  for (let i = 0, j = pts.length - 1; i < pts.length; j = i++) if (distFormaSeg(f, pts[j], pts[i]) < m) return false;
+  return true;
+}
+function simplificar(pts, tol) { // Douglas-Peucker
+  if (pts.length < 3) return pts;
+  let max = 0, k = 0;
+  for (let i = 1; i < pts.length - 1; i++) { const d = distPuntoSeg(pts[i], pts[0], pts[pts.length - 1]); if (d > max) { max = d; k = i; } }
+  if (max <= tol) return [pts[0], pts[pts.length - 1]];
+  return simplificar(pts.slice(0, k + 1), tol).slice(0, -1).concat(simplificar(pts.slice(k), tol));
+}
+
+// ════════════════ Lector DXF ════════════════
+/** Devuelve { ents:[{l, p:[x,y,…], z:cerrada} | {l, c:[x,y], r}], capas:[…], insunits } en unidades del dibujo. */
+function leerDXF(texto) {
+  const L = texto.split(/\r\n|\r|\n/);
+  const g = []; for (let i = 0; i + 1 < L.length; i += 2) { const c = parseInt(L[i]); if (isNaN(c)) { i--; continue; } g.push([c, L[i + 1].trim()]); }
+  let insunits = 0, i = 0;
+  const bloques = {}, ents = [], capas = new Set();
+  // Agrupa en entidades: [{tipo, cod:[[c,v]...]}]
+  function leerEntidades(desde, finTipos) {
+    const lista = []; let k = desde;
+    while (k < g.length) {
+      if (g[k][0] === 0) {
+        const tipo = g[k][1]; if (finTipos.includes(tipo)) return { lista, k };
+        const cod = []; k++;
+        while (k < g.length && g[k][0] !== 0) { cod.push(g[k]); k++; }
+        lista.push({ tipo, cod });
+      } else k++;
+    }
+    return { lista, k };
+  }
+  while (i < g.length) {
+    if (g[i][0] === 0 && g[i][1] === 'SECTION' && g[i + 1] && g[i + 1][0] === 2) {
+      const sec = g[i + 1][1]; i += 2;
+      if (sec === 'HEADER') {
+        while (i < g.length && !(g[i][0] === 0 && g[i][1] === 'ENDSEC')) { if (g[i][0] === 9 && g[i][1] === '$INSUNITS' && g[i + 1]) insunits = parseInt(g[i + 1][1]) || 0; i++; }
+      } else if (sec === 'BLOCKS') {
+        while (i < g.length && !(g[i][0] === 0 && g[i][1] === 'ENDSEC')) {
+          if (g[i][0] === 0 && g[i][1] === 'BLOCK') {
+            let nombre = '', bx = 0, by = 0; i++;
+            while (i < g.length && g[i][0] !== 0) { const [c, v] = g[i]; if (c === 2) nombre = v; else if (c === 10) bx = +v; else if (c === 20) by = +v; i++; }
+            const r = leerEntidades(i, ['ENDBLK']); bloques[nombre] = { base: [bx, by], ents: r.lista }; i = r.k + 1;
+          } else i++;
+        }
+      } else if (sec === 'ENTITIES') {
+        const r = leerEntidades(i, ['ENDSEC']); i = r.k;
+        convertir(r.lista, [1, 0, 0, 1, 0, 0], 0, '0');
+      }
+      while (i < g.length && !(g[i][0] === 0 && g[i][1] === 'ENDSEC')) i++;
+    }
+    i++;
+  }
+  // m = [a,b,c,d,e,f]: x' = a x + c y + e ; y' = b x + d y + f
+  function aplicar(m, x, y) { return [m[0] * x + m[2] * y + m[4], m[1] * x + m[3] * y + m[5]]; }
+  function mult(m, n) { return [m[0] * n[0] + m[2] * n[1], m[1] * n[0] + m[3] * n[1], m[0] * n[2] + m[2] * n[3], m[1] * n[2] + m[3] * n[3], m[0] * n[4] + m[2] * n[5] + m[4], m[1] * n[4] + m[3] * n[5] + m[5]]; }
+  function arcoPts(cx, cy, r, a0, a1, ocs) {
+    if (ocs) { const t = a0; a0 = 180 - a1; a1 = 180 - t; cx = -cx; }
+    while (a1 <= a0) a1 += 360;
+    const n = Math.max(6, Math.ceil((a1 - a0) / 7.5)), p = [];
+    for (let k = 0; k <= n; k++) { const a = (a0 + (a1 - a0) * k / n) * RAD; p.push(cx + r * Math.cos(a), cy + r * Math.sin(a)); }
+    return p;
+  }
+  function bulgePts(x1, y1, x2, y2, b, out) {
+    const th = 4 * Math.atan(b), d = Math.hypot(x2 - x1, y2 - y1); if (!d) return;
+    const r = d / (2 * Math.sin(th / 2)), mx = (x1 + x2) / 2, my = (y1 + y2) / 2;
+    const h = Math.sqrt(Math.max(0, r * r - d * d / 4)) * Math.sign(b) * (Math.abs(th) > Math.PI ? -1 : 1);
+    const nx = -(y2 - y1) / d, ny = (x2 - x1) / d, cx = mx + nx * h, cy = my + ny * h;
+    const a0 = Math.atan2(y1 - cy, x1 - cx); const n = Math.max(4, Math.ceil(Math.abs(th) / (7.5 * RAD)));
+    for (let k = 1; k < n; k++) { const a = a0 + th * k / n; out.push(cx + Math.abs(r) * Math.cos(a), cy + Math.abs(r) * Math.sin(a)); }
+  }
+  function emitirPoli(m, capa, plano, cerrada) {
+    const p = []; for (let k = 0; k < plano.length; k += 2) { const q = aplicar(m, plano[k], plano[k + 1]); p.push(q[0], q[1]); }
+    if (p.length >= 4) ents.push({ l: capa, p, z: !!cerrada });
+  }
+  function convertir(lista, m, prof, capaPadre) {
+    if (prof > 8 || ents.length > 300000) return;
+    for (let k = 0; k < lista.length; k++) {
+      const e = lista[k], v = {}; let capa = capaPadre;
+      for (const [c, x] of e.cod) { if (c === 8) capa = x === '0' ? capaPadre : x; if (v[c] === undefined) v[c] = x; }
+      capas.add(capa);
+      const ocs = parseFloat(v[230]) < 0;
+      const f = c => parseFloat(v[c]) || 0;
+      switch (e.tipo) {
+        case 'LINE': emitirPoli(m, capa, [f(10), f(20), f(11), f(21)]); break;
+        case 'LWPOLYLINE': {
+          const pts = [], bul = []; for (const [c, x] of e.cod) { if (c === 10) { pts.push([+x * (ocs ? -1 : 1), 0]); bul.push(0); } else if (c === 20) pts[pts.length - 1][1] = +x; else if (c === 42 && pts.length) bul[pts.length - 1] = +x * (ocs ? -1 : 1); }
+          const cerrada = (parseInt(v[70]) || 0) & 1; const plano = [];
+          for (let j = 0; j < pts.length; j++) {
+            plano.push(pts[j][0], pts[j][1]);
+            const sig = j + 1 < pts.length ? pts[j + 1] : (cerrada ? pts[0] : null);
+            if (sig && bul[j]) bulgePts(pts[j][0], pts[j][1], sig[0], sig[1], bul[j], plano);
+          }
+          emitirPoli(m, capa, plano, cerrada); break;
+        }
+        case 'POLYLINE': {
+          const cerrada = (parseInt(v[70]) || 0) & 1, pts = [], bul = []; let j = k + 1;
+          while (j < lista.length && lista[j].tipo === 'VERTEX') {
+            const w = {}; for (const [c, x] of lista[j].cod) if (w[c] === undefined) w[c] = x;
+            if (!((parseInt(w[70]) || 0) & 16)) { pts.push([parseFloat(w[10]) || 0, parseFloat(w[20]) || 0]); bul.push(parseFloat(w[42]) || 0); }
+            j++;
+          }
+          if (j < lista.length && lista[j].tipo === 'SEQEND') j++;
+          k = j - 1;
+          const plano = [];
+          for (let q = 0; q < pts.length; q++) {
+            plano.push(pts[q][0], pts[q][1]);
+            const sig = q + 1 < pts.length ? pts[q + 1] : (cerrada ? pts[0] : null);
+            if (sig && bul[q]) bulgePts(pts[q][0], pts[q][1], sig[0], sig[1], bul[q], plano);
+          }
+          emitirPoli(m, capa, plano, cerrada); break;
+        }
+        case 'CIRCLE': {
+          const cx = f(10) * (ocs ? -1 : 1), cy = f(20), r = f(40);
+          const sx = Math.hypot(m[0], m[1]), sy = Math.hypot(m[2], m[3]);
+          if (Math.abs(sx - sy) < 1e-9 * Math.max(1, sx)) { const c = aplicar(m, cx, cy); ents.push({ l: capa, c, r: r * sx }); }
+          else emitirPoli(m, capa, arcoPts(cx, cy, r, 0, 360, false), true);
+          break;
+        }
+        case 'ARC': emitirPoli(m, capa, arcoPts(f(10), f(20), f(40), f(50), f(51), ocs)); break;
+        case 'ELLIPSE': {
+          const cx = f(10), cy = f(20), mx = f(11), my = f(21), ra = f(40) || 1; let t0 = f(41), t1 = v[42] !== undefined ? f(42) : Math.PI * 2;
+          while (t1 <= t0) t1 += Math.PI * 2;
+          const n = Math.max(8, Math.ceil((t1 - t0) / (7.5 * RAD))), p = [];
+          for (let q = 0; q <= n; q++) { const t = t0 + (t1 - t0) * q / n; p.push(cx + mx * Math.cos(t) - my * ra * Math.sin(t), cy + my * Math.cos(t) + mx * ra * Math.sin(t)); }
+          emitirPoli(m, capa, p, Math.abs(t1 - t0 - Math.PI * 2) < 1e-6); break;
+        }
+        case 'SPLINE': {
+          const ctl = [], fit = []; for (const [c, x] of e.cod) { if (c === 10) ctl.push(+x, 0); else if (c === 20) ctl[ctl.length - 1] = +x; else if (c === 11) fit.push(+x, 0); else if (c === 21) fit[fit.length - 1] = +x; }
+          emitirPoli(m, capa, fit.length >= 4 ? fit : ctl, (parseInt(v[70]) || 0) & 1); break;
+        }
+        case 'HATCH': { // solo sombreados sólidos: cada contorno sale como polígono relleno (h = color, g = grupo)
+          const cod = e.cod; if (!((parseInt(v[70]) || 0) & 1) && v[2] !== 'SOLID') break;
+          const col = v[420] !== undefined ? '#' + ((parseInt(v[420]) || 0) & 0xFFFFFF).toString(16).padStart(6, '0') : aciHex(parseInt(v[62]) || 7);
+          let q = cod.findIndex(c => c[0] === 91); if (q < 0) break;
+          const nLazos = parseInt(cod[q][1]) || 0, grupo = 'h' + ents.length; q++;
+          const toma = c => { while (q < cod.length && cod[q][0] !== c) q++; return q < cod.length ? parseFloat(cod[q++][1]) : 0; };
+          for (let lz = 0; lz < nLazos; lz++) {
+            while (q < cod.length && cod[q][0] !== 92) q++; if (q >= cod.length) break;
+            const tipo = parseInt(cod[q][1]) || 0; q++;
+            const plano = [];
+            if (tipo & 2) { // polilínea con o sin bulges
+              const conB = toma(72), n = toma(93), pts = [], bul = [];
+              for (let j = 0; j < n && q < cod.length; j++) { const x = toma(10), y = toma(20); let b = 0; if (conB && cod[q] && cod[q][0] === 42) b = parseFloat(cod[q++][1]) || 0; pts.push([x, y]); bul.push(b); }
+              for (let j = 0; j < pts.length; j++) { plano.push(pts[j][0], pts[j][1]); const sig = pts[(j + 1) % pts.length]; if (bul[j]) bulgePts(pts[j][0], pts[j][1], sig[0], sig[1], bul[j], plano); }
+            } else { // aristas: línea, arco, elipse, spline
+              const n = toma(93);
+              for (let j = 0; j < n && q < cod.length; j++) {
+                const t = toma(72);
+                if (t === 1) { const x1 = toma(10), y1 = toma(20), x2 = toma(11), y2 = toma(21); if (!plano.length) plano.push(x1, y1); plano.push(x2, y2); }
+                else if (t === 2) {
+                  const cx = toma(10), cy = toma(20), r = toma(40); let a0 = toma(50), a1 = toma(51); const ccw = cod[q] && cod[q][0] === 73 ? parseInt(cod[q++][1]) : 1;
+                  if (!ccw) { a0 = -a0; a1 = -a1; } let da = a1 - a0; if (ccw) { while (da <= 0) da += 360; } else { while (da >= 0) da -= 360; }
+                  const m2 = Math.max(4, Math.ceil(Math.abs(da) / 7.5)); for (let k = 0; k <= m2; k++) { const a = (a0 + da * k / m2) * RAD; plano.push(cx + r * Math.cos(a), cy + r * Math.sin(a)); }
+                } else if (t === 3) {
+                  const cx = toma(10), cy = toma(20), mx = toma(11), my = toma(21), ra = toma(40); let a0 = toma(50) * RAD, a1 = toma(51) * RAD; const ccw = cod[q] && cod[q][0] === 73 ? parseInt(cod[q++][1]) : 1;
+                  if (!ccw) { a0 = -a0; a1 = -a1; } let da = a1 - a0; if (ccw) { while (da <= 0) da += 2 * Math.PI; } else { while (da >= 0) da -= 2 * Math.PI; }
+                  const m2 = Math.max(8, Math.ceil(Math.abs(da) / (7.5 * RAD))); for (let k = 0; k <= m2; k++) { const a = a0 + da * k / m2; plano.push(cx + mx * Math.cos(a) - my * ra * Math.sin(a), cy + my * Math.cos(a) + mx * ra * Math.sin(a)); }
+                } else if (t === 4) { // spline: se aproxima por sus puntos de control
+                  while (q < cod.length && ![72, 92, 97].includes(cod[q][0])) { if (cod[q][0] === 10) plano.push(parseFloat(cod[q][1]) || 0, 0); else if (cod[q][0] === 20) plano[plano.length - 1] = parseFloat(cod[q][1]) || 0; q++; }
+                }
+              }
+            }
+            if (plano.length >= 6) { const n0 = ents.length; emitirPoli(m, capa, plano, true); if (ents.length > n0) Object.assign(ents[ents.length - 1], { h: col, g: grupo }); }
+          }
+          break;
+        }
+        case 'SOLID': case 'TRACE': case '3DFACE': {
+          const p = [f(10), f(20), f(11), f(21), f(13), f(23), f(12), f(22)]; emitirPoli(m, capa, p, true); break;
+        }
+        case 'INSERT': {
+          const b = bloques[v[2]]; if (!b) break;
+          const sx = v[41] !== undefined ? f(41) : 1, sy = v[42] !== undefined ? f(42) : 1, a = f(50) * RAD;
+          let ix = f(10); if (ocs) ix = -ix;
+          const c = Math.cos(a), s = Math.sin(a);
+          let t = [c * sx, s * sx, -s * sy, c * sy, ix, f(20)];
+          if (ocs) t = mult([-1, 0, 0, 1, 0, 0], [c * sx, s * sx, -s * sy, c * sy, -ix, f(20)]);
+          t = mult(t, [1, 0, 0, 1, -b.base[0], -b.base[1]]);
+          const nc = parseInt(v[70]) || 1, nf = parseInt(v[71]) || 1, dc = f(44), df = f(45);
+          for (let fi = 0; fi < Math.min(nf, 50); fi++) for (let ci = 0; ci < Math.min(nc, 50); ci++) {
+            const off = rotar([ci * dc, fi * df], a);
+            convertir(b.ents, mult(m, mult([1, 0, 0, 1, off[0], off[1]], t)), prof + 1, capa);
+          }
+          break;
+        }
+      }
+    }
+  }
+  return { ents, capas: [...capas].filter(c => ents.some(e => e.l === c)).sort(), insunits };
+}
+const UNIDADES = { 0: ['sin unidad (mm)', .1], 1: ['pulgadas', 2.54], 2: ['pies', 30.48], 4: ['mm', .1], 5: ['cm', 1], 6: ['m', 100] };
+/** Color ACI de AutoCAD → #rrggbb (aproximado) */
+function aciHex(n) {
+  const fijos = { 1: '#ff0000', 2: '#ffff00', 3: '#00ff00', 4: '#00ffff', 5: '#0000ff', 6: '#ff00ff', 7: '#808080', 8: '#808080', 9: '#c0c0c0' };
+  if (fijos[n]) return fijos[n];
+  if (n >= 250) { const g = Math.round(51 + (n - 250) * 40.8); return '#' + g.toString(16).padStart(2, '0').repeat(3); }
+  if (!(n >= 10)) return '#808080';
+  const h = Math.floor((n - 10) / 10) * 15, v = (n - 10) % 10, luz = [1, 1, .65, .65, .5, .5, .3, .3, .15, .15][v], sat = v % 2 ? .5 : 1;
+  const f = k => { const kk = (k + h / 60) % 6; return luz * (1 - sat * Math.max(0, Math.min(kk, 4 - kk, 1))); };
+  return '#' + [f(5), f(3), f(1)].map(x => Math.round(x * 255).toString(16).padStart(2, '0')).join('');
+}
+/** Unidades del DXF: las de la cabecera si dan un tamaño creíble para un local (1,5 m – 5 km); si no, se adivinan por el tamaño. */
+function unidadDxf(insunits, caja) {
+  const tam = Math.max(caja.x1 - caja.x0, caja.y1 - caja.y0), adivina = tam > 3000 ? '4' : tam > 300 ? '5' : '6';
+  const u = String(insunits in UNIDADES ? insunits : 0);
+  if (u === '0') return { unidad: adivina, aviso: '' };
+  const cm = tam * UNIDADES[u][1];
+  if (cm >= 150 && cm <= 500000 || adivina === u) return { unidad: u, aviso: '' };
+  return { unidad: adivina, aviso: `El DXF dice que está en ${UNIDADES[u][0]}, pero así mediría ${fmt(cm / 100, 2)} m: se toma en ${UNIDADES[adivina][0]} (${fmt(tam * UNIDADES[adivina][1] / 100, 1)} m). Cámbialo en «Unidades» si no es así.` };
+}
+</script>
+<script>
+// ════════════════ Estado ════════════════
+const norm = s => String(s == null ? '' : s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+const hoy = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
+const fFecha = s => s ? s.split('-').reverse().join('/') : '';
+const diasDesde = s => s ? Math.floor((new Date(hoy()) - new Date(s)) / 864e5) : 0;
+const ESTADOS = ['Nuevo', 'Bueno', 'Usado', 'Faltan piezas', 'Dañado', 'Retirado'];
+// clave, título, tipo, ancho (px)
+const CAMPOS = [
+  ['cod', 'Cód.', 'txt', 62], ['titulo', 'Título', 'txt', 230], ['editorial', 'Editorial', 'txt', 120, 'dlEdit'], ['anio', 'Año', 'num', 56],
+  ['jmin', 'Jug. mín.', 'num', 62], ['jmax', 'Jug. máx.', 'num', 64], ['dur', 'Duración (min)', 'num', 76], ['edad', 'Edad', 'num', 50],
+  ['cat', 'Categoría', 'txt', 120, 'dlCat'], ['idioma', 'Idioma', 'txt', 82, 'dlIdioma'], ['estado', 'Estado', 'estado', 112], ['prop', 'Propietario', 'txt', 110, 'dlProp'],
+  ['est', 'Estantería', 'est', 92], ['balda', 'Balda', 'num', 52], ['lomo', 'Lomo (cm)', 'num', 66],
+  ['prestadoA', 'Prestado a', 'txt', 115], ['fPrest', 'Desde', 'fecha', 122], ['notas', 'Notas', 'txt', 200],
+];
+const NUMERICOS = new Set(CAMPOS.filter(c => c[2] === 'num').map(c => c[0]));
+const COLORES_EST = ['#b9814f', '#4a86c5', '#7b9e3a', '#a05ab4', '#c0504d', '#3a9e95'];
+function estadoVacio() {
+  return {
+    formato: FORMATO, version: 1, nombre: 'Ludoteca del club',
+    juegos: [], estanterias: [], historial: [],
+    plano: { dxfs: [], zonas: [], obst: [], puertas: [], pasillos: [], cotas: [] },
+    externos: { origen: '', fecha: '', objetos: [] },
+    opc: { lomoDef: 7, diasPrestamo: 15, accesoDef: 90, url: 'distribuidor_eventos.html' }, sigCod: 1,
+  };
+}
+let L = estadoVacio();
+const ENTS = {};
+const P = () => L.plano;
+const estDe = id => L.estanterias.find(e => e.id === id);
+const juegoDe = id => L.juegos.find(j => j.id === id);
+const codEst = id => { const e = estDe(id); return e ? e.cod : ''; };
+function nuevoCod() { let c; do { c = String(L.sigCod++).padStart(3, '0'); } while (L.juegos.some(j => j.cod === c)); return c; }
+function juegoNuevo(o) { return Object.assign({ id: uid(), cod: nuevoCod(), titulo: '', editorial: '', anio: '', jmin: '', jmax: '', dur: '', edad: '', cat: '', idioma: '', estado: 'Bueno', prop: 'Asociación', est: '', balda: '', lomo: '', prestadoA: '', fPrest: '', notas: '' }, o || {}); }
+
+// ════════════════ Deshacer ════════════════
+const pilaDeshacer = [], pilaRehacer = [];
+const fotoEstado = () => JSON.stringify(L);
+let ultimaFoto = null;
+function guardarPaso() {
+  if (ultimaFoto !== null) { pilaDeshacer.push(ultimaFoto); if (pilaDeshacer.length > 60) pilaDeshacer.shift(); pilaRehacer.length = 0; }
+  ultimaFoto = fotoEstado(); botonesDeshacer();
+}
+function deshacer() { if (!pilaDeshacer.length) return; pilaRehacer.push(fotoEstado()); L = JSON.parse(pilaDeshacer.pop()); ultimaFoto = fotoEstado(); trasCambioTotal(); }
+function rehacer() { if (!pilaRehacer.length) return; pilaDeshacer.push(fotoEstado()); L = JSON.parse(pilaRehacer.pop()); ultimaFoto = fotoEstado(); trasCambioTotal(); }
+function botonesDeshacer() { $('bDeshacer').disabled = !pilaDeshacer.length; $('bRehacer').disabled = !pilaRehacer.length; }
+
+// ════════════════ Estanterías: geometría y ocupación ════════════════
+/* Estantería: { id, cod, nombre, x, y (centro, cm), w (largo), f (fondo), rot (°), baldas, acc (acceso delante, cm), color }
+   El frente es el lado −Y local (abajo con giro 0). La balda 1 es la de arriba. */
+const estPts = e => rectPts(e.x, e.y, e.w, e.f, (e.rot || 0) * RAD);
+function accPts(e) { const a = (e.rot || 0) * RAD, c = rotar([0, -e.f / 2 - e.acc / 2], a); return rectPts(e.x + c[0], e.y + c[1], e.w, e.acc, a); }
+const lomoDe = j => +j.lomo > 0 ? +j.lomo : L.opc.lomoDef;
+const juegosDe = e => L.juegos.filter(j => j.est === e.id);
+const ocupBalda = (e, b) => juegosDe(e).filter(j => +j.balda === b).reduce((s, j) => s + lomoDe(j), 0);
+const ocupTotal = e => juegosDe(e).reduce((s, j) => s + lomoDe(j), 0) / (e.w * Math.max(1, e.baldas));
+const colOcup = o => o < .75 ? '#27ae60' : o <= 1 ? '#e67e22' : '#d84343';
+function baldaLibre(e, j) { for (let b = 1; b <= e.baldas; b++) if (ocupBalda(e, b) + lomoDe(j) <= e.w) return b; return e.baldas; }
+/** Pone el juego en la estantería e (y balda); sin balda, busca la primera con sitio. e = null: sin ubicar. */
+function ubicar(j, e, balda) {
+  if (!e) { j.est = ''; j.balda = ''; return; }
+  if (balda != null) { j.est = e.id; j.balda = balda; return; }
+  if (j.est === e.id && +j.balda >= 1 && +j.balda <= e.baldas) return;
+  j.est = ''; j.balda = baldaLibre(e, j); j.est = e.id;
+}
+function nuevoCodEst() { let n = L.estanterias.length + 1; while (L.estanterias.some(e => e.cod === 'E' + n)) n++; return 'E' + n; }
+const ubicacionTxt = j => j.est ? codEst(j.est) + (j.balda ? ' · B' + j.balda : '') : '';
+
+// ════════════════ Puente con el Distribuidor de Eventos ════════════════
+/* Mensaje común a los dos programas:
+   { eloiaasoft:'plano', version:1, id, origen, nombre, fecha,
+     plano:{dxfs, zonas, obst, puertas, pasillos, cotas}, dxfEnts:{id:[…]},
+     objetos:[{tipo:'mesa'|'estanteria'|'acceso', etiqueta, color, p:[[x,y]…] | c:[x,y], r, env}] }
+   Se entrega por postMessage (ventana abierta con el botón) o, si no, por localStorage «eloiaasoft_puente». */
+const firmaPlano = p => JSON.stringify([(p.dxfs || []).map(d => [d.id, r1(d.x), r1(d.y), d.k, d.rot || 0]), p.zonas || [], p.obst || [], p.puertas || []]);
+const planoVacio = p => !(p.dxfs.length || p.zonas.length || p.obst.length);
+function objetosPropios() {
+  const o = [];
+  for (const e of L.estanterias) {
+    o.push({ tipo: 'estanteria', etiqueta: e.cod, color: e.color, p: estPts(e) });
+    if (e.acc > 0) o.push({ tipo: 'acceso', etiqueta: e.cod, p: accPts(e) });
+  }
+  return o;
+}
+function construirPuente() {
+  const dxfEnts = {}; for (const d of P().dxfs) dxfEnts[d.id] = ENTS[d.id] || [];
+  const p = P();
+  return { eloiaasoft: 'plano', version: 1, id: uid(), origen: APP, nombre: L.nombre, fecha: new Date().toISOString(),
+    plano: JSON.parse(JSON.stringify({ dxfs: p.dxfs, zonas: p.zonas, obst: p.obst, puertas: p.puertas, pasillos: p.pasillos || [], cotas: p.cotas || [] })), dxfEnts, objetos: objetosPropios() };
+}
+/** Convierte un trabajo del Distribuidor (su .json o su copia automática) en un mensaje de puente. */
+function puenteDeTrabajoOtro(o) {
+  const objetos = [];
+  (o.mesas || []).forEach((m, i) => {
+    const t = (o.tipos || []).find(t => t.id === m.t); if (!t) return;
+    const f = t.forma === 'red' ? { c: [m.x, m.y], r: t.D / 2 } : { p: rectPts(m.x, m.y, t.L, t.A, (m.rot || 0) * RAD) };
+    objetos.push(Object.assign({ tipo: 'mesa', etiqueta: String(i + 1), color: t.color }, f));
+  });
+  return { eloiaasoft: 'plano', version: 1, id: uid(), origen: OTRA, nombre: o.nombre, fecha: o.fecha || '',
+    plano: { dxfs: o.dxfs || [], zonas: o.zonas || [], obst: o.obst || [], puertas: o.puertas || [], pasillos: o.pasillos || [], cotas: o.cotas || [] }, dxfEnts: o.dxfEnts || {}, objetos };
+}
+let ultimoPuente = null;
+async function recibirPuente(o, silencio) {
+  if (!o || o.eloiaasoft !== 'plano' || !o.plano) return false;
+  if (o.id && o.id === ultimoPuente) return false; ultimoPuente = o.id;
+  const ext = { origen: o.origen || OTRA, fecha: o.fecha || new Date().toISOString(), objetos: (o.objetos || []).filter(x => x.tipo === 'mesa') };
+  let usar = true;
+  if (!planoVacio(P()) && firmaPlano(P()) !== firmaPlano(o.plano) && !silencio)
+    usar = await preguntar('Plano recibido de ' + esc(ext.origen), `«${esc(o.nombre || '')}» trae un plano distinto del tuyo. ¿Lo cambio por el suyo?<br><br>Las estanterías se quedan en sus coordenadas. Si dices que no, solo se actualizan las mesas.`, null);
+  if (usar) {
+    for (const k in ENTS) delete ENTS[k];
+    for (const id in (o.dxfEnts || {})) ENTS[id] = o.dxfEnts[id];
+    L.plano = Object.assign({ dxfs: [], zonas: [], obst: [], puertas: [], pasillos: [], cotas: [] }, JSON.parse(JSON.stringify(o.plano)));
+    L.plano.dxfs = L.plano.dxfs.filter(d => ENTS[d.id]);
+  }
+  L.externos = ext;
+  guardarPaso(); trasCambioTotal(); if (pestana !== 'plano') verPestana('plano'); ajustarVista();
+  snack((usar ? 'Plano' : 'Mesas') + ' de ' + ext.origen + ' cargado' + (ext.objetos.length ? ' · ' + ext.objetos.length + ' mesas' : ''));
+  return true;
+}
+let ventanaOtra = null, pendiente = null;
+function abrirOtra() {
+  const pay = construirPuente();
+  try { localStorage.setItem('eloiaasoft_puente', JSON.stringify(Object.assign({ destino: OTRA, ts: Date.now() }, pay))); } catch (e) {}
+  if (ventanaOtra && !ventanaOtra.closed) { try { ventanaOtra.postMessage(pay, '*'); ventanaOtra.focus(); snack('Plano enviado al ' + OTRA); } catch (e) {} return; }
+  pendiente = pay;
+  ventanaOtra = window.open(L.opc.url || 'distribuidor_eventos.html', 'eloiaasoft_distribuidor');
+  if (!ventanaOtra) snack('El navegador ha bloqueado la ventana: permite las ventanas emergentes o usa Archivo → Plano compartido', 6000);
+  else snack('Abriendo el ' + OTRA + '… (debe estar en la misma carpeta: ' + (L.opc.url || 'distribuidor_eventos.html') + ')', 5000);
+}
+addEventListener('message', e => {
+  const d = e.data; if (!d || typeof d !== 'object') return;
+  if (d.eloiaasoft === 'listo') { ventanaOtra = e.source; if (pendiente) { e.source.postMessage(pendiente, '*'); pendiente = null; } }
+  else if (d.eloiaasoft === 'plano') { ventanaOtra = e.source; recibirPuente(d); }
+});
+function traerCopiaOtra() {
+  try {
+    const a = localStorage.getItem('dev_auto'); if (!a) { snack('No hay ningún trabajo del Distribuidor guardado en este navegador. Ábrelo y dibuja el plano, o usa 📂 .json…', 6000); return; }
+    const o = JSON.parse(a); if (o.formato !== FORMATO_OTRA) { snack('La copia del Distribuidor no se puede leer'); return; }
+    recibirPuente(puenteDeTrabajoOtro(o));
+  } catch (e) { snack('No se ha podido leer la copia del Distribuidor: ' + e.message); }
+}
+function exportarPlanoCompartido() { descargar(JSON.stringify(construirPuente()), nombreArchivo(L.nombre) + '_plano.json', 'application/json'); }
+</script>
+<script>
+// ════════════════ Vista (SVG con zoom y desplazamiento) ════════════════
+const svg = $('lienzo'), NS = 'http://www.w3.org/2000/svg';
+const V = { x0: -200, yT: 1000, s: .5 };
+let pestana = 'juegos';
+function tamLienzo() { const r = svg.getBoundingClientRect(); return { w: r.width || 800, h: r.height || 600, r }; }
+function aplicarVista() {
+  const { w, h } = tamLienzo();
+  svg.setAttribute('viewBox', `${V.x0} ${-V.yT} ${w / V.s} ${h / V.s}`);
+  $('zoomTxt').textContent = '1 m = ' + fmt(V.s * 100, V.s < .1 ? 1 : 0) + ' px';
+  pintarRejilla(); pintarTextos(); pintarUI();
+}
+function aMundo(ev) { const r = svg.getBoundingClientRect(); return [V.x0 + (ev.clientX - r.left) / V.s, V.yT - (ev.clientY - r.top) / V.s]; }
+function zoomEn(px, py, f) { const wx = V.x0 + px / V.s, wy = V.yT - py / V.s; V.s = Math.max(.005, Math.min(40, V.s * f)); V.x0 = wx - px / V.s; V.yT = wy + py / V.s; aplicarVista(); }
+function ajustarVista(caja) {
+  const { w, h } = tamLienzo();
+  if (!caja) caja = cajaTodo();
+  if (!caja || !isFinite(caja.x0)) caja = { x0: 0, y0: 0, x1: 1200, y1: 800 };
+  const cw = Math.max(100, caja.x1 - caja.x0), ch = Math.max(100, caja.y1 - caja.y0);
+  V.s = Math.min((w - 40) / cw, (h - 40) / ch);
+  V.x0 = (caja.x0 + caja.x1) / 2 - w / 2 / V.s; V.yT = (caja.y0 + caja.y1) / 2 + h / 2 / V.s;
+  aplicarVista();
+}
+function cajaTodo() {
+  const pts = [];
+  for (const z of P().zonas) pts.push(...z.pts);
+  for (const e of L.estanterias) pts.push(...estPts(e));
+  if (!P().zonas.length) for (const d of P().dxfs) if (d.visible && d.caja) { const c = cajaDxfMundo(d); pts.push([c.x0, c.y0], [c.x1, c.y1]); }
+  return pts.length ? cajaDe(pts) : null;
+}
+function el(tag, at, padre) { const e = document.createElementNS(NS, tag); for (const k in at) e.setAttribute(k, at[k]); if (padre) padre.appendChild(e); return e; }
+const pathPoli = (pts, cerrar) => pts.length ? 'M' + pts.map(p => r1(p[0]) + ' ' + r1(p[1])).join('L') + (cerrar ? 'Z' : '') : '';
+const pathForma = f => f.r != null ? `M${r1(f.c[0] + f.r)} ${r1(f.c[1])}A${r1(f.r)} ${r1(f.r)} 0 1 0 ${r1(f.c[0] - f.r)} ${r1(f.c[1])}A${r1(f.r)} ${r1(f.r)} 0 1 0 ${r1(f.c[0] + f.r)} ${r1(f.c[1])}Z` : pathPoli(f.p, true);
+const colTexto = () => getComputedStyle(document.body).getPropertyValue('--texto').trim() || '#1c2733';
+function matDxf(d) { const a = (d.rot || 0) * RAD, k = d.k; return [Math.cos(a) * k, Math.sin(a) * k, -Math.sin(a) * k, Math.cos(a) * k, d.x, d.y]; }
+const aplicarM = (m, x, y) => [m[0] * x + m[2] * y + m[4], m[1] * x + m[3] * y + m[5]];
+function cajaDxfMundo(d) { const m = matDxf(d), c = d.caja; return cajaDe([[c.x0, c.y0], [c.x1, c.y0], [c.x1, c.y1], [c.x0, c.y1]].map(p => aplicarM(m, p[0], p[1]))); }
+function formaObst(o) {
+  if (o.tipo === 'colRed') return circ([o.x, o.y], o.d / 2);
+  if (o.tipo === 'colCuad') return poli(rectPts(o.x, o.y, o.w, o.h, (o.rot || 0) * RAD));
+  const a = [o.x1, o.y1], b = [o.x2, o.y2], l = dist(a, b) || 1, ang = Math.atan2(b[1] - a[1], b[0] - a[0]);
+  return poli(rectPts((a[0] + b[0]) / 2, (a[1] + b[1]) / 2, l + o.g, o.g, ang));
+}
+
+// ════════════════ Pintar ════════════════
+function pintarTodo() { pintarDxf(); pintarFondo(); pintarExt(); pintarEst(); pintarCotas(); pintarUI(); pintarLeyenda(); }
+function pintarRejilla() {
+  const g = $('gRejilla'); const { w, h } = tamLienzo();
+  const paso = V.s > .6 ? 100 : V.s > .12 ? 500 : 1000;
+  const x0 = Math.floor(V.x0 / paso) * paso, x1 = V.x0 + w / V.s, y1 = V.yT, y0 = V.yT - h / V.s;
+  if ((x1 - x0) / paso > 300) { g.innerHTML = ''; return; }
+  let d = '';
+  for (let x = x0; x <= x1; x += paso) d += `M${x} ${y0}V${y1}`;
+  for (let y = Math.floor(y0 / paso) * paso; y <= y1; y += paso) d += `M${x0} ${y}H${x1}`;
+  g.innerHTML = `<path d="${d}" stroke="var(--rejilla)" stroke-width="1" vector-effect="non-scaling-stroke" fill="none"/>`;
+}
+function svgDxf(trazo) {
+  let s = '';
+  for (const d of P().dxfs) {
+    if (!d.visible || !ENTS[d.id]) continue;
+    const porCapa = {};
+    for (const e of ENTS[d.id]) {
+      if (d.ocultas && d.ocultas.includes(e.l)) continue;
+      let t = porCapa[e.l] || '';
+      if (e.r != null) t += `M${e.c[0] + e.r} ${e.c[1]}A${e.r} ${e.r} 0 1 0 ${e.c[0] - e.r} ${e.c[1]}A${e.r} ${e.r} 0 1 0 ${e.c[0] + e.r} ${e.c[1]}`;
+      else { const p = e.p; t += 'M' + p[0] + ' ' + p[1]; for (let j = 2; j < p.length; j += 2) t += 'L' + p[j] + ' ' + p[j + 1]; if (e.z) t += 'Z'; }
+      porCapa[e.l] = t;
+    }
+    s += `<g transform="translate(${d.x} ${d.y}) rotate(${d.rot || 0}) scale(${d.k})" opacity="${d.opac}">`;
+    const grupos = {};
+    for (const e of ENTS[d.id]) if (e.h && !(d.ocultas && d.ocultas.includes(e.l))) { const g = grupos[e.g] || (grupos[e.g] = { h: e.h, d: '' }); g.d += 'M' + e.p[0] + ' ' + e.p[1]; for (let j = 2; j < e.p.length; j += 2) g.d += 'L' + e.p[j] + ' ' + e.p[j + 1]; g.d += 'Z'; }
+    for (const k in grupos) s += `<path d="${grupos[k].d}" fill="${grupos[k].h}" fill-opacity="${d.opRelleno != null ? d.opRelleno : .35}" fill-rule="evenodd" stroke="none"/>`;
+    for (const c in porCapa) s += `<path d="${porCapa[c]}" fill="none" stroke="${trazo || d.color}" stroke-width="1" vector-effect="non-scaling-stroke"/>`;
+    s += '</g>';
+  }
+  return s;
+}
+function pintarDxf() { const g = $('gDxf'); g.style.display = $('cDxf').checked ? '' : 'none'; g.innerHTML = svgDxf(); }
+function svgFondo(conZona) {
+  let s = '';
+  if (conZona) for (const z of P().zonas) s += `<path d="${pathPoli(z.pts, true)}" fill="#27ae60" fill-opacity=".05" stroke="#27ae60" stroke-opacity=".7" stroke-width="1.5" vector-effect="non-scaling-stroke"/>`;
+  for (const o of P().obst) s += `<path d="${pathForma(formaObst(o))}" fill="${o.tipo === 'pared' ? '#5d6670' : '#6b747e'}" stroke="#2c3238" stroke-width="1" vector-effect="non-scaling-stroke"/>`;
+  for (const p of P().puertas) {
+    const col = p.tipo === 'emergencia' ? '#27ae60' : p.tipo === 'servicio' ? '#8e44ad' : '#e67e22';
+    const tx = -p.ny, ty = p.nx, a = [p.x - tx * p.ancho / 2, p.y - ty * p.ancho / 2], b = [p.x + tx * p.ancho / 2, p.y + ty * p.ancho / 2];
+    const hoja = [a[0] + p.nx * p.ancho, a[1] + p.ny * p.ancho], sweep = (tx * p.ny - ty * p.nx) > 0 ? 0 : 1;
+    s += `<path d="M${r1(a[0])} ${r1(a[1])}L${r1(hoja[0])} ${r1(hoja[1])}" stroke="${col}" stroke-width="2.5" vector-effect="non-scaling-stroke"/>`;
+    s += `<path d="M${r1(hoja[0])} ${r1(hoja[1])}A${p.ancho} ${p.ancho} 0 0 ${sweep} ${r1(b[0])} ${r1(b[1])}" fill="none" stroke="${col}" stroke-width="1.2" stroke-dasharray="4 3" vector-effect="non-scaling-stroke"/>`;
+  }
+  return s;
+}
+function pintarFondo() { $('gFondo').innerHTML = svgFondo($('cZona').checked); }
+function pintarExt() {
+  let s = '';
+  if ($('cMesas').checked) for (const o of L.externos.objetos || []) s += `<path d="${pathForma(o)}" fill="${o.color || '#c98a3f'}" fill-opacity=".3" stroke="${o.color || '#c98a3f'}" stroke-width="1" stroke-dasharray="5 3" vector-effect="non-scaling-stroke"/>`;
+  $('gExt').innerHTML = s;
+}
+let BUSCA = new Set();
+function svgEstanterias(paraImprimir) {
+  let s = '';
+  const verAcc = paraImprimir || $('cAcc').checked, verOcup = !paraImprimir && $('cOcup').checked;
+  if (verAcc) for (const e of L.estanterias) if (e.acc > 0) s += `<path d="${pathPoli(accPts(e), true)}" fill="#f39c12" fill-opacity=".07" stroke="#f39c12" stroke-opacity=".6" stroke-dasharray="6 4" stroke-width="1" vector-effect="non-scaling-stroke"/>`;
+  for (const e of L.estanterias) {
+    const pts = estPts(e), sel = !paraImprimir && SEL && SEL.id === e.id, hit = !paraImprimir && BUSCA.has(e.id);
+    if (hit) s += `<path d="${pathPoli(pts, true)}" fill="none" stroke="#e67e22" stroke-opacity=".35" stroke-width="16" vector-effect="non-scaling-stroke"/>`;
+    s += `<path d="${pathPoli(pts, true)}" fill="${e.color}" fill-opacity="${paraImprimir ? .35 : .28}" stroke="${sel ? '#005a9c' : hit ? '#e67e22' : '#4b3a28'}" stroke-width="${sel || hit ? 3 : 1.2}" vector-effect="non-scaling-stroke"/>`;
+    if (verOcup) {
+      const o = ocupTotal(e), wo = e.w * Math.min(1, o), a = (e.rot || 0) * RAD, c = rotar([-e.w / 2 + wo / 2, e.f * .25], a);
+      if (wo > 0) s += `<path d="${pathPoli(rectPts(e.x + c[0], e.y + c[1], wo, e.f * .3, a), true)}" fill="${colOcup(o)}" fill-opacity=".7"/>`;
+    }
+    s += `<path d="M${r1(pts[0][0])} ${r1(pts[0][1])}L${r1(pts[1][0])} ${r1(pts[1][1])}" stroke="${e.color}" stroke-width="4" vector-effect="non-scaling-stroke" stroke-linecap="round"/>`;
+  }
+  return s;
+}
+function textosEstanterias(colT, fondo) {
+  let t = '';
+  for (const e of L.estanterias) {
+    const fs = Math.max(9, Math.min(e.f * .5, e.w * .2, 34)), n = juegosDe(e).length;
+    t += `<text x="${r1(e.x)}" y="${r1(-e.y + fs * .35)}" font-size="${r1(fs)}" text-anchor="middle" font-weight="700" fill="${colT}" stroke="${fondo}" stroke-width="${r1(fs / 6)}" paint-order="stroke">${esc(e.cod)}<tspan font-weight="400" font-size="${r1(fs * .7)}"> · ${n}</tspan></text>`;
+  }
+  return t;
+}
+function pintarEst() { $('gEst').innerHTML = svgEstanterias(false); pintarTextos(); resumenEst(); }
+function pintarTextos() {
+  let t = textosEstanterias(colTexto(), 'var(--lienzo)');
+  if ($('cMesas').checked) for (const o of L.externos.objetos || []) {
+    const b = o.c ? { x0: o.c[0] - o.r, x1: o.c[0] + o.r, y0: o.c[1] - o.r, y1: o.c[1] + o.r } : cajaDe(o.p), fs = Math.max(12, Math.min(36, Math.min(b.x1 - b.x0, b.y1 - b.y0) * .35));
+    t += `<text x="${r1((b.x0 + b.x1) / 2)}" y="${r1(-(b.y0 + b.y1) / 2 + fs * .35)}" font-size="${r1(fs)}" text-anchor="middle" fill="${o.color || '#c98a3f'}" font-weight="700" opacity=".85">${esc(o.etiqueta || '')}</text>`;
+  }
+  t += textosCota.join('');
+  $('gTextos').innerHTML = t;
+}
+let textosCota = [];
+function pintarCotas() {
+  let s = ''; textosCota = [];
+  for (const c of P().cotas || []) {
+    const a = c.a, b = c.b, l = dist(a, b); if (!l) continue;
+    const sel = SEL && SEL.k === 'cota' && SEL.id === c.id, col = sel ? '#005a9c' : '#2471a3';
+    s += `<path d="M${a[0]} ${a[1]}L${b[0]} ${b[1]}" stroke="${col}" stroke-width="1" vector-effect="non-scaling-stroke"/>`;
+    let ang = Math.atan2(b[1] - a[1], b[0] - a[0]) / RAD; if (ang > 90 || ang < -90) ang += 180;
+    const m = [(a[0] + b[0]) / 2, (a[1] + b[1]) / 2];
+    textosCota.push(`<text x="${r1(m[0])}" y="${r1(-m[1] - 4 / V.s)}" transform="rotate(${r1(-ang)} ${r1(m[0])} ${r1(-m[1])})" font-size="${r1(12 / V.s)}" text-anchor="middle" fill="${col}" font-weight="600">${fcm(l)}</text>`);
+  }
+  $('gCotas').innerHTML = s; pintarTextos();
+}
+function pintarLeyenda() {
+  let h = '<div><i style="background:#b9814f;opacity:.6"></i>Estantería (línea gruesa: frente)</div><div><i style="background:#f39c12;opacity:.35"></i>Acceso delante</div>';
+  if ($('cOcup').checked) h += '<div><i style="background:#27ae60"></i>Ocupación &lt; 75 %</div><div><i style="background:#e67e22"></i>75–100 %</div><div><i style="background:#d84343"></i>Llena de más</div>';
+  if ((L.externos.objetos || []).length && $('cMesas').checked) h += '<div><i style="background:#7f8a96;opacity:.4;border:1px dashed #7f8a96"></i>Mesas del Distribuidor</div>';
+  $('leyenda').innerHTML = h;
+}
+function resumenEst() {
+  const n = L.estanterias.length, cap = L.estanterias.reduce((s, e) => s + e.w * e.baldas, 0), uso = L.estanterias.reduce((s, e) => s + juegosDe(e).reduce((a, j) => a + lomoDe(j), 0), 0);
+  $('resEst').innerHTML = n ? `<b>${n}</b> estantería${n > 1 ? 's' : ''} · ${fm(cap)} de balda · ocupado <b>${fmt(cap ? uso / cap * 100 : 0)} %</b>` : 'Aún no hay estanterías: elige 📚 y haz clic en el plano.';
+}
+
+// ════════════════ Herramientas y ratón ════════════════
+let SEL = null, HERR = 'sel', TMP = { pts: [] }, RATON = null, ARRASTRE = null, PAN = null, espacio = false, GUIAS = [];
+const AYUDA = {
+  sel: 'Clic: elegir estantería · arrastrar: mover · R: girar 90° · Supr: borrar · Ctrl+D: duplicar · arrastra juegos desde la izquierda',
+  est: 'Clic: colocar una estantería con las medidas de la izquierda · Esc: terminar',
+  medir: 'Clic en dos puntos', local: 'Clic en una esquina del local y en la contraria',
+};
+const OPC = { w: 100, f: 40, baldas: 5, rot: 0, dejarCota: false };
+function ponerHerr(h) {
+  HERR = h; TMP = { pts: [] };
+  document.querySelectorAll('#herrPlano button').forEach(b => b.classList.toggle('activa', b.dataset.h === h));
+  $('ayudaHerr').textContent = AYUDA[h] || '';
+  svg.style.cursor = h === 'sel' ? 'default' : 'crosshair';
+  const c = (k, t, u) => `<label>${t}${u ? ' (' + u + ')' : ''}<input data-o="${k}" value="${OPC[k]}"></label>`;
+  let o = '';
+  if (h === 'est') o = `<div class="mini">${c('w', 'Largo', 'cm')}${c('f', 'Fondo', 'cm')}${c('baldas', 'Baldas', '')}${c('rot', 'Giro', '°')}</div><p class="nota">Medidas típicas: Kallax 77×39 (4 baldas por columna), Billy 80×28, 40×28 (6 baldas).</p>`;
+  if (h === 'medir') o = `<label class="nota" style="display:flex;gap:6px;align-items:center;margin:0"><input type="checkbox" data-o="dejarCota" ${OPC.dejarCota ? 'checked' : ''}> Dejar la cota en el plano</label>`;
+  if (h === 'local') o = '<p class="nota">Crea la zona útil del local si no tienes DXF. Luego puedes afinarla en el Distribuidor.</p>';
+  $('opcHerr').innerHTML = o;
+  $('opcHerr').querySelectorAll('[data-o]').forEach(i => i.addEventListener('change', () => {
+    const k = i.dataset.o; if (i.type === 'checkbox') { OPC[k] = i.checked; return; }
+    const n = k === 'rot' || k === 'baldas' ? num(i.value) : leerLargo(i.value); if (isFinite(n) && (k === 'rot' || n > 0)) OPC[k] = k === 'baldas' ? Math.max(1, Math.round(n)) : n;
+  }));
+  pintarUI();
+}
+const rej = v => Math.round(v / 5) * 5;
+function tocar(p) {
+  for (let i = L.estanterias.length - 1; i >= 0; i--) { const e = L.estanterias[i]; if (dentroPoli(p, estPts(e)) || distPuntoForma(p, poli(estPts(e))) <= 5 / V.s) return { k: 'est', id: e.id }; }
+  for (const c of P().cotas || []) if (distPuntoSeg(p, c.a, c.b) <= 8 / V.s) return { k: 'cota', id: c.id };
+  return null;
+}
+/** Imán: alinea los bordes de la caja de la estantería con los de las demás (giros de 90°) */
+function iman(e, x, y) {
+  GUIAS = [];
+  if (!$('sIman').checked) return [x, y];
+  x = rej(x); y = rej(y);
+  const tol = 10 / V.s, b = cajaDe(estPts(Object.assign({}, e, { x, y })));
+  let mx = null, my = null, dx = tol, dy = tol;
+  for (const o of L.estanterias) {
+    if (o.id === e.id) continue;
+    const c = cajaDe(estPts(o));
+    for (const [mi, ot] of [[b.x0, c.x1], [b.x1, c.x0], [b.x0, c.x0], [b.x1, c.x1]]) { const d = Math.abs(ot - mi); if (d < dx) { dx = d; mx = ot - mi; } }
+    for (const [mi, ot] of [[b.y0, c.y1], [b.y1, c.y0], [b.y0, c.y0], [b.y1, c.y1]]) { const d = Math.abs(ot - mi); if (d < dy) { dy = d; my = ot - mi; } }
+  }
+  for (const z of P().zonas) for (const v of z.pts) {
+    for (const mi of [b.x0, b.x1]) { const d = Math.abs(v[0] - mi); if (d < dx) { dx = d; mx = v[0] - mi; } }
+    for (const mi of [b.y0, b.y1]) { const d = Math.abs(v[1] - mi); if (d < dy) { dy = d; my = v[1] - mi; } }
+  }
+  if (mx != null) { x += mx; GUIAS.push('x'); }
+  if (my != null) { y += my; GUIAS.push('y'); }
+  return [x, y];
+}
+function pintarUI() {
+  const g = $('gUI'); let s = ''; const k = 1 / V.s;
+  const P2 = p => `${r1(p[0])} ${r1(-p[1])}`;
+  const c = RATON;
+  if (c && HERR === 'est') { const e = { x: c[0], y: c[1], w: OPC.w, f: OPC.f, rot: OPC.rot, acc: L.opc.accesoDef }; s += `<path d="M${estPts(e).map(P2).join('L')}Z" fill="#b9814f" fill-opacity=".35" stroke="#005a9c" stroke-width="${r1(1.5 * k)}"/>`; if (e.acc) s += `<path d="M${accPts(e).map(P2).join('L')}Z" fill="#f39c12" fill-opacity=".08" stroke="#f39c12" stroke-dasharray="${6 * k} ${4 * k}" stroke-width="${r1(k)}"/>`; }
+  if (c && (HERR === 'medir' || HERR === 'local') && TMP.pts.length) {
+    const a = TMP.pts[0];
+    if (HERR === 'medir') s += `<path d="M${P2(a)}L${P2(c)}" stroke="#005a9c" stroke-width="${r1(1.6 * k)}"/><text x="${r1((a[0] + c[0]) / 2)}" y="${r1(-(a[1] + c[1]) / 2 - 8 * k)}" font-size="${r1(12 * k)}" text-anchor="middle" fill="#005a9c" stroke="var(--lienzo)" stroke-width="${r1(3 * k)}" paint-order="stroke" font-weight="600">${fcm(dist(a, c))}</text>`;
+    else s += `<path d="M${P2(a)}L${P2([c[0], a[1]])}L${P2(c)}L${P2([a[0], c[1]])}Z" fill="#27ae60" fill-opacity=".1" stroke="#005a9c" stroke-width="${r1(1.5 * k)}"/><text x="${r1((a[0] + c[0]) / 2)}" y="${r1(-(a[1] + c[1]) / 2)}" font-size="${r1(13 * k)}" text-anchor="middle" fill="#005a9c" font-weight="600">${fm(Math.abs(c[0] - a[0]))} × ${fm(Math.abs(c[1] - a[1]))}</text>`;
+  }
+  if (ARRASTRE && SEL && GUIAS.length) { const e = estDe(SEL.id); if (e) { const b = cajaDe(estPts(e)); s += `<rect x="${r1(b.x0)}" y="${r1(-b.y1)}" width="${r1(b.x1 - b.x0)}" height="${r1(b.y1 - b.y0)}" fill="none" stroke="#e67e22" stroke-dasharray="${4 * k} ${3 * k}" stroke-width="${r1(1.5 * k)}"/>`; } }
+  g.innerHTML = s;
+}
+svg.addEventListener('contextmenu', e => e.preventDefault());
+svg.addEventListener('wheel', e => { e.preventDefault(); const r = svg.getBoundingClientRect(); zoomEn(e.clientX - r.left, e.clientY - r.top, e.deltaY < 0 ? 1.2 : 1 / 1.2); }, { passive: false });
+svg.addEventListener('pointerdown', e => {
+  svg.setPointerCapture(e.pointerId);
+  if (e.button === 1 || e.button === 2 || (e.button === 0 && espacio)) { PAN = { x: e.clientX, y: e.clientY, x0: V.x0, yT: V.yT }; svg.style.cursor = 'grabbing'; return; }
+  if (e.button !== 0) return;
+  const p = aMundo(e);
+  if (HERR === 'sel') {
+    const t = tocar(p); SEL = t; ARRASTRE = null;
+    if (t && t.k === 'est') { const o = estDe(t.id); ARRASTRE = { ini: p, x: o.x, y: o.y, movido: false }; }
+    pintarSeleccion(); return;
+  }
+  if (HERR === 'est') {
+    const e2 = { id: uid(), cod: nuevoCodEst(), nombre: '', x: 0, y: 0, w: OPC.w, f: OPC.f, rot: OPC.rot, baldas: OPC.baldas, acc: L.opc.accesoDef, color: COLORES_EST[L.estanterias.length % COLORES_EST.length] };
+    const q = iman(e2, p[0], p[1]); e2.x = q[0]; e2.y = q[1]; GUIAS = [];
+    L.estanterias.push(e2); SEL = { k: 'est', id: e2.id }; guardarPaso(); pintarSeleccion(); return;
+  }
+  if (HERR === 'medir' || HERR === 'local') {
+    const q = $('sIman').checked ? [rej(p[0]), rej(p[1])] : p;
+    if (!TMP.pts.length) { TMP.pts.push(q); return; }
+    const a = TMP.pts[0]; TMP.pts = [];
+    if (HERR === 'medir') { snack('Medida: ' + fcm(dist(a, q)) + ' (' + fm(dist(a, q)) + ')'); if (OPC.dejarCota && dist(a, q) > 1) { P().cotas = P().cotas || []; P().cotas.push({ id: uid(), a, b: q }); guardarPaso(); pintarCotas(); } }
+    else if (Math.abs(q[0] - a[0]) > 50 && Math.abs(q[1] - a[1]) > 50) { P().zonas.push({ id: uid(), pts: [a, [q[0], a[1]], q, [a[0], q[1]]] }); guardarPaso(); pintarFondo(); infoPlano(); ponerHerr('sel'); snack('Local de ' + fm(Math.abs(q[0] - a[0])) + ' × ' + fm(Math.abs(q[1] - a[1])) + ' creado'); }
+    pintarUI();
+  }
+});
+svg.addEventListener('pointermove', e => {
+  if (PAN) { V.x0 = PAN.x0 - (e.clientX - PAN.x) / V.s; V.yT = PAN.yT + (e.clientY - PAN.y) / V.s; aplicarVista(); return; }
+  const p = aMundo(e);
+  $('coords').textContent = `x ${fmt(p[0] / 100, 2)} m · y ${fmt(p[1] / 100, 2)} m`;
+  if (ARRASTRE && SEL) {
+    const A = ARRASTRE, d = [p[0] - A.ini[0], p[1] - A.ini[1]];
+    if (!A.movido && Math.hypot(d[0], d[1]) * V.s < 3) return;
+    A.movido = true; const o = estDe(SEL.id); const q = iman(o, A.x + d[0], A.y + d[1]); o.x = q[0]; o.y = q[1];
+    $('gEst').innerHTML = svgEstanterias(false); pintarTextos(); pintarUI(); return;
+  }
+  RATON = HERR === 'sel' ? null : p;
+  if (HERR === 'est' && RATON) { const q = iman({ id: '_', x: 0, y: 0, w: OPC.w, f: OPC.f, rot: OPC.rot }, p[0], p[1]); RATON = q; GUIAS = []; }
+  pintarUI();
+});
+svg.addEventListener('pointerup', () => {
+  if (PAN) { PAN = null; svg.style.cursor = HERR === 'sel' ? 'default' : 'crosshair'; return; }
+  if (ARRASTRE) { if (ARRASTRE.movido) { guardarPaso(); pintarProps(); } ARRASTRE = null; GUIAS = []; pintarUI(); }
+});
+svg.addEventListener('pointerleave', () => { RATON = null; pintarUI(); });
+function pintarSeleccion() { pintarEst(); pintarCotas(); pintarUI(); pintarProps(); }
+function borrarSel() {
+  if (!SEL) return;
+  if (SEL.k === 'est') { const e = estDe(SEL.id), n = juegosDe(e).length; for (const j of juegosDe(e)) { j.est = ''; j.balda = ''; } L.estanterias = L.estanterias.filter(x => x !== e); if (n) snack(n + ' juegos han pasado a «sin ubicar»'); }
+  else if (SEL.k === 'cota') P().cotas = P().cotas.filter(c => c.id !== SEL.id);
+  SEL = null; guardarPaso(); pintarSeleccion(); listaSin();
+}
+function girarSel(g) { const e = SEL && SEL.k === 'est' && estDe(SEL.id); if (!e) return; e.rot = (((e.rot || 0) + g) % 360 + 360) % 360; guardarPaso(); pintarSeleccion(); }
+function duplicarSel() {
+  const e = SEL && SEL.k === 'est' && estDe(SEL.id); if (!e) return;
+  const a = (e.rot || 0) * RAD, d = rotar([e.w, 0], a), n = Object.assign({}, e, { id: uid(), cod: nuevoCodEst(), x: e.x + d[0], y: e.y + d[1] });
+  L.estanterias.push(n); SEL = { k: 'est', id: n.id }; guardarPaso(); pintarSeleccion();
+}
+document.addEventListener('keydown', e => {
+  if (e.target.matches('input, select, textarea')) return;
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 's') { e.preventDefault(); guardarTrabajo(); return; }
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'z') { e.preventDefault(); e.shiftKey ? rehacer() : deshacer(); return; }
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'y') { e.preventDefault(); rehacer(); return; }
+  if (pestana !== 'plano') return;
+  if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'd') { e.preventDefault(); duplicarSel(); return; }
+  if (e.key === ' ') { espacio = true; e.preventDefault(); return; }
+  if (e.key === 'Escape') { if (TMP.pts.length) { TMP.pts = []; pintarUI(); } else if (HERR !== 'sel') ponerHerr('sel'); else { SEL = null; pintarSeleccion(); } return; }
+  if ((e.key === 'Delete' || e.key === 'Backspace') && SEL) { borrarSel(); e.preventDefault(); return; }
+  if (e.key.toLowerCase() === 'f') ajustarVista();
+  if (e.key.toLowerCase() === 'r' && SEL) girarSel(e.shiftKey ? 15 : 90);
+  const fl = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, 1], ArrowDown: [0, -1] }[e.key];
+  if (fl && SEL && SEL.k === 'est') { const o = estDe(SEL.id), d = e.shiftKey ? 10 : 1; o.x += fl[0] * d; o.y += fl[1] * d; e.preventDefault(); clearTimeout(girarSel.t); girarSel.t = setTimeout(guardarPaso, 400); pintarSeleccion(); }
+});
+document.addEventListener('keyup', e => { if (e.key === ' ') espacio = false; });
+document.querySelectorAll('#herrPlano').forEach(h => h.addEventListener('click', e => { const b = e.target.closest('button[data-h]'); if (b) ponerHerr(b.dataset.h); }));
+$('bLocal').onclick = () => ponerHerr('local');
+$('vAjustar').onclick = () => ajustarVista();
+$('vMas').onclick = () => { const { w, h } = tamLienzo(); zoomEn(w / 2, h / 2, 1.3); };
+$('vMenos').onclick = () => { const { w, h } = tamLienzo(); zoomEn(w / 2, h / 2, 1 / 1.3); };
+$('cDxf').onchange = pintarDxf; $('cZona').onchange = pintarFondo;
+['cAcc', 'cOcup'].forEach(id => $(id).onchange = () => { pintarEst(); pintarLeyenda(); });
+$('cMesas').onchange = () => { pintarExt(); pintarTextos(); pintarLeyenda(); };
+new ResizeObserver(() => { if (pestana === 'plano') aplicarVista(); }).observe($('lienzoCaja'));
+
+// Buscar en el plano
+function buscarPlano() {
+  const q = norm($('buscaPlano').value.trim()); BUSCA = new Set();
+  if (q.length >= 2) for (const j of L.juegos) if (j.est && (norm(j.titulo).includes(q) || norm(j.cod) === q)) BUSCA.add(j.est);
+  pintarEst(); pintarProps();
+  $('buscaPlano').style.borderColor = q.length >= 2 ? (BUSCA.size ? '#e67e22' : 'var(--mal)') : '';
+}
+$('buscaPlano').addEventListener('input', buscarPlano);
+function verEnPlano(j) {
+  verPestana('plano');
+  if (!j.est) { snack('«' + (j.titulo || j.cod) + '» no está en ninguna estantería: arrástralo desde la lista de la izquierda'); $('fSin').value = j.titulo; listaSin(); return; }
+  $('buscaPlano').value = j.titulo; buscarPlano();
+  const e = estDe(j.est); SEL = { k: 'est', id: e.id }; pintarSeleccion();
+  const b = cajaDe(estPts(e)); ajustarVista({ x0: b.x0 - 300, y0: b.y0 - 300, x1: b.x1 + 300, y1: b.y1 + 300 });
+}
+
+// ════════════════ Panel de la estantería elegida ════════════════
+function pintarProps() {
+  const c = $('propsEst');
+  const e = SEL && SEL.k === 'est' && estDe(SEL.id);
+  if (!e) { c.innerHTML = '<h4>Estantería elegida</h4><p class="nota" style="margin:0">Haz clic en una estantería del plano para ver sus medidas y sus juegos balda a balda.</p>'; return; }
+  const js = juegosDe(e), q = norm($('buscaPlano').value.trim());
+  let h = `<h4>📚 ${esc(e.cod)} ${e.nombre ? '· ' + esc(e.nombre) : ''}</h4>
+    <div class="mini"><label>Código<input data-p="cod" value="${esc(e.cod)}"></label><label style="grid-column:span 2">Nombre / tema<input data-p="nombre" value="${esc(e.nombre || '')}" placeholder="p. ej. Familiares"></label>
+    <label>Largo (cm)<input data-p="w" value="${fmt(e.w, 1)}"></label><label>Fondo (cm)<input data-p="f" value="${fmt(e.f, 1)}"></label><label>Baldas<input data-p="baldas" value="${e.baldas}"></label>
+    <label>Giro (°)<input data-p="rot" value="${fmt(e.rot || 0, 1)}"></label><label>Acceso (cm)<input data-p="acc" value="${fmt(e.acc || 0)}"></label><label>Color<input type="color" data-p="color" value="${e.color}" style="height:26px;padding:0"></label></div>
+    <div class="fila" style="margin-top:7px"><button class="b chico" data-a="girar">⟳ 90°</button><button class="b chico" data-a="dup">⧉ Duplicar</button><button class="b chico" data-a="tabla">📚 En la tabla</button><button class="b chico peligro" data-a="borrar">🗑</button></div>
+    <p class="nota">${js.length} juegos · ocupado ${fmt(ocupTotal(e) * 100)} % · la balda 1 es la de arriba</p>`;
+  for (let b = 1; b <= e.baldas; b++) {
+    const lis = js.filter(j => +j.balda === b), oc = ocupBalda(e, b), o = oc / e.w;
+    h += `<div class="balda" data-est="${e.id}" data-b="${b}"><div class="cabB"><b>Balda ${b}</b><span>${fmt(oc)} / ${fmt(e.w)} cm</span></div><div class="barraO"><i style="width:${Math.min(100, o * 100)}%;background:${colOcup(o)}"></i></div>${lis.map(j => chip(j, q)).join('')}</div>`;
+  }
+  const sinB = js.filter(j => !(+j.balda >= 1 && +j.balda <= e.baldas));
+  if (sinB.length) h += `<div class="balda" data-est="${e.id}" data-b="0"><div class="cabB"><b>Sin balda</b></div>${sinB.map(j => chip(j, q)).join('')}</div>`;
+  c.innerHTML = h;
+}
+const chip = (j, q) => `<span class="chip ${q && norm(j.titulo).includes(q) ? 'hit' : ''}" draggable="true" data-jid="${j.id}" title="${esc(j.titulo)} — doble clic: ver en la tabla">${esc(j.titulo || '(sin título)')} <small>${esc(j.cod)}${j.prestadoA ? ' · prestado' : ''}</small></span>`;
+$('propsEst').addEventListener('change', e => {
+  const s = SEL && estDe(SEL.id); const k = e.target.dataset.p; if (!s || !k) return;
+  const v = e.target.value;
+  if (k === 'cod' || k === 'nombre' || k === 'color') s[k] = v;
+  else { const n = k === 'rot' || k === 'baldas' ? num(v) : leerLargo(v); if (!isFinite(n) || (k !== 'rot' && k !== 'acc' && n <= 0) || n < 0 && k === 'acc') { pintarProps(); return; } s[k] = k === 'baldas' ? Math.max(1, Math.round(n)) : n; }
+  guardarPaso(); pintarSeleccion();
+});
+$('propsEst').addEventListener('click', e => {
+  const a = e.target.dataset.a; if (!a) return;
+  if (a === 'girar') girarSel(90); else if (a === 'dup') duplicarSel(); else if (a === 'borrar') borrarSel();
+  else if (a === 'tabla') { const s = estDe(SEL.id); limpiarFiltros(); $('fEst').value = s.id; verPestana('juegos'); }
+});
+$('propsEst').addEventListener('dblclick', e => { const c = e.target.closest('[data-jid]'); if (c) { const j = juegoDe(c.dataset.jid); limpiarFiltros(); $('fTexto').value = j.titulo; verPestana('juegos'); } });
+function listaSin() {
+  const q = norm($('fSin').value.trim());
+  const sin = L.juegos.filter(j => !j.est && j.estado !== 'Retirado');
+  $('nSin').textContent = sin.length;
+  const vis = sin.filter(j => !q || norm(j.titulo + ' ' + j.cod + ' ' + j.cat).includes(q)).sort((a, b) => a.titulo.localeCompare(b.titulo, 'es'));
+  $('listaSin').innerHTML = vis.slice(0, 400).map(j => chip(j, '')).join('') + (vis.length > 400 ? `<p class="nota">… y ${vis.length - 400} más (filtra)</p>` : '') + (!sin.length ? '<p class="nota" style="margin:0">Todos los juegos tienen sitio 👍</p>' : '');
+}
+$('fSin').addEventListener('input', listaSin);
+
+// Arrastrar juegos
+let arrJuego = null;
+document.addEventListener('dragstart', e => { const c = e.target.closest && e.target.closest('[data-jid]'); if (!c) return; arrJuego = c.dataset.jid; e.dataTransfer.setData('text/plain', 'ludoteca:' + arrJuego); e.dataTransfer.effectAllowed = 'move'; });
+document.addEventListener('dragend', () => { arrJuego = null; document.querySelectorAll('.sobre').forEach(x => x.classList.remove('sobre')); });
+function soltarEn(j, e, b) {
+  if (!j) return;
+  if (!e) { ubicar(j, null); snack('«' + j.titulo + '» queda sin ubicar'); }
+  else { ubicar(j, e, b || null); snack('«' + j.titulo + '» → ' + e.cod + ' · balda ' + j.balda); }
+  guardarPaso(); pintarEst(); pintarProps(); listaSin();
+}
+svg.addEventListener('dragover', e => { if (arrJuego) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; } });
+svg.addEventListener('drop', e => {
+  if (!arrJuego) return; e.preventDefault(); e.stopPropagation();
+  const t = tocar(aMundo(e)); const j = juegoDe(arrJuego);
+  if (!t || t.k !== 'est') { snack('Suelta el juego encima de una estantería'); return; }
+  SEL = t; soltarEn(j, estDe(t.id), null);
+});
+$('lateral').addEventListener('dragover', e => { if (!arrJuego) return; const z = e.target.closest('.balda, #listaSin'); if (!z) return; e.preventDefault(); document.querySelectorAll('.sobre').forEach(x => x !== z && x.classList.remove('sobre')); z.classList.add('sobre'); });
+$('lateral').addEventListener('drop', e => {
+  if (!arrJuego) return; const z = e.target.closest('.balda, #listaSin'); if (!z) return; e.preventDefault(); e.stopPropagation();
+  const j = juegoDe(arrJuego);
+  if (z.id === 'listaSin') soltarEn(j, null); else { const b = +z.dataset.b; soltarEn(j, estDe(z.dataset.est), b || null); }
+});
+</script>
+<script>
+// ════════════════ Tabla de juegos ════════════════
+let ORDEN = { k: 'titulo', dir: 1 }, MARCA = new Set(), NUEVO = null;
+function opcionesEst(sel, vacio, corto) { return `<option value="">${vacio || '—'}</option>` + L.estanterias.slice().sort((a, b) => a.cod.localeCompare(b.cod, 'es', { numeric: true })).map(e => `<option value="${e.id}" ${sel === e.id ? 'selected' : ''}>${esc(e.cod)}${e.nombre && !corto ? ' · ' + esc(e.nombre) : ''}</option>`).join(''); }
+function rellenarFiltros() {
+  const v = id => $(id).value;
+  const cats = [...new Set(L.juegos.map(j => j.cat).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'es'));
+  const fc = v('fCat'), fe = v('fEstado'), fs = v('fEst');
+  $('fCat').innerHTML = '<option value="">Todas las categorías</option>' + cats.map(c => `<option ${c === fc ? 'selected' : ''}>${esc(c)}</option>`).join('');
+  $('fEstado').innerHTML = '<option value="">Cualquier estado</option>' + ESTADOS.map(c => `<option ${c === fe ? 'selected' : ''}>${c}</option>`).join('');
+  $('fEst').innerHTML = opcionesEst(fs, 'Cualquier estantería') + `<option value="__sin" ${fs === '__sin' ? 'selected' : ''}>(sin estantería)</option>`;
+  $('selMover').innerHTML = opcionesEst('', '→ estantería…');
+  const dl = (id, k) => $(id).innerHTML = [...new Set(L.juegos.map(j => j[k]).filter(Boolean))].sort().map(x => `<option value="${esc(x)}">`).join('');
+  dl('dlCat', 'cat'); dl('dlEdit', 'editorial'); dl('dlIdioma', 'idioma'); dl('dlProp', 'prop');
+}
+function juegosFiltrados() {
+  const q = norm($('fTexto').value.trim()), nj = num($('fJug').value), dm = num($('fDur').value);
+  const cat = $('fCat').value, es = $('fEstado').value, est = $('fEst').value, pr = $('fPrest').checked;
+  const r = L.juegos.filter(j => {
+    if (j.id === NUEVO) return true;
+    if (q && !norm([j.cod, j.titulo, j.editorial, j.cat, j.notas, j.prop, j.prestadoA, j.idioma].join(' ')).includes(q)) return false;
+    if (nj > 0 && !((+j.jmin || 1) <= nj && (+j.jmax || +j.jmin || 99) >= nj)) return false;
+    if (dm > 0 && !(+j.dur > 0 && +j.dur <= dm)) return false;
+    if (cat && j.cat !== cat) return false;
+    if (es && j.estado !== es) return false;
+    if (est === '__sin' ? j.est : (est && j.est !== est)) return false;
+    if (pr && !j.prestadoA) return false;
+    return true;
+  });
+  const k = ORDEN.k, d = ORDEN.dir;
+  const val = j => k === 'est' ? codEst(j.est) : j[k];
+  r.sort((a, b) => {
+    if (a.id === NUEVO) return -1; if (b.id === NUEVO) return 1;
+    let x = val(a), y = val(b);
+    if (NUMERICOS.has(k)) { x = x === '' || x == null ? Infinity : +x; y = y === '' || y == null ? Infinity : +y; return (x - y) * d || a.titulo.localeCompare(b.titulo, 'es'); }
+    x = String(x || ''); y = String(y || ''); if (!x && y) return 1; if (x && !y) return -1;
+    return x.localeCompare(y, 'es', { numeric: true, sensitivity: 'base' }) * d;
+  });
+  return r;
+}
+function celda(j, c) {
+  const [k, , tipo, , dl] = c, v = j[k] == null ? '' : j[k];
+  if (tipo === 'estado') return `<td><select data-k="${k}">${ESTADOS.map(e => `<option ${e === v ? 'selected' : ''}>${e}</option>`).join('')}</select></td>`;
+  if (tipo === 'est') return `<td title="${esc((estDe(v) || {}).nombre || '')}"><select data-k="${k}">${opcionesEst(v, '—', true)}</select></td>`;
+  if (tipo === 'fecha') return `<td><input type="date" data-k="${k}" value="${esc(v)}"></td>`;
+  return `<td><input data-k="${k}" value="${esc(v)}" ${tipo === 'num' ? 'inputmode="decimal" style="text-align:right"' : ''} ${dl ? `list="${dl}"` : ''}></td>`;
+}
+function pintarTabla() {
+  rellenarFiltros();
+  $('tabla').style.width = (70 + CAMPOS.reduce((s, c) => s + c[3], 0)) + 'px';
+  $('cols').innerHTML = '<col style="width:30px">' + CAMPOS.map(c => `<col style="width:${c[3]}px">`).join('') + '<col style="width:40px">';
+  $('cabT').innerHTML = '<tr><th title="Marcar todos los visibles"><input type="checkbox" id="marcaTodo"></th>' + CAMPOS.map(c => `<th data-k="${c[0]}" class="${ORDEN.k === c[0] ? 'ord' + (ORDEN.dir < 0 ? ' desc' : '') : ''}" title="Ordenar por ${c[1]}">${c[1]}</th>`).join('') + '<th title="Ver en el plano">📍</th></tr>';
+  const lista = juegosFiltrados(), dias = L.opc.diasPrestamo;
+  $('cuerpoT').innerHTML = lista.map(j => `<tr data-id="${j.id}" class="${MARCA.has(j.id) ? 'marcada' : ''} ${j.prestadoA ? 'prest' : ''} ${j.prestadoA && diasDesde(j.fPrest) > dias ? 'vencido' : ''}"><td class="ctr"><input type="checkbox" data-m ${MARCA.has(j.id) ? 'checked' : ''}></td>${CAMPOS.map(c => celda(j, c)).join('')}<td class="ctr"><button data-plano title="Ver en el plano">📍</button></td></tr>`).join('')
+    || `<tr><td colspan="${CAMPOS.length + 2}" style="padding:18px;text-align:center;color:var(--sec)">${L.juegos.length ? 'Ningún juego cumple los filtros' : 'Aún no hay juegos. Pulsa ＋ Juego, importa un CSV o carga el ejemplo (Archivo).'}</td></tr>`;
+  $('marcaTodo').checked = lista.length > 0 && lista.every(j => MARCA.has(j.id));
+  $('marcaTodo').onchange = e => { for (const j of lista) e.target.checked ? MARCA.add(j.id) : MARCA.delete(j.id); pintarTabla(); };
+  $('txtMarcados').textContent = MARCA.size ? MARCA.size + ' marcados' : lista.length + ' de ' + L.juegos.length + ' juegos';
+  kpis();
+}
+function kpis() {
+  const n = L.juegos.length, ub = L.juegos.filter(j => j.est).length, pr = L.juegos.filter(j => j.prestadoA), ve = pr.filter(j => diasDesde(j.fPrest) > L.opc.diasPrestamo).length;
+  $('kpis').innerHTML = `<div><b>${n}</b>juegos</div><div><b>${ub}</b>en estanterías</div><div><b>${n - ub}</b>sin ubicar</div><div><b>${L.estanterias.length}</b>estanterías</div><div><b>${pr.length}</b>prestados${ve ? ` · <span class="mal">${ve} fuera de plazo</span>` : ''}</div>`;
+}
+$('cabT').addEventListener('click', e => { const th = e.target.closest('th[data-k]'); if (!th) return; const k = th.dataset.k; ORDEN = { k, dir: ORDEN.k === k ? -ORDEN.dir : 1 }; NUEVO = null; pintarTabla(); });
+$('cuerpoT').addEventListener('change', e => {
+  const tr = e.target.closest('tr[data-id]'); if (!tr) return; const j = juegoDe(tr.dataset.id); if (!j) return;
+  if (e.target.dataset.m != null) { e.target.checked ? MARCA.add(j.id) : MARCA.delete(j.id); tr.classList.toggle('marcada', e.target.checked); $('txtMarcados').textContent = MARCA.size + ' marcados'; return; }
+  const k = e.target.dataset.k; let v = e.target.value.trim();
+  if (NUMERICOS.has(k)) { if (v === '') v = ''; else { const n = num(v); if (!isFinite(n)) { e.target.value = j[k]; snack('Escribe un número'); return; } v = n; } }
+  if (k === 'cod' && v && L.juegos.some(x => x !== j && x.cod === v)) snack('Ojo: el código ' + v + ' ya lo tiene otro juego');
+  if (k === 'est') { ubicar(j, v ? estDe(v) : null); const b = tr.querySelector('[data-k=balda]'); if (b) b.value = j.balda; }
+  else j[k] = v;
+  if (k === 'prestadoA' && v && !j.fPrest) { j.fPrest = hoy(); tr.querySelector('[data-k=fPrest]').value = j.fPrest; }
+  if (k === 'prestadoA' || k === 'fPrest') { tr.classList.toggle('prest', !!j.prestadoA); tr.classList.toggle('vencido', !!j.prestadoA && diasDesde(j.fPrest) > L.opc.diasPrestamo); }
+  if (k === 'prestadoA' && !v && j.fPrest) { L.historial.unshift({ juego: j.id, titulo: j.titulo, persona: e.target.defaultValue, desde: j.fPrest, hasta: hoy() }); j.fPrest = ''; tr.querySelector('[data-k=fPrest]').value = ''; }
+  guardarPaso(); kpis();
+  if (['cat', 'editorial', 'idioma', 'prop'].includes(k)) rellenarFiltros();
+});
+$('cuerpoT').addEventListener('keydown', e => {
+  if (e.key !== 'Enter' && e.key !== 'ArrowDown' && e.key !== 'ArrowUp') return;
+  const k = e.target.dataset.k; if (!k || (e.target.tagName === 'SELECT' && e.key !== 'Enter')) return;
+  const tr = e.target.closest('tr'); const sig = (e.key === 'ArrowUp' || (e.key === 'Enter' && e.shiftKey)) ? tr.previousElementSibling : tr.nextElementSibling;
+  e.preventDefault(); e.target.dispatchEvent(new Event('change', { bubbles: true }));
+  if (sig) { const i = sig.querySelector(`[data-k="${k}"]`); if (i) { i.focus(); if (i.select) i.select(); } }
+});
+$('cuerpoT').addEventListener('click', e => { if (e.target.dataset.plano == null) return; const j = juegoDe(e.target.closest('tr').dataset.id); if (j) verEnPlano(j); });
+function nuevoJuegoTabla() {
+  const j = juegoNuevo(); L.juegos.push(j); NUEVO = j.id; guardarPaso(); pintarTabla();
+  const i = document.querySelector(`tr[data-id="${j.id}"] [data-k=titulo]`); if (i) { i.focus(); i.closest('.tablaWrap').scrollTop = 0; }
+}
+function limpiarFiltros() { ['fTexto', 'fJug', 'fDur', 'fCat', 'fEstado', 'fEst'].forEach(id => $(id).value = ''); $('fPrest').checked = false; NUEVO = null; }
+$('bNuevoJuego').onclick = nuevoJuegoTabla;
+$('bLimpiar').onclick = () => { limpiarFiltros(); pintarTabla(); };
+['fTexto', 'fJug', 'fDur'].forEach(id => $(id).addEventListener('input', () => { NUEVO = null; pintarTabla(); }));
+['fCat', 'fEstado', 'fEst', 'fPrest'].forEach(id => $(id).addEventListener('change', () => { NUEVO = null; pintarTabla(); }));
+$('bMover').onclick = () => {
+  if (!MARCA.size) { snack('Marca primero los juegos (casilla de la izquierda)'); return; }
+  const e = estDe($('selMover').value);
+  for (const id of MARCA) { const j = juegoDe(id); if (j) ubicar(j, e || null); }
+  snack(MARCA.size + ' juegos ' + (e ? '→ ' + e.cod : 'sin estantería')); MARCA.clear(); guardarPaso(); pintarTabla();
+};
+$('bBorrarMarcados').onclick = async () => {
+  if (!MARCA.size) { snack('Marca primero los juegos'); return; }
+  if (!await preguntar('Borrar juegos', `¿Borrar <b>${MARCA.size}</b> juegos de la base de datos? (Ctrl+Z para deshacer)`, null)) return;
+  L.juegos = L.juegos.filter(j => !MARCA.has(j.id)); MARCA.clear(); guardarPaso(); pintarTabla();
+};
+
+// ════════════════ CSV ════════════════
+function parseCsv(t) {
+  const l0 = t.split(/\r?\n/)[0] || '';
+  const sep = l0.includes('\t') ? '\t' : (l0.split(';').length >= l0.split(',').length ? ';' : ',');
+  const filas = []; let fila = [], cur = '', q = false;
+  for (let i = 0; i < t.length; i++) {
+    const c = t[i];
+    if (q) { if (c === '"') { if (t[i + 1] === '"') { cur += '"'; i++; } else q = false; } else cur += c; }
+    else if (c === '"') q = true;
+    else if (c === sep) { fila.push(cur); cur = ''; }
+    else if (c === '\n' || c === '\r') { if (c === '\r' && t[i + 1] === '\n') i++; fila.push(cur); cur = ''; if (fila.some(x => x.trim())) filas.push(fila); fila = []; }
+    else cur += c;
+  }
+  fila.push(cur); if (fila.some(x => x.trim())) filas.push(fila);
+  return filas;
+}
+const ALIAS = {
+  cod: ['cod', 'codigo', 'id', 'n', 'no', 'num', 'numero', 'inventario', 'ref', 'referencia'], titulo: ['titulo', 'nombre', 'juego', 'objectname', 'name', 'title'],
+  editorial: ['editorial', 'publisher', 'editor', 'editora'], anio: ['ano', 'anio', 'year', 'yearpublished', 'publicado'],
+  jmin: ['jugmin', 'jugadoresmin', 'minjugadores', 'minplayers', 'min', 'jugadoresminimo', 'minimojugadores'], jmax: ['jugmax', 'jugadoresmax', 'maxjugadores', 'maxplayers', 'max', 'jugadoresmaximo', 'maximojugadores'],
+  jug: ['jugadores', 'players', 'njugadores', 'numjugadores'], dur: ['duracion', 'duracionmin', 'tiempo', 'minutos', 'playingtime', 'maxplaytime', 'duration'],
+  edad: ['edad', 'edadmin', 'minage', 'age', 'edadminima'], cat: ['categoria', 'tipo', 'genero', 'category', 'categorias'], idioma: ['idioma', 'language', 'lengua'],
+  estado: ['estado', 'condicion', 'condition'], prop: ['propietario', 'dueno', 'cedido', 'cedidopor', 'owner', 'procedencia'],
+  est: ['estanteria', 'estante', 'ubicacion', 'mueble', 'lugar'], balda: ['balda', 'estantes', 'nivel', 'piso', 'shelf'], lomo: ['lomo', 'lomocm', 'grosor', 'ancho'],
+  prestadoA: ['prestadoa', 'prestado', 'prestamo'], fPrest: ['desde', 'fechaprestamo', 'fecha'], notas: ['notas', 'observaciones', 'comentarios', 'comment', 'comentario'],
+};
+const claveCab = h => { const n = norm(h).replace(/[^a-z0-9]/g, ''); for (const k in ALIAS) if (ALIAS[k].includes(n)) return k; return null; };
+function leerFechaCsv(s) { s = String(s || '').trim(); let m = s.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})$/); if (m) return (m[3].length === 2 ? '20' + m[3] : m[3]) + '-' + m[2].padStart(2, '0') + '-' + m[1].padStart(2, '0'); m = s.match(/^\d{4}-\d{2}-\d{2}/); return m ? m[0] : ''; }
+async function importarCsv(file) {
+  try {
+    const filas = parseCsv(await leerArchivo(file)); if (filas.length < 2) { snack('El CSV está vacío'); return; }
+    const cab = filas[0].map(claveCab);
+    if (!cab.includes('titulo')) { snack('No encuentro la columna del título (Título, Nombre, Juego…)', 6000); return; }
+    const yaEsta = (t, e) => L.juegos.some(j => norm(j.titulo) === norm(t) && (!e || !j.editorial || norm(j.editorial) === norm(e)));
+    let n = 0, rep = 0, nuevasEst = 0;
+    const base = cajaTodo() || { x1: 0, y0: 0 };
+    for (const f of filas.slice(1)) {
+      const o = {}; cab.forEach((k, i) => { if (k && f[i] != null && String(f[i]).trim() !== '' && o[k] == null) o[k] = String(f[i]).trim(); });
+      if (!o.titulo) continue;
+      if (o.jug) { const m = o.jug.match(/(\d+)\s*(?:-|–|a|al|\/)\s*(\d+)/); if (m) { o.jmin = o.jmin || m[1]; o.jmax = o.jmax || m[2]; } else if (/^\d+$/.test(o.jug)) { o.jmin = o.jmin || o.jug; o.jmax = o.jmax || o.jug; } delete o.jug; }
+      if (yaEsta(o.titulo, o.editorial)) { rep++; continue; }
+      for (const k of NUMERICOS) if (o[k] != null) { const v = num(o[k]); o[k] = isFinite(v) ? v : ''; }
+      if (o.estado) { const e = ESTADOS.find(e => norm(e) === norm(o.estado)); o.estado = e || o.estado; }
+      if (o.fPrest) o.fPrest = leerFechaCsv(o.fPrest);
+      let e = null;
+      if (o.est) {
+        e = L.estanterias.find(x => norm(x.cod) === norm(o.est) || norm(x.nombre) === norm(o.est));
+        if (!e) { e = { id: uid(), cod: o.est.slice(0, 12), nombre: '', x: (isFinite(base.x1) ? base.x1 : 0) + 150 + nuevasEst * 120, y: isFinite(base.y0) ? base.y0 + 50 : 0, w: 100, f: 40, rot: 0, baldas: 5, acc: L.opc.accesoDef, color: COLORES_EST[L.estanterias.length % COLORES_EST.length] }; L.estanterias.push(e); nuevasEst++; }
+      }
+      const est = o.est; delete o.est; const balda = o.balda; delete o.balda;
+      const j = juegoNuevo(o); if (o.cod && L.juegos.some(x => x.cod === o.cod)) j.cod = nuevoCod();
+      if (e) { ubicar(j, e, +balda >= 1 ? +balda : null); }
+      L.juegos.push(j); n++;
+    }
+    guardarPaso(); trasCambioTotal(); verPestana('juegos');
+    snack(`${n} juegos importados${rep ? ' · ' + rep + ' repetidos no se han añadido' : ''}${nuevasEst ? ' · ' + nuevasEst + ' estanterías nuevas (colócalas en el plano)' : ''}`, 6000);
+  } catch (err) { console.error(err); snack('No se ha podido leer el CSV: ' + err.message); }
+}
+function csvCelda(v) { v = v == null ? '' : String(v); return /[;"\n\r]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
+function exportarCsv() {
+  const lin = [CAMPOS.map(c => c[1]).join(';')];
+  for (const j of L.juegos.slice().sort((a, b) => a.titulo.localeCompare(b.titulo, 'es'))) lin.push(CAMPOS.map(c => csvCelda(c[0] === 'est' ? codEst(j.est) : c[2] === 'num' && j[c[0]] !== '' ? String(j[c[0]]).replace('.', ',') : c[0] === 'fPrest' ? fFecha(j.fPrest) : j[c[0]])).join(';'));
+  descargar('﻿' + lin.join('\r\n'), nombreArchivo(L.nombre) + '_juegos.csv', 'text/csv;charset=utf-8');
+}
+$('bImpCsvJ').onclick = () => $('fCsv').click();
+$('bExpCsvJ').onclick = exportarCsv;
+$('fCsv').onchange = e => { if (e.target.files[0]) importarCsv(e.target.files[0]); e.target.value = ''; };
+
+// ════════════════ Préstamos ════════════════
+const etiquetaJuego = j => j.cod + ' · ' + j.titulo;
+function pintarPrestamos() {
+  $('pFecha').value = $('pFecha').value || hoy(); $('oDias').value = L.opc.diasPrestamo;
+  $('dlLibres').innerHTML = L.juegos.filter(j => !j.prestadoA && j.estado !== 'Retirado').map(j => `<option value="${esc(etiquetaJuego(j))}">`).join('');
+  $('dlPersonas').innerHTML = [...new Set(L.juegos.map(j => j.prestadoA).concat(L.historial.map(h => h.persona)).filter(Boolean))].sort().map(p => `<option value="${esc(p)}">`).join('');
+  const pr = L.juegos.filter(j => j.prestadoA).sort((a, b) => (a.fPrest || '').localeCompare(b.fPrest || ''));
+  $('nPrest').textContent = pr.length;
+  $('tablaPrest').innerHTML = pr.length ? `<table class="tablaP"><thead><tr><th>Juego</th><th>Persona</th><th>Desde</th><th>Días</th><th></th></tr></thead><tbody>${pr.map(j => { const d = diasDesde(j.fPrest), v = d > L.opc.diasPrestamo; return `<tr><td><b>${esc(j.titulo)}</b> <small style="color:var(--sec)">${esc(j.cod)}${j.est ? ' · ' + esc(ubicacionTxt(j)) : ''}</small></td><td>${esc(j.prestadoA)}</td><td>${fFecha(j.fPrest)}</td><td class="${v ? 'mal' : ''}"><b>${d}</b>${v ? ' ⚠' : ''}</td><td><button class="b chico" data-dev="${j.id}">↩ Devuelto</button></td></tr>`; }).join('')}</tbody></table>` : '<p class="nota" style="margin:0">No hay ningún juego prestado.</p>';
+  $('tablaHist').innerHTML = L.historial.length ? `<table class="tablaP"><thead><tr><th>Juego</th><th>Persona</th><th>Desde</th><th>Devuelto</th><th>Días</th></tr></thead><tbody>${L.historial.slice(0, 300).map(h => `<tr><td>${esc(h.titulo)}</td><td>${esc(h.persona)}</td><td>${fFecha(h.desde)}</td><td>${fFecha(h.hasta)}</td><td>${h.desde && h.hasta ? Math.round((new Date(h.hasta) - new Date(h.desde)) / 864e5) : ''}</td></tr>`).join('')}</tbody></table>${L.historial.length > 300 ? '<p class="nota">Se muestran los 300 últimos.</p>' : ''}` : '<p class="nota" style="margin:0">Aún no hay devoluciones.</p>';
+}
+$('bPrestar').onclick = () => {
+  const t = $('pJuego').value.trim(), per = $('pPersona').value.trim();
+  const j = L.juegos.find(j => etiquetaJuego(j) === t) || L.juegos.find(j => norm(j.titulo) === norm(t) && !j.prestadoA);
+  if (!j) { snack('Elige un juego de la lista'); return; } if (!per) { snack('¿A quién se lo prestas?'); return; }
+  if (j.prestadoA) { snack('Ese juego ya está prestado a ' + j.prestadoA); return; }
+  j.prestadoA = per; j.fPrest = $('pFecha').value || hoy(); $('pJuego').value = ''; $('pPersona').value = '';
+  guardarPaso(); pintarPrestamos(); snack('«' + j.titulo + '» prestado a ' + per);
+};
+$('tablaPrest').addEventListener('click', e => {
+  const id = e.target.dataset.dev; if (!id) return; const j = juegoDe(id);
+  L.historial.unshift({ juego: j.id, titulo: j.titulo, persona: j.prestadoA, desde: j.fPrest, hasta: hoy() });
+  j.prestadoA = ''; j.fPrest = ''; guardarPaso(); pintarPrestamos(); snack('«' + j.titulo + '» devuelto' + (j.est ? ': va a ' + ubicacionTxt(j) : ''));
+});
+$('oDias').onchange = e => { const n = num(e.target.value); if (n > 0) { L.opc.diasPrestamo = Math.round(n); guardarPaso(); pintarPrestamos(); } };
+
+// ════════════════ Listados (PDF) ════════════════
+function svgPlanoImpresion(anchoPx) {
+  const c = cajaTodo(); if (!c) return '';
+  const m = 60, x0 = c.x0 - m, y0 = c.y0 - m, w = c.x1 - c.x0 + 2 * m, h = c.y1 - c.y0 + 2 * m;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${r1(x0)} ${r1(-y0 - h)} ${r1(w)} ${r1(h)}" width="${anchoPx}" height="${Math.round(anchoPx * h / w)}" style="max-height:230mm"><g transform="scale(1,-1)">${svgDxf('#8a96a3')}${svgFondo(true)}${svgEstanterias(true)}</g>${textosEstanterias('#1c2733', '#ffffff')}</svg>`;
+}
+function filaJuego(j, conUbic) { return `<tr><td>${esc(j.cod)}</td><td><b>${esc(j.titulo)}</b>${j.editorial ? ' <span style="color:#6b7684">· ' + esc(j.editorial) + '</span>' : ''}</td><td class="n">${j.jmin || j.jmax ? esc(j.jmin || '?') + (j.jmax && j.jmax !== j.jmin ? '–' + esc(j.jmax) : '') : ''}</td><td class="n">${j.dur ? esc(j.dur) + "'" : ''}</td><td>${esc(j.cat)}</td>${conUbic ? `<td>${esc(ubicacionTxt(j))}</td>` : ''}<td>${esc(j.estado)}${j.prestadoA ? ' · <b>prestado</b>' : ''}</td></tr>`; }
+const cabJuegos = u => `<tr><th>Cód.</th><th>Título</th><th class="n">Jug.</th><th class="n">Dur.</th><th>Categoría</th>${u ? '<th>Ubicación</th>' : ''}<th>Estado</th></tr>`;
+function construirListado() {
+  const n = L.juegos.length, f = new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+  let h = `<h1>${esc(L.nombre)}</h1><div class="sub">Ludoteca · ${f}</div>
+  <div class="kpi"><div><b>${n}</b><span>juegos</span></div><div><b>${L.estanterias.length}</b><span>estanterías</span></div><div><b>${L.juegos.filter(j => j.est).length}</b><span>ubicados</span></div><div><b>${L.juegos.filter(j => j.prestadoA).length}</b><span>prestados</span></div></div>`;
+  if ($('lPlano').checked && cajaTodo()) h += `<h2>Plano del local</h2><div class="dibujo">${svgPlanoImpresion(700)}</div>`;
+  const ests = L.estanterias.slice().sort((a, b) => a.cod.localeCompare(b.cod, 'es', { numeric: true }));
+  if ($('lInv').checked) {
+    let primera = true;
+    for (const e of ests) {
+      const js = juegosDe(e); h += `<h2 class="${primera && $('lPlano').checked ? 'salto' : ''}">Estantería ${esc(e.cod)}${e.nombre ? ' — ' + esc(e.nombre) : ''} <span style="font-weight:400;color:#6b7684;font-size:11px">· ${js.length} juegos · ${fmt(e.w)}×${fmt(e.f)} cm · ${e.baldas} baldas</span></h2>`; primera = false;
+      if (!js.length) { h += '<p style="color:#6b7684">Vacía</p>'; continue; }
+      h += `<table>${cabJuegos(false).replace('<th>Cód.</th>', '<th>Balda</th><th>Cód.</th>')}`;
+      for (const j of js.slice().sort((a, b) => (+a.balda || 99) - (+b.balda || 99) || a.titulo.localeCompare(b.titulo, 'es'))) h += filaJuego(j, false).replace('<tr>', `<tr><td class="n">${esc(j.balda || '—')}</td>`);
+      h += '</table>';
+    }
+    const sin = L.juegos.filter(j => !j.est);
+    if (sin.length) { h += `<h2>Sin estantería <span style="font-weight:400;color:#6b7684;font-size:11px">· ${sin.length} juegos</span></h2><table>${cabJuegos(false)}${sin.sort((a, b) => a.titulo.localeCompare(b.titulo, 'es')).map(j => filaJuego(j, false)).join('')}</table>`; }
+  }
+  if ($('lCat').checked) h += `<h2 class="salto">Catálogo alfabético</h2><table>${cabJuegos(true)}${L.juegos.slice().sort((a, b) => a.titulo.localeCompare(b.titulo, 'es')).map(j => filaJuego(j, true)).join('')}</table>`;
+  if ($('lPre').checked) {
+    const pr = L.juegos.filter(j => j.prestadoA);
+    h += `<h2>Préstamos</h2>` + (pr.length ? `<table><tr><th>Juego</th><th>Persona</th><th>Desde</th><th class="n">Días</th></tr>${pr.map(j => `<tr><td>${esc(j.titulo)}</td><td>${esc(j.prestadoA)}</td><td>${fFecha(j.fPrest)}</td><td class="n" style="${diasDesde(j.fPrest) > L.opc.diasPrestamo ? 'color:#d84343;font-weight:700' : ''}">${diasDesde(j.fPrest)}</td></tr>`).join('')}</table>` : '<p style="color:#6b7684">No hay juegos prestados.</p>');
+  }
+  if ($('lEtq').checked) for (const e of ests) {
+    const js = juegosDe(e);
+    h += `<div class="salto" style="border:3px solid ${e.color};border-radius:10px;padding:14mm 12mm;margin-top:6mm"><div style="font-size:64px;font-weight:800;color:${e.color};line-height:1">${esc(e.cod)}</div><div style="font-size:26px;margin:6px 0 14px">${esc(e.nombre || '')}</div>`;
+    for (let b = 1; b <= e.baldas; b++) { const lb = js.filter(j => +j.balda === b); if (lb.length) h += `<div style="margin:8px 0;font-size:13px"><b>Balda ${b}:</b> ${lb.map(j => esc(j.titulo)).sort((a, b) => a.localeCompare(b, 'es')).join(' · ')}</div>`; }
+    h += '</div>';
+  }
+  h += `<div class="pie">Ludoteca v${VERSION} — Por Eloi A.A. · ${f}</div>`;
+  $('informe').innerHTML = h;
+}
+['lPlano', 'lInv', 'lCat', 'lPre', 'lEtq'].forEach(id => $(id).onchange = construirListado);
+$('bPdf').onclick = () => { construirListado(); setTimeout(() => window.print(), 120); };
+$('bSvg').onclick = () => { const s = svgPlanoImpresion(1400); if (!s) { snack('No hay plano ni estanterías'); return; } descargar('<?xml version="1.0" encoding="UTF-8"?>\n' + s, nombreArchivo(L.nombre) + '_plano.svg', 'image/svg+xml'); };
+</script>
+<script>
+// ════════════════ Pestañas y refresco ════════════════
+function verPestana(v) {
+  pestana = v;
+  document.querySelectorAll('.vista').forEach(s => s.classList.toggle('activa', s.id === 'v_' + v));
+  document.querySelectorAll('#pestanas button').forEach(b => b.classList.toggle('activa', b.dataset.v === v));
+  if (v === 'plano') { aplicarVista(); pintarTodo(); pintarProps(); listaSin(); listaDxf(); infoPlano(); if (!ajustarVista.hecho) { ajustarVista.hecho = true; ajustarVista(); } }
+  if (v === 'juegos') pintarTabla();
+  if (v === 'prestamos') pintarPrestamos();
+  if (v === 'listados') construirListado();
+  if (v === 'archivo') leerOpc();
+  try { localStorage.setItem('ludo_pestana', v); } catch (e) {}
+}
+$('pestanas').addEventListener('click', e => { const b = e.target.closest('button[data-v]'); if (b) verPestana(b.dataset.v); });
+function trasCambioTotal() {
+  $('nombreTrabajo').value = L.nombre || 'Ludoteca';
+  if (SEL && SEL.k === 'est' && !estDe(SEL.id)) SEL = null;
+  botonesDeshacer(); $('txtLomo').textContent = fmt(L.opc.lomoDef, 1);
+  if (pestana === 'plano') { pintarTodo(); pintarProps(); listaSin(); listaDxf(); infoPlano(); }
+  if (pestana === 'juegos') pintarTabla();
+  if (pestana === 'prestamos') pintarPrestamos();
+  if (pestana === 'listados') construirListado();
+  if (pestana === 'archivo') leerOpc();
+}
+function infoPlano() {
+  const p = P(), e = L.externos;
+  $('infoPlano').innerHTML = (planoVacio(p) ? 'Sin plano todavía.' : `${p.dxfs.length} DXF · ${p.zonas.length} zona${p.zonas.length === 1 ? '' : 's'} útil${p.zonas.length === 1 ? '' : 'es'} · ${p.obst.length} columnas/paredes · ${p.puertas.length} puertas`)
+    + (e.objetos && e.objetos.length ? `<br>${e.objetos.length} mesas de «${esc(e.origen)}» (${e.fecha ? new Date(e.fecha).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' }) : ''}) <a href="#" id="quitarMesas">quitar</a>` : '');
+  const q = $('quitarMesas'); if (q) q.onclick = ev => { ev.preventDefault(); L.externos = { origen: '', fecha: '', objetos: [] }; guardarPaso(); pintarExt(); pintarTextos(); infoPlano(); };
+}
+$('bOtra').onclick = abrirOtra; $('bOtra2').onclick = abrirOtra; $('bTraer').onclick = traerCopiaOtra;
+
+// Lista de DXF (sencilla: la escala fina se hace en el Distribuidor)
+function listaDxf() {
+  const c = $('listaDxf');
+  if (!P().dxfs.length) { c.innerHTML = '<p class="nota" style="margin:0">Sin DXF.</p>'; return; }
+  c.innerHTML = P().dxfs.map(d => {
+    const caja = d.caja ? cajaDxfMundo(d) : null;
+    const uni = Object.entries(UNIDADES).map(([k, u]) => `<option value="${k}" ${String(d.unidad) === k ? 'selected' : ''}>${u[0]}</option>`).join('') + (d.unidad === 'cota' ? `<option value="cota" selected>por cota (×${fmt(d.k, 4)})</option>` : '');
+    return `<div class="it" data-id="${d.id}"><div class="cab"><input type="checkbox" data-a="vis" ${d.visible ? 'checked' : ''}><b title="${esc(d.nombre)}">${esc(d.nombre)}</b><button class="b chico peligro" data-a="quitar">✕</button></div>
+      <div class="nota" style="margin:3px 0 0">${caja ? fm(caja.x1 - caja.x0) + ' × ' + fm(caja.y1 - caja.y0) : ''}</div>
+      <div class="mini" style="grid-template-columns:1fr"><label>Unidades del DXF<select data-a="unidad">${uni}</select></label></div></div>`;
+  }).join('');
+}
+$('listaDxf').addEventListener('click', e => { const it = e.target.closest('.it'); if (!it || e.target.dataset.a !== 'quitar') return; P().dxfs = P().dxfs.filter(d => d.id !== it.dataset.id); delete ENTS[it.dataset.id]; guardarPaso(); pintarDxf(); listaDxf(); infoPlano(); });
+$('listaDxf').addEventListener('change', e => {
+  const it = e.target.closest('.it'); const d = it && P().dxfs.find(x => x.id === it.dataset.id); if (!d) return;
+  if (e.target.dataset.a === 'vis') d.visible = e.target.checked;
+  if (e.target.dataset.a === 'unidad' && e.target.value !== 'cota') { const k0 = d.k; d.unidad = e.target.value; d.k = UNIDADES[d.unidad][1]; d.x *= d.k / k0; d.y *= d.k / k0; d.cota = null; }
+  guardarPaso(); pintarDxf(); listaDxf();
+});
+async function importarDxf(files) {
+  let n = 0;
+  for (const f of files) {
+    try {
+      const r = leerDXF(await leerArchivo(f));
+      if (!r.ents.length) { snack(f.name + ': no tiene líneas que se puedan leer'); continue; }
+      const id = uid(); ENTS[id] = r.ents;
+      const pts = []; for (const e of r.ents) { if (e.r != null) pts.push([e.c[0] - e.r, e.c[1] - e.r], [e.c[0] + e.r, e.c[1] + e.r]); else for (let j = 0; j < e.p.length; j += 2) pts.push([e.p[j], e.p[j + 1]]); }
+      const caja = cajaDe(pts);
+      const ud = unidadDxf(r.insunits, caja), unidad = ud.unidad; if (ud.aviso) setTimeout(() => snack(ud.aviso, 9000), 1200);
+      const k = UNIDADES[unidad][1];
+      P().dxfs.push({ id, nombre: f.name, unidad, k, x: -caja.x0 * k, y: -caja.y0 * k, rot: 0, visible: true, opac: .85, color: '#4a5560', capas: r.capas, ocultas: [], caja, cota: null });
+      n++;
+    } catch (err) { console.error(err); snack(f.name + ': no se ha podido leer (' + err.message + ')'); }
+  }
+  if (n) { guardarPaso(); if (pestana !== 'plano') verPestana('plano'); pintarDxf(); listaDxf(); infoPlano(); ajustarVista(); snack(n + ' DXF importado' + (n > 1 ? 's' : '') + '. Para escalarlo con una cota o dibujar la zona útil, ábrelo en el Distribuidor'); }
+}
+$('bImpDxf').onclick = () => $('fDxf').click();
+$('fDxf').onchange = e => { importarDxf([...e.target.files]); e.target.value = ''; };
+$('bImpPlano').onclick = () => $('fPlano').click();
+$('fPlano').onchange = e => { if (e.target.files[0]) abrirTrabajo(e.target.files[0]); e.target.value = ''; };
+
+// ════════════════ Archivo ════════════════
+function leerOpc() { $('oLomo').value = fmt(L.opc.lomoDef, 1); $('oAcceso').value = fmt(L.opc.accesoDef); $('oUrl').value = L.opc.url || ''; }
+$('oLomo').onchange = e => { const n = num(e.target.value); if (n > 0) { L.opc.lomoDef = n; guardarPaso(); $('txtLomo').textContent = fmt(n, 1); } };
+$('oAcceso').onchange = e => { const n = leerLargo(e.target.value); if (n >= 0) { L.opc.accesoDef = n; guardarPaso(); } };
+$('oUrl').onchange = e => { L.opc.url = e.target.value.trim() || 'distribuidor_eventos.html'; guardarPaso(); };
+function guardarTrabajo() {
+  L.nombre = $('nombreTrabajo').value;
+  const o = JSON.parse(JSON.stringify(L)); o.fecha = new Date().toISOString(); o.dxfEnts = {};
+  for (const d of P().dxfs) o.dxfEnts[d.id] = ENTS[d.id] || [];
+  descargar(JSON.stringify(o), nombreArchivo(L.nombre) + '.json', 'application/json');
+  snack('Ludoteca guardada');
+}
+function cargarEstado(o) {
+  for (const k in ENTS) delete ENTS[k];
+  for (const id in (o.dxfEnts || {})) ENTS[id] = o.dxfEnts[id];
+  delete o.dxfEnts; delete o.fecha;
+  const base = estadoVacio(); L = Object.assign(base, o); L.opc = Object.assign(estadoVacio().opc, o.opc || {}); L.plano = Object.assign(estadoVacio().plano, o.plano || {});
+  L.plano.dxfs = L.plano.dxfs.filter(d => ENTS[d.id]);
+}
+async function abrirTrabajo(file) {
+  try {
+    const o = JSON.parse(await leerArchivo(file));
+    if (o.eloiaasoft === 'plano') { recibirPuente(o); return; }
+    if (o.formato === FORMATO_OTRA) { recibirPuente(puenteDeTrabajoOtro(o)); return; }
+    if (o.formato !== FORMATO) { snack('Ese .json no es de la Ludoteca ni del Distribuidor de Eventos'); return; }
+    cargarEstado(o); MARCA.clear(); SEL = null;
+    pilaDeshacer.length = 0; pilaRehacer.length = 0; ultimaFoto = null; guardarPaso();
+    ajustarVista.hecho = false; trasCambioTotal(); verPestana('juegos'); snack('Abierta: ' + L.nombre);
+  } catch (err) { console.error(err); snack('No se ha podido abrir: ' + err.message); }
+}
+async function nuevoTrabajo() {
+  if (!await preguntar('Ludoteca nueva', 'Se vacían los juegos, las estanterías, los préstamos y el plano. ¿Seguro? (Guarda antes si lo necesitas)', null)) return;
+  for (const k in ENTS) delete ENTS[k];
+  L = estadoVacio(); MARCA.clear(); SEL = null; guardarPaso(); trasCambioTotal(); verPestana('juegos');
+}
+function cargarEjemplo() {
+  for (const k in ENTS) delete ENTS[k];
+  L = estadoVacio(); L.nombre = 'Club de juegos (ejemplo)';
+  L.plano.zonas = [{ id: uid(), pts: [[0, 0], [1400, 0], [1400, 900], [0, 900]] }];
+  L.plano.obst = [{ id: uid(), tipo: 'colCuad', x: 700, y: 450, w: 40, h: 40, rot: 0 }];
+  L.plano.puertas = [{ id: uid(), x: 1100, y: 0, nx: 0, ny: 1, ancho: 120, tipo: 'principal', acc: true }];
+  const E = (cod, nombre, x, y, w, f, rot, baldas, color) => ({ id: uid(), cod, nombre, x, y, w, f, rot, baldas, acc: 90, color });
+  L.estanterias = [
+    E('E1', 'Familiares', 77 / 2 + 20, 880 - 39 / 2 - 10, 77, 39, 0, 4, COLORES_EST[0]), E('E2', 'Familiares', 77 / 2 + 97, 880 - 39 / 2 - 10, 77, 39, 0, 4, COLORES_EST[0]),
+    E('E3', 'Party / rápidos', 77 / 2 + 174, 880 - 39 / 2 - 10, 77, 39, 0, 4, COLORES_EST[2]), E('E4', 'Expertos', 77 / 2 + 251, 880 - 39 / 2 - 10, 77, 39, 0, 4, COLORES_EST[1]),
+    E('E5', 'Expertos', 1380 - 39 / 2, 650, 77, 39, 270, 4, COLORES_EST[1]), E('E6', 'Cooperativos', 1380 - 39 / 2, 573, 77, 39, 270, 4, COLORES_EST[3]),
+    E('E7', 'Rol y LCG', 20 + 28 / 2, 300, 80, 28, 90, 6, COLORES_EST[4]),
+  ];
+  const D = [
+    ['Catan', 'Devir', 1995, 3, 4, 90, 10, 'Familiar', 'E1', 1, 8], ['Carcassonne', 'Devir', 2000, 2, 5, 45, 7, 'Familiar', 'E1', 1, 7], ['¡Aventureros al tren!', 'Days of Wonder', 2004, 2, 5, 60, 8, 'Familiar', 'E1', 2, 8],
+    ['Azul', 'Next Move', 2017, 2, 4, 45, 8, 'Abstracto', 'E1', 2, 7], ['Splendor', 'Space Cowboys', 2014, 2, 4, 30, 10, 'Familiar', 'E1', 3, 7], ['Kingdomino', 'Blue Orange', 2016, 2, 4, 20, 8, 'Familiar', 'E2', 1, 5],
+    ['Patchwork', 'Lookout', 2014, 2, 2, 30, 8, 'Dos jugadores', 'E2', 1, 5], ['Dixit', 'Libellud', 2008, 3, 8, 30, 8, 'Party', 'E3', 1, 9], ['Código Secreto', 'Devir', 2015, 2, 8, 15, 14, 'Party', 'E3', 1, 6],
+    ['Dobble', 'Asmodee', 2009, 2, 8, 15, 6, 'Party', 'E3', 2, 4], ['Virus!', 'Tranjis Games', 2015, 2, 6, 20, 8, 'Cartas', 'E3', 2, 4], ['Jungle Speed', 'Asmodee', 1997, 2, 10, 10, 7, 'Party', 'E3', 2, 9],
+    ['Love Letter', 'Devir', 2012, 2, 4, 20, 10, 'Cartas', 'E3', 3, 3], ['Coup', 'Ludonova', 2012, 2, 6, 15, 13, 'Faroleo', 'E3', 3, 3], ['Saboteur', 'Amigo', 2004, 3, 10, 30, 8, 'Faroleo', 'E3', 3, 4],
+    ['Bang!', 'dV Giochi', 2002, 4, 7, 40, 8, 'Faroleo', 'E3', 3, 5], ['Terraforming Mars', 'Maldito Games', 2016, 1, 5, 120, 12, 'Experto', 'E4', 1, 9], ['Agricola', 'Devir', 2007, 1, 4, 150, 12, 'Experto', 'E4', 1, 10],
+    ['Puerto Rico', 'Devir', 2002, 3, 5, 90, 12, 'Experto', 'E4', 2, 7], ['Wingspan', 'Maldito Games', 2019, 1, 5, 70, 10, 'Experto', 'E4', 2, 9], ['7 Wonders', 'Asmodee', 2010, 2, 7, 30, 10, 'Familiar', 'E4', 3, 8],
+    ['Dominion', 'Devir', 2008, 2, 4, 30, 13, 'Cartas', 'E5', 1, 11], ['Small World', 'Days of Wonder', 2009, 2, 5, 80, 8, 'Familiar', 'E5', 1, 8], ['Gloomhaven', 'Asmodee', 2017, 1, 4, 120, 14, 'Experto', 'E5', 2, 20],
+    ['Pandemic', 'Z-Man', 2008, 2, 4, 45, 8, 'Cooperativo', 'E6', 1, 7], ['Hanabi', 'Asmodee', 2010, 2, 5, 25, 8, 'Cooperativo', 'E6', 1, 3], ['La isla prohibida', 'Devir', 2010, 2, 4, 30, 10, 'Cooperativo', 'E6', 2, 6],
+    ['Arkham Horror: El juego de cartas', 'Fantasy Flight', 2016, 1, 2, 90, 14, 'LCG', 'E7', 1, 8], ['Las mansiones de la locura', 'Fantasy Flight', 2016, 1, 5, 150, 14, 'Cooperativo', 'E7', 2, 14],
+    ['Exploding Kittens', 'Asmodee', 2015, 2, 5, 15, 7, 'Cartas', '', '', 4],
+  ];
+  const ec = c => L.estanterias.find(e => e.cod === c);
+  L.juegos = D.map(d => juegoNuevo({ titulo: d[0], editorial: d[1], anio: d[2], jmin: d[3], jmax: d[4], dur: d[5], edad: d[6], cat: d[7], idioma: 'Español', est: d[8] ? ec(d[8]).id : '', balda: d[9], lomo: d[10] }));
+  const cod = t => L.juegos.find(j => j.titulo === t);
+  Object.assign(cod('Wingspan'), { prestadoA: 'Marta', fPrest: hoy() });
+  const viejo = new Date(Date.now() - 20 * 864e5).toISOString().slice(0, 10);
+  Object.assign(cod('Catan'), { prestadoA: 'Jordi', fPrest: viejo });
+  Object.assign(cod('Saboteur'), { estado: 'Faltan piezas', notas: 'Faltan 2 cartas de camino' });
+  MARCA.clear(); SEL = null; pilaDeshacer.length = 0; pilaRehacer.length = 0; ultimaFoto = null; guardarPaso();
+  ajustarVista.hecho = false; trasCambioTotal(); verPestana('plano'); ajustarVista();
+  snack('Ejemplo cargado: arrastra «Exploding Kittens» a una estantería, o busca un juego arriba a la derecha', 6000);
+}
+$('bGuardar').onclick = guardarTrabajo;
+$('bAbrir').onclick = () => $('fTrabajo').click();
+$('fTrabajo').onchange = e => { if (e.target.files[0]) abrirTrabajo(e.target.files[0]); e.target.value = ''; };
+$('bDeshacer').onclick = deshacer; $('bRehacer').onclick = rehacer;
+$('nombreTrabajo').addEventListener('change', e => { L.nombre = e.target.value; guardarPaso(); });
+document.querySelectorAll('[data-hacer]').forEach(b => b.onclick = () => ({
+  nuevo: nuevoTrabajo, abrir: () => $('fTrabajo').click(), guardar: guardarTrabajo, ejemplo: cargarEjemplo,
+  impDxf: () => $('fDxf').click(), impCsv: () => $('fCsv').click(), csv: exportarCsv, plano: exportarPlanoCompartido,
+  pdf: () => { verPestana('listados'); $('bPdf').click(); },
+})[b.dataset.hacer]());
+$('bTema').onclick = () => { document.body.classList.toggle('oscuro'); try { localStorage.setItem('dev_tema', document.body.classList.contains('oscuro') ? 'o' : 'c'); } catch (e) {} if (pestana === 'plano') pintarTodo(); };
+
+// Arrastrar archivos a la ventana
+let cuentaArr = 0;
+const conArchivos = e => e.dataTransfer && [...e.dataTransfer.types].includes('Files');
+addEventListener('dragenter', e => { if (!conArchivos(e)) return; e.preventDefault(); cuentaArr++; $('soltar').classList.add('ver'); });
+addEventListener('dragleave', e => { if (!conArchivos(e)) return; if (--cuentaArr <= 0) { cuentaArr = 0; $('soltar').classList.remove('ver'); } });
+addEventListener('dragover', e => { if (conArchivos(e)) e.preventDefault(); });
+addEventListener('drop', e => {
+  if (!conArchivos(e)) return;
+  e.preventDefault(); cuentaArr = 0; $('soltar').classList.remove('ver');
+  const fs = [...e.dataTransfer.files];
+  const dx = fs.filter(f => /\.dxf$/i.test(f.name)); if (dx.length) importarDxf(dx);
+  const js = fs.find(f => /\.json$/i.test(f.name)); if (js) abrirTrabajo(js);
+  const cs = fs.find(f => /\.(csv|txt|tsv)$/i.test(f.name)); if (cs) importarCsv(cs);
+});
+
+// Copia automática en el navegador
+function copiaAuto() {
+  try {
+    const o = JSON.parse(JSON.stringify(L)); o.dxfEnts = {}; let tam = 0;
+    for (const d of P().dxfs) { o.dxfEnts[d.id] = ENTS[d.id]; tam += (ENTS[d.id] || []).length; }
+    if (tam > 60000) o.dxfEnts = {};
+    localStorage.setItem('ludo_auto', JSON.stringify(o));
+  } catch (e) {}
+}
+setInterval(copiaAuto, 15000);
+addEventListener('beforeunload', copiaAuto);
+
+// ════════════════ Arranque ════════════════
+(function iniciar() {
+  try { if (localStorage.getItem('dev_tema') === 'o') document.body.classList.add('oscuro'); } catch (e) {}
+  $('verPrograma').textContent = 'v' + VERSION;
+  let recuperado = false;
+  try { const a = localStorage.getItem('ludo_auto'); if (a) { const o = JSON.parse(a); if (o.formato === FORMATO && (o.juegos.length || o.estanterias.length)) { cargarEstado(o); recuperado = true; } } } catch (e) {}
+  guardarPaso(); ponerHerr('sel');
+  let v = 'juegos'; try { v = localStorage.getItem('ludo_pestana') || 'juegos'; } catch (e) {}
+  trasCambioTotal(); verPestana(v);
+  if (recuperado) snack('Recuperada la última ludoteca de este navegador (Archivo → Nueva para empezar de cero)');
+  // ¿Nos ha abierto el Distribuidor? Pedimos el plano; si no llega, se mira el buzón de localStorage
+  if (window.opener) { try { window.opener.postMessage({ eloiaasoft: 'listo', app: APP }, '*'); } catch (e) {} }
+  setTimeout(() => {
+    try {
+      const a = localStorage.getItem('eloiaasoft_puente'); if (!a) return; const o = JSON.parse(a);
+      if (o.destino === APP && Date.now() - o.ts < 120000 && o.id !== ultimoPuente) { localStorage.removeItem('eloiaasoft_puente'); recibirPuente(o); }
+    } catch (e) {}
+  }, 1200);
+})();
+</script>
+</body>
+</html>
