@@ -14,7 +14,8 @@ Son archivos HTML de un solo fichero: funcionan sin instalar nada y sin internet
 | Archivo | Qué es |
 |---|---|
 | `index.html` | Página principal |
-| `ludoteca.html` | Ludoteca v0.1 |
+| `ludoteca.html` | Ludoteca v0.2 |
+| `manual_ludoteca.html` / `.pdf` | Manual de la Ludoteca: instalación, uso y cómo está hecho |
 | `distribuidor_eventos.html` | Distribuidor de Eventos v0.3 |
 | `manual_distribuidor_eventos.html` / `.pdf` | Manual del Distribuidor (v0.2) |
 | `planos/AVALON-SALAS-COLORES.dxf` | Plano del local de la asociación (planta baja y altillo, en metros, zonas por colores) |
@@ -22,10 +23,15 @@ Son archivos HTML de un solo fichero: funcionan sin instalar nada y sin internet
 
 ## Ludoteca
 
-- **Juegos:** tabla editable como una hoja de cálculo (código, título, editorial, jugadores, duración, edad, categoría, idioma, estado, propietario, estantería, balda, lomo, préstamo y notas). Filtros, orden por columnas, acciones sobre varios juegos. Importa CSV de Excel/LibreOffice o de BoardGameGeek y exporta CSV.
+- **Juegos:** ficha de cada juego (juego, mínimo y máximo de jugadores, dueño, condición, estante #, nivel de estante, fecha de entrega, fecha de devolución y anotaciones, más editorial, duración, edad, categoría, idioma y lomo) con campos obligatorios y comprobaciones (máximo ≥ mínimo, devolución ≥ entrega). Cada juego tiene un ID único y fechas de creación y de último cambio. Tabla editable como una hoja de cálculo, búsqueda por nombre o dueño, filtros por jugadores, duración, condición, estante y disponibilidad. Importa CSV de Excel/LibreOffice o de BoardGameGeek y exporta CSV.
+- **Datos:** se guardan solos en la base de datos del navegador (IndexedDB), con una copia por día (30 días) y, en Chrome/Edge, también en un archivo `.json` vinculado de tu carpeta. Copias `.json` y CSV cuando quieras.
 - **Plano y estanterías:** DXF del local, estanterías con largo, fondo, baldas, giro y zona de acceso delante; imán entre estanterías; ocupación de cada balda según el lomo de las cajas; arrastrar juegos a una estantería o balda; buscador «¿Dónde está…?».
-- **Préstamos:** con plazo, avisos de retraso e historial.
+- **Préstamos:** fecha de entrega y de devolución prevista, avisos de retraso e historial con la fecha real.
 - **Listados en PDF:** plano, inventario por estantería y balda, catálogo alfabético, préstamos y carteles de estantería.
+
+## Instalación
+
+No necesita servidor ni base de datos aparte. Descarga el repositorio (**Code → Download ZIP**), descomprímelo en una carpeta y abre `ludoteca.html` con doble clic en Chrome o Edge. En **💾 Archivo → 🔗 Vincular…** elige dónde guardar el `.json` de los datos. Los detalles, en el manual.
 
 ## Plano del club
 

@@ -188,7 +188,33 @@ table.datos td.ctr { text-align: center; }
 table.datos td.ctr input[type=checkbox], table.datos th input[type=checkbox] { width: auto; height: auto; vertical-align: middle; }
 table.datos td.ctr button { border: none; background: none; cursor: pointer; padding: 2px 4px; font-size: 14px; }
 table.datos tr.prest input[data-k=prestadoA] { color: var(--aviso); font-weight: 600; }
-table.datos tr.vencido input[data-k=prestadoA], table.datos tr.vencido input[data-k=fPrest] { color: var(--mal); font-weight: 600; }
+table.datos tr.vencido input[data-k=prestadoA], table.datos tr.vencido input[data-k=fDev] { color: var(--mal); font-weight: 600; }
+table.datos td.err { background: #fdecec !important; box-shadow: inset 0 0 0 1px #d84343; }
+table.datos td.falta { background: #fff7e0 !important; }
+body.oscuro table.datos td.err { background: #4a2424 !important; } body.oscuro table.datos td.falta { background: #3d3520 !important; }
+#ficha { max-width: 820px; width: 94vw; padding: 0; }
+#ficha .cabF { display: flex; align-items: center; gap: 10px; padding: 14px 18px; border-bottom: 1px solid var(--borde); }
+#ficha .cabF h3 { margin: 0; flex: 1; }
+#ficha .cuerpoF { padding: 14px 18px; max-height: 70vh; overflow: auto; }
+#ficha .pieF { display: flex; gap: 8px; padding: 12px 18px; border-top: 1px solid var(--borde); flex-wrap: wrap; }
+.formF { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px 12px; }
+.formF label { display: flex; flex-direction: column; gap: 3px; font-size: 12px; color: var(--sec); min-width: 0; }
+.formF label b { color: var(--texto); font-weight: 600; }
+.formF label .req { color: var(--mal); }
+.formF input, .formF select, .formF textarea { padding: 6px 8px; border: 1px solid var(--borde); border-radius: 6px; background: var(--bg); font: inherit; color: var(--texto); }
+.formF textarea { min-height: 80px; resize: vertical; }
+.formF input, .formF select, .formF textarea { width: 100%; min-width: 0; }
+.formF .doble { grid-column: span 2; } .formF .entera { grid-column: 1 / -1; }
+.formF .malF input, .formF .malF select { border-color: var(--mal); background: #fdecec; }
+body.oscuro .formF .malF input, body.oscuro .formF .malF select { background: #4a2424; }
+.formF .msj { color: var(--mal); font-size: 11.5px; min-height: 0; }
+.formF h4 { grid-column: 1 / -1; margin: 6px 0 -2px; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--acento); border-bottom: 1px solid var(--borde); padding-bottom: 3px; }
+#estGuardado { cursor: pointer; }
+#estGuardado.ok { color: var(--ok); border-color: var(--ok); } #estGuardado.pend { color: var(--aviso); border-color: var(--aviso); } #estGuardado.mal { color: var(--mal); border-color: var(--mal); }
+.copias { max-height: 220px; overflow: auto; font-size: 12.5px; }
+.copias div { display: flex; align-items: center; gap: 8px; padding: 4px 0; border-bottom: 1px solid var(--borde); }
+.copias div span { flex: 1; }
+@media (max-width: 700px) { .formF { grid-template-columns: 1fr 1fr; } }
 .chip { display: block; font-size: 12px; background: var(--bg); border: 1px solid var(--borde); border-radius: 5px; padding: 2px 6px; margin: 2px 0; cursor: grab; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .chip small { color: var(--sec); }
 .chip:hover { border-color: var(--acento); }
@@ -222,14 +248,15 @@ table.datos tr.vencido input[data-k=prestadoA], table.datos tr.vencido input[dat
 <body>
 <header>
   <h1><svg class="logo" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="#005a9c"/><g fill="#e9d3a8"><rect x="12" y="14" width="8" height="24" rx="1"/><rect x="22" y="18" width="7" height="20" rx="1"/><rect x="31" y="12" width="9" height="26" rx="1"/><rect x="42" y="20" width="10" height="18" rx="1"/></g><rect x="8" y="38" width="48" height="4" fill="#fff"/><rect x="8" y="50" width="48" height="4" fill="#fff"/></svg>
-    Ludoteca <span class="por">— Por Eloi A.A.</span> <span class="ver" id="verPrograma">v0.1</span></h1>
+    Ludoteca <span class="por">— Por Eloi A.A.</span> <span class="ver" id="verPrograma">v0.2</span></h1>
   <input id="nombreTrabajo" value="Ludoteca del club" title="Nombre de la asociación o de la ludoteca: sale en los listados y en el nombre de los archivos">
+  <span class="ver" id="estGuardado" title="Dónde y cuándo se han guardado los datos (clic: ver Archivo)">…</span>
   <span class="hueco"></span>
   <button class="b" id="bOtra" title="Abre el Distribuidor de Eventos con este mismo plano (y las estanterías como obstáculos)">🍽️ Distribuidor de mesas</button>
   <button class="b" id="bDeshacer" title="Deshacer (Ctrl+Z)">↶</button>
   <button class="b" id="bRehacer" title="Rehacer (Ctrl+Y)">↷</button>
   <button class="b" id="bAbrir" title="Abre una ludoteca guardada (.json)">📂 Abrir</button>
-  <button class="b p" id="bGuardar" title="Guarda juegos, estanterías y plano en un .json (Ctrl+S)">💾 Guardar</button>
+  <button class="b p" id="bGuardar" title="Guarda ya: en el archivo vinculado si lo hay; si no, descarga una copia .json (Ctrl+S)">💾 Guardar</button>
   <button class="b" id="bTema" title="Modo claro / oscuro">🌓</button>
 </header>
 <nav id="pestanas">
@@ -251,7 +278,7 @@ table.datos tr.vencido input[data-k=prestadoA], table.datos tr.vencido input[dat
       <select id="fCat"></select>
       <select id="fEstado"></select>
       <select id="fEst"></select>
-      <label><input type="checkbox" id="fPrest"> Solo prestados</label>
+      <select id="fDisp"><option value="">Disponibles y prestados</option><option value="disp">Solo disponibles</option><option value="prest">Solo prestados</option><option value="venc">Fuera de plazo</option><option value="inc">Con datos incompletos</option></select>
       <button class="b chico" id="bLimpiar">✕ Quitar filtros</button>
       <span class="hueco"></span>
     </div>
@@ -265,7 +292,7 @@ table.datos tr.vencido input[data-k=prestadoA], table.datos tr.vencido input[dat
       <button class="b chico" id="bExpCsvJ">⬇ Exportar CSV</button>
     </div>
     <div class="tablaWrap"><table class="datos" id="tabla"><colgroup id="cols"></colgroup><thead id="cabT"></thead><tbody id="cuerpoT"></tbody></table></div>
-    <p class="nota">Edita directamente en las celdas (Intro baja a la fila siguiente). Clic en la cabecera para ordenar. 📍 lleva el juego al plano. El <b>lomo</b> es el grosor de la caja colocada de canto: sirve para calcular cuánto ocupa cada balda (si está vacío se usan <span id="txtLomo">7</span> cm).</p>
+    <p class="nota">Edita directamente en las celdas (Intro baja a la fila siguiente) o abre la ficha completa con ✏️. Clic en la cabecera para ordenar. 📍 lleva el juego al plano. En <span style="background:#fdecec;padding:0 4px">rojo</span>, datos obligatorios que faltan o no cuadran; en <span style="background:#fff7e0;padding:0 4px">amarillo</span>, juegos aún sin estante o nivel. El <b>lomo</b> es el grosor de la caja colocada de canto: sirve para calcular cuánto ocupa cada balda (si está vacío se usan <span id="txtLomo">7</span> cm).</p>
     <datalist id="dlCat"></datalist><datalist id="dlEdit"></datalist><datalist id="dlIdioma"></datalist><datalist id="dlProp"></datalist>
   </div></section>
 
@@ -336,7 +363,8 @@ table.datos tr.vencido input[data-k=prestadoA], table.datos tr.vencido input[dat
       <div class="tarjeta"><h3>Prestar un juego</h3>
         <div class="campo" style="grid-template-columns:1fr"><input id="pJuego" list="dlLibres" placeholder="Juego (escribe para buscar)"></div>
         <div class="campo" style="grid-template-columns:1fr"><input id="pPersona" list="dlPersonas" placeholder="Socio / persona"></div>
-        <div class="campo"><label>Fecha</label><input type="date" id="pFecha"></div>
+        <div class="campo"><label>Fecha de entrega</label><input type="date" id="pFecha" style="width:140px"></div>
+        <div class="campo"><label>Fecha de devolución <small>(prevista)</small></label><input type="date" id="pDev" style="width:140px"></div>
         <div class="fila" style="justify-content:flex-end"><button class="b p" id="bPrestar">Prestar</button></div>
         <div class="campo" style="margin-top:14px"><label>Plazo de devolución <span class="u">(días)</span></label><input id="oDias"></div>
         <datalist id="dlLibres"></datalist><datalist id="dlPersonas"></datalist>
@@ -368,7 +396,7 @@ table.datos tr.vencido input[data-k=prestadoA], table.datos tr.vencido input[dat
       <div class="tarjeta"><h3>Ludoteca <span class="etq">.json propio</span></h3>
         <div class="accion"><div class="t"><b>Nueva</b><span>Vacía juegos, estanterías y préstamos (se queda el plano del club)</span></div><button class="b peligro" data-hacer="nuevo">Nueva</button></div>
         <div class="accion"><div class="t"><b>Abrir</b><span>Una ludoteca guardada, un trabajo del Distribuidor (solo el plano) o un plano compartido</span></div><button class="b" data-hacer="abrir">📂 Abrir…</button></div>
-        <div class="accion"><div class="t"><b>Guardar</b><span>Todo en un solo archivo .json (los DXF van dentro)</span></div><button class="b p" data-hacer="guardar">💾 Guardar</button></div>
+        <div class="accion"><div class="t"><b>Copia de seguridad</b><span>Descarga todo en un solo archivo .json (los DXF van dentro). Con «Abrir» se recupera.</span></div><button class="b p" data-hacer="guardar">⬇ Copia .json</button></div>
         <div class="accion"><div class="t"><b>Ejemplo</b><span>Un local de 14 × 9 m con 7 estanterías y 30 juegos, para probar</span></div><button class="b" data-hacer="ejemplo">Cargar ejemplo</button></div>
       </div>
       <div class="tarjeta"><h3>Importar</h3>
@@ -380,10 +408,17 @@ table.datos tr.vencido input[data-k=prestadoA], table.datos tr.vencido input[dat
         <div class="accion"><div class="t"><b>Listados en PDF</b><span>Inventario por estanterías, catálogo, préstamos y carteles</span></div><button class="b p" data-hacer="pdf">🖨️ PDF</button></div>
         <div class="accion"><div class="t"><b>Plano compartido</b><span>Plano + estanterías en un .json que abre el Distribuidor de Eventos (por si no van en la misma carpeta)</span></div><button class="b" data-hacer="plano">⬇ .json</button></div>
       </div>
+      <div class="tarjeta"><h3>Dónde se guardan los datos <span class="etq">base de datos</span></h3>
+        <p class="nota" style="margin:0 0 6px">Cada cambio se guarda solo en la <b>base de datos del navegador</b> (IndexedDB): no se pierde al recargar ni al cerrar. Además se hace una <b>copia diaria</b> (se guardan los 30 últimos días).</p>
+        <div class="accion"><div class="t"><b>Archivo vinculado</b><span id="txtArchivo">Para tener los datos también en una carpeta del ordenador (o en una carpeta sincronizada con la nube), vincula un archivo .json: cada cambio se escribe en él. Chrome y Edge.</span></div><button class="b p" id="bVincular">🔗 Vincular…</button></div>
+        <div class="accion"><div class="t"><b>Copias diarias</b><span>Para volver a como estaba un día concreto</span></div></div>
+        <div class="copias" id="listaCopias"></div>
+      </div>
       <div class="tarjeta"><h3>Opciones</h3>
         <div class="campo"><label>Lomo por defecto <span class="u">(cm)</span></label><input id="oLomo"></div>
         <div class="campo"><label>Acceso delante de una estantería nueva <span class="u">(cm)</span></label><input id="oAcceso"></div>
         <div class="campo" style="grid-template-columns:1fr 1.3fr"><label>Archivo del Distribuidor <small>(en la misma carpeta)</small></label><input id="oUrl"></div>
+        <div class="campo" style="grid-template-columns:1fr"><label>Condiciones de los juegos <small>(una por línea; se usan en la ficha y en los filtros)</small></label><textarea id="oCond" rows="7" class="ent" style="resize:vertical"></textarea></div>
       </div>
       <div class="tarjeta"><h3>Atajos del plano</h3>
         <p class="nota" style="margin:0;line-height:1.7">
@@ -401,6 +436,10 @@ table.datos tr.vencido input[data-k=prestadoA], table.datos tr.vencido input[dat
 <input type="file" id="fCsv" accept=".csv,.txt,.tsv" hidden>
 <div id="soltar">Suelta el archivo (.json, .csv o .dxf)</div>
 <div id="snack"></div>
+<dialog id="ficha"><div class="cabF"><h3 id="fichaTit">Juego</h3><span class="nota" id="fichaInfo" style="margin:0"></span></div>
+  <div class="cuerpoF"><form class="formF" id="formF" autocomplete="off" onsubmit="return false"></form></div>
+  <div class="pieF"><button class="b peligro" id="fBorrar">🗑 Eliminar</button><button class="b" id="fVerPlano">📍 Ver en el plano</button><span class="hueco"></span><button class="b" id="fCancelar">Cancelar</button><button class="b p" id="fGuardar">Guardar</button></div>
+</dialog>
 <dialog id="dlg"><h3 id="dlgTit"></h3><p id="dlgTxt" class="nota"></p><input id="dlgEnt" class="ent"><div class="fila"><button class="b" id="dlgNo">Cancelar</button><button class="b p" id="dlgSi">Aceptar</button></div></dialog>
 <script>
 /* ════════════════════════════════════════════════════════════════════
@@ -409,7 +448,7 @@ table.datos tr.vencido input[data-k=prestadoA], table.datos tr.vencido input[dat
    Comparte el plano con el Distribuidor de Eventos (mismas coordenadas)
    ════════════════════════════════════════════════════════════════════ */
 'use strict';
-const VERSION = '0.1', FORMATO = 'trabajo-Ludoteca', APP = 'Ludoteca', OTRA = 'Distribuidor de Eventos', FORMATO_OTRA = 'trabajo-Distribuidor-Eventos';
+const VERSION = '0.2', FORMATO = 'trabajo-Ludoteca', APP = 'Ludoteca', OTRA = 'Distribuidor de Eventos', FORMATO_OTRA = 'trabajo-Distribuidor-Eventos';
 const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const num = v => parseFloat(String(v).replace(',', '.'));
@@ -739,17 +778,21 @@ const PLANO_CLUB = {"nombre":"Avalon","dxfs":[{"id":"club-avalon","nombre":"Aval
 <script>
 // ════════════════ Estado ════════════════
 const norm = s => String(s == null ? '' : s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+const ahora = () => new Date().toISOString();
 const hoy = () => { const d = new Date(); return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); };
 const fFecha = s => s ? s.split('-').reverse().join('/') : '';
 const diasDesde = s => s ? Math.floor((new Date(hoy()) - new Date(s)) / 864e5) : 0;
-const ESTADOS = ['Nuevo', 'Bueno', 'Usado', 'Faltan piezas', 'Dañado', 'Retirado'];
+const sumaDias = (s, n) => { const d = new Date((s || hoy()) + 'T12:00:00'); d.setDate(d.getDate() + n); return d.toISOString().slice(0, 10); };
+const fHora = s => s ? new Date(s).toLocaleString('es-ES', { dateStyle: 'short', timeStyle: 'short' }) : '—';
+const CONDICIONES_DEF = ['Nuevo', 'Como nuevo', 'Bueno', 'Usado', 'Con desgaste', 'Faltan piezas', 'Dañado', 'Retirado'];
+const condiciones = () => (L.opc.condiciones && L.opc.condiciones.length ? L.opc.condiciones : CONDICIONES_DEF);
 // clave, título, tipo, ancho (px)
 const CAMPOS = [
-  ['cod', 'Cód.', 'txt', 62], ['titulo', 'Título', 'txt', 230], ['editorial', 'Editorial', 'txt', 120, 'dlEdit'], ['anio', 'Año', 'num', 56],
+  ['cod', 'Cód.', 'txt', 62], ['titulo', 'Juego', 'txt', 230], ['editorial', 'Editorial', 'txt', 120, 'dlEdit'], ['anio', 'Año', 'num', 56],
   ['jmin', 'Jug. mín.', 'num', 62], ['jmax', 'Jug. máx.', 'num', 64], ['dur', 'Duración (min)', 'num', 76], ['edad', 'Edad', 'num', 50],
-  ['cat', 'Categoría', 'txt', 120, 'dlCat'], ['idioma', 'Idioma', 'txt', 82, 'dlIdioma'], ['estado', 'Estado', 'estado', 112], ['prop', 'Propietario', 'txt', 110, 'dlProp'],
-  ['est', 'Estantería', 'est', 92], ['balda', 'Balda', 'num', 52], ['lomo', 'Lomo (cm)', 'num', 66],
-  ['prestadoA', 'Prestado a', 'txt', 115], ['fPrest', 'Desde', 'fecha', 122], ['notas', 'Notas', 'txt', 200],
+  ['cat', 'Categoría', 'txt', 120, 'dlCat'], ['idioma', 'Idioma', 'txt', 82, 'dlIdioma'], ['estado', 'Condición', 'estado', 118], ['prop', 'Dueño', 'txt', 110, 'dlProp'],
+  ['est', 'Estante', 'est', 92], ['balda', 'Nivel', 'num', 52], ['lomo', 'Lomo (cm)', 'num', 66],
+  ['prestadoA', 'Prestado a', 'txt', 115], ['fPrest', 'Entrega', 'fecha', 122], ['fDev', 'Devolución', 'fecha', 122], ['notas', 'Anotaciones', 'txt', 200],
 ];
 const NUMERICOS = new Set(CAMPOS.filter(c => c[2] === 'num').map(c => c[0]));
 const COLORES_EST = ['#b9814f', '#4a86c5', '#7b9e3a', '#a05ab4', '#c0504d', '#3a9e95'];
@@ -759,7 +802,7 @@ function estadoVacio() {
     juegos: [], estanterias: [], historial: [],
     plano: { dxfs: [], zonas: [], obst: [], puertas: [], pasillos: [], cotas: [] },
     externos: { origen: '', fecha: '', objetos: [] },
-    opc: { lomoDef: 7, diasPrestamo: 15, accesoDef: 90, url: 'distribuidor_eventos.html' }, sigCod: 1,
+    opc: { lomoDef: 7, diasPrestamo: 15, accesoDef: 90, url: 'distribuidor_eventos.html', condiciones: CONDICIONES_DEF.slice() }, sigCod: 1,
   };
 }
 let L = estadoVacio();
@@ -769,7 +812,25 @@ const estDe = id => L.estanterias.find(e => e.id === id);
 const juegoDe = id => L.juegos.find(j => j.id === id);
 const codEst = id => { const e = estDe(id); return e ? e.cod : ''; };
 function nuevoCod() { let c; do { c = String(L.sigCod++).padStart(3, '0'); } while (L.juegos.some(j => j.cod === c)); return c; }
-function juegoNuevo(o) { return Object.assign({ id: uid(), cod: nuevoCod(), titulo: '', editorial: '', anio: '', jmin: '', jmax: '', dur: '', edad: '', cat: '', idioma: '', estado: 'Bueno', prop: 'Asociación', est: '', balda: '', lomo: '', prestadoA: '', fPrest: '', notas: '' }, o || {}); }
+function juegoNuevo(o) { return Object.assign({ id: uid(), cod: nuevoCod(), titulo: '', editorial: '', anio: '', jmin: '', jmax: '', dur: '', edad: '', cat: '', idioma: '', estado: 'Bueno', prop: 'Asociación', est: '', balda: '', lomo: '', prestadoA: '', fPrest: '', fDev: '', notas: '', creado: ahora(), actualizado: ahora() }, o || {}); }
+
+/** Fuera de plazo: prestado y pasada la fecha de devolución prevista (o el plazo, si no hay fecha). */
+const vencido = j => !!j.prestadoA && (j.fDev ? j.fDev < hoy() : diasDesde(j.fPrest) > L.opc.diasPrestamo);
+const tocado = j => { j.actualizado = ahora(); if (!j.creado) j.creado = j.actualizado; };
+const entero = v => v !== '' && v != null && Number.isInteger(+v) && +v > 0;
+/** Comprueba un juego. errores: obligatorios que faltan o no cuadran · faltas: aún sin estante o nivel. Clave → texto. */
+function validar(j) {
+  const err = {}, falta = {};
+  if (!String(j.titulo || '').trim()) err.titulo = 'Escribe el nombre del juego';
+  if (!entero(j.jmin)) err.jmin = 'Número entero mayor que 0';
+  if (!entero(j.jmax)) err.jmax = 'Número entero mayor que 0';
+  else if (entero(j.jmin) && +j.jmax < +j.jmin) err.jmax = 'Tiene que ser mayor o igual que el mínimo';
+  if (!String(j.prop || '').trim()) err.prop = '«Asociación» o el nombre del socio';
+  if (!String(j.estado || '').trim()) err.estado = 'Elige la condición';
+  if (j.fPrest && j.fDev && j.fDev < j.fPrest) err.fDev = 'No puede ser anterior a la entrega';
+  if (!j.est) falta.est = 'Sin estante'; else if (!(+j.balda >= 1)) falta.balda = 'Sin nivel';
+  return { err, falta, ok: !Object.keys(err).length, completo: !Object.keys(err).length && !Object.keys(falta).length };
+}
 
 // ════════════════ Deshacer ════════════════
 const pilaDeshacer = [], pilaRehacer = [];
@@ -777,10 +838,10 @@ const fotoEstado = () => JSON.stringify(L);
 let ultimaFoto = null;
 function guardarPaso() {
   if (ultimaFoto !== null) { pilaDeshacer.push(ultimaFoto); if (pilaDeshacer.length > 60) pilaDeshacer.shift(); pilaRehacer.length = 0; }
-  ultimaFoto = fotoEstado(); botonesDeshacer();
+  ultimaFoto = fotoEstado(); botonesDeshacer(); programarGuardado();
 }
-function deshacer() { if (!pilaDeshacer.length) return; pilaRehacer.push(fotoEstado()); L = JSON.parse(pilaDeshacer.pop()); ultimaFoto = fotoEstado(); trasCambioTotal(); }
-function rehacer() { if (!pilaRehacer.length) return; pilaDeshacer.push(fotoEstado()); L = JSON.parse(pilaRehacer.pop()); ultimaFoto = fotoEstado(); trasCambioTotal(); }
+function deshacer() { if (!pilaDeshacer.length) return; pilaRehacer.push(fotoEstado()); L = JSON.parse(pilaDeshacer.pop()); ultimaFoto = fotoEstado(); trasCambioTotal(); programarGuardado(); }
+function rehacer() { if (!pilaRehacer.length) return; pilaDeshacer.push(fotoEstado()); L = JSON.parse(pilaRehacer.pop()); ultimaFoto = fotoEstado(); trasCambioTotal(); programarGuardado(); }
 function botonesDeshacer() { $('bDeshacer').disabled = !pilaDeshacer.length; $('bRehacer').disabled = !pilaRehacer.length; }
 
 // ════════════════ Estanterías: geometría y ocupación ════════════════
@@ -1252,6 +1313,7 @@ function soltarEn(j, e, b) {
   if (!j) return;
   if (!e) { ubicar(j, null); snack('«' + j.titulo + '» queda sin ubicar'); }
   else { ubicar(j, e, b || null); snack('«' + j.titulo + '» → ' + e.cod + ' · balda ' + j.balda); }
+  tocado(j);
   guardarPaso(); pintarEst(); pintarProps(); listaSin();
 }
 svg.addEventListener('dragover', e => { if (arrJuego) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; } });
@@ -1277,7 +1339,7 @@ function rellenarFiltros() {
   const cats = [...new Set(L.juegos.map(j => j.cat).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'es'));
   const fc = v('fCat'), fe = v('fEstado'), fs = v('fEst');
   $('fCat').innerHTML = '<option value="">Todas las categorías</option>' + cats.map(c => `<option ${c === fc ? 'selected' : ''}>${esc(c)}</option>`).join('');
-  $('fEstado').innerHTML = '<option value="">Cualquier estado</option>' + ESTADOS.map(c => `<option ${c === fe ? 'selected' : ''}>${c}</option>`).join('');
+  $('fEstado').innerHTML = '<option value="">Cualquier condición</option>' + condiciones().map(c => `<option ${c === fe ? 'selected' : ''}>${esc(c)}</option>`).join('');
   $('fEst').innerHTML = opcionesEst(fs, 'Cualquier estantería') + `<option value="__sin" ${fs === '__sin' ? 'selected' : ''}>(sin estantería)</option>`;
   $('selMover').innerHTML = opcionesEst('', '→ estantería…');
   const dl = (id, k) => $(id).innerHTML = [...new Set(L.juegos.map(j => j[k]).filter(Boolean))].sort().map(x => `<option value="${esc(x)}">`).join('');
@@ -1285,7 +1347,7 @@ function rellenarFiltros() {
 }
 function juegosFiltrados() {
   const q = norm($('fTexto').value.trim()), nj = num($('fJug').value), dm = num($('fDur').value);
-  const cat = $('fCat').value, es = $('fEstado').value, est = $('fEst').value, pr = $('fPrest').checked;
+  const cat = $('fCat').value, es = $('fEstado').value, est = $('fEst').value, disp = $('fDisp').value;
   const r = L.juegos.filter(j => {
     if (j.id === NUEVO) return true;
     if (q && !norm([j.cod, j.titulo, j.editorial, j.cat, j.notas, j.prop, j.prestadoA, j.idioma].join(' ')).includes(q)) return false;
@@ -1294,7 +1356,10 @@ function juegosFiltrados() {
     if (cat && j.cat !== cat) return false;
     if (es && j.estado !== es) return false;
     if (est === '__sin' ? j.est : (est && j.est !== est)) return false;
-    if (pr && !j.prestadoA) return false;
+    if (disp === 'disp' && j.prestadoA) return false;
+    if (disp === 'prest' && !j.prestadoA) return false;
+    if (disp === 'venc' && !vencido(j)) return false;
+    if (disp === 'inc' && validar(j).completo) return false;
     return true;
   });
   const k = ORDEN.k, d = ORDEN.dir;
@@ -1310,27 +1375,36 @@ function juegosFiltrados() {
 }
 function celda(j, c) {
   const [k, , tipo, , dl] = c, v = j[k] == null ? '' : j[k];
-  if (tipo === 'estado') return `<td><select data-k="${k}">${ESTADOS.map(e => `<option ${e === v ? 'selected' : ''}>${e}</option>`).join('')}</select></td>`;
+  const lista = condiciones().includes(v) || !v ? condiciones() : condiciones().concat([v]);
+  if (tipo === 'estado') return `<td><select data-k="${k}">${v ? '' : '<option value=""></option>'}${lista.map(e => `<option ${e === v ? 'selected' : ''}>${esc(e)}</option>`).join('')}</select></td>`;
   if (tipo === 'est') return `<td title="${esc((estDe(v) || {}).nombre || '')}"><select data-k="${k}">${opcionesEst(v, '—', true)}</select></td>`;
   if (tipo === 'fecha') return `<td><input type="date" data-k="${k}" value="${esc(v)}"></td>`;
   return `<td><input data-k="${k}" value="${esc(v)}" ${tipo === 'num' ? 'inputmode="decimal" style="text-align:right"' : ''} ${dl ? `list="${dl}"` : ''}></td>`;
 }
 function pintarTabla() {
   rellenarFiltros();
-  $('tabla').style.width = (70 + CAMPOS.reduce((s, c) => s + c[3], 0)) + 'px';
-  $('cols').innerHTML = '<col style="width:30px">' + CAMPOS.map(c => `<col style="width:${c[3]}px">`).join('') + '<col style="width:40px">';
-  $('cabT').innerHTML = '<tr><th title="Marcar todos los visibles"><input type="checkbox" id="marcaTodo"></th>' + CAMPOS.map(c => `<th data-k="${c[0]}" class="${ORDEN.k === c[0] ? 'ord' + (ORDEN.dir < 0 ? ' desc' : '') : ''}" title="Ordenar por ${c[1]}">${c[1]}</th>`).join('') + '<th title="Ver en el plano">📍</th></tr>';
-  const lista = juegosFiltrados(), dias = L.opc.diasPrestamo;
-  $('cuerpoT').innerHTML = lista.map(j => `<tr data-id="${j.id}" class="${MARCA.has(j.id) ? 'marcada' : ''} ${j.prestadoA ? 'prest' : ''} ${j.prestadoA && diasDesde(j.fPrest) > dias ? 'vencido' : ''}"><td class="ctr"><input type="checkbox" data-m ${MARCA.has(j.id) ? 'checked' : ''}></td>${CAMPOS.map(c => celda(j, c)).join('')}<td class="ctr"><button data-plano title="Ver en el plano">📍</button></td></tr>`).join('')
+  $('tabla').style.width = (94 + CAMPOS.reduce((s, c) => s + c[3], 0)) + 'px';
+  $('cols').innerHTML = '<col style="width:30px">' + CAMPOS.map(c => `<col style="width:${c[3]}px">`).join('') + '<col style="width:64px">';
+  $('cabT').innerHTML = '<tr><th title="Marcar todos los visibles"><input type="checkbox" id="marcaTodo"></th>' + CAMPOS.map(c => `<th data-k="${c[0]}" class="${ORDEN.k === c[0] ? 'ord' + (ORDEN.dir < 0 ? ' desc' : '') : ''}" title="Ordenar por ${c[1]}">${c[1]}</th>`).join('') + '<th title="Ficha y plano"></th></tr>';
+  const lista = juegosFiltrados();
+  $('cuerpoT').innerHTML = lista.map(j => `<tr data-id="${j.id}" class="${MARCA.has(j.id) ? 'marcada' : ''} ${j.prestadoA ? 'prest' : ''} ${vencido(j) ? 'vencido' : ''}"><td class="ctr"><input type="checkbox" data-m ${MARCA.has(j.id) ? 'checked' : ''}></td>${CAMPOS.map(c => celda(j, c)).join('')}<td class="ctr"><button data-ficha title="Ficha completa: ver, editar o eliminar">✏️</button><button data-plano title="Ver en el plano">📍</button></td></tr>`).join('')
     || `<tr><td colspan="${CAMPOS.length + 2}" style="padding:18px;text-align:center;color:var(--sec)">${L.juegos.length ? 'Ningún juego cumple los filtros' : 'Aún no hay juegos. Pulsa ＋ Juego, importa un CSV o carga el ejemplo (Archivo).'}</td></tr>`;
   $('marcaTodo').checked = lista.length > 0 && lista.every(j => MARCA.has(j.id));
   $('marcaTodo').onchange = e => { for (const j of lista) e.target.checked ? MARCA.add(j.id) : MARCA.delete(j.id); pintarTabla(); };
   $('txtMarcados').textContent = MARCA.size ? MARCA.size + ' marcados' : lista.length + ' de ' + L.juegos.length + ' juegos';
+  document.querySelectorAll('#cuerpoT tr[data-id]').forEach(tr => marcarFila(tr, juegoDe(tr.dataset.id)));
   kpis();
 }
+/** Pinta en rojo/amarillo las celdas con datos que faltan o no cuadran */
+function marcarFila(tr, j) {
+  const v = validar(j);
+  tr.querySelectorAll('[data-k]').forEach(i => { const k = i.dataset.k, td = i.parentElement; td.classList.toggle('err', !!v.err[k]); td.classList.toggle('falta', !!v.falta[k]); td.title = v.err[k] || v.falta[k] || (k === 'est' ? ((estDe(j.est) || {}).nombre || '') : ''); });
+  tr.classList.toggle('prest', !!j.prestadoA); tr.classList.toggle('vencido', vencido(j));
+}
 function kpis() {
-  const n = L.juegos.length, ub = L.juegos.filter(j => j.est).length, pr = L.juegos.filter(j => j.prestadoA), ve = pr.filter(j => diasDesde(j.fPrest) > L.opc.diasPrestamo).length;
-  $('kpis').innerHTML = `<div><b>${n}</b>juegos</div><div><b>${ub}</b>en estanterías</div><div><b>${n - ub}</b>sin ubicar</div><div><b>${L.estanterias.length}</b>estanterías</div><div><b>${pr.length}</b>prestados${ve ? ` · <span class="mal">${ve} fuera de plazo</span>` : ''}</div>`;
+  const n = L.juegos.length, ub = L.juegos.filter(j => j.est).length, pr = L.juegos.filter(j => j.prestadoA), ve = pr.filter(vencido).length, inc = L.juegos.filter(j => !validar(j).completo).length;
+  $('kpis').innerHTML = `<div><b>${n}</b>juegos</div><div><b>${n - pr.length}</b>disponibles</div><div><b>${pr.length}</b>prestados${ve ? ` · <span class="mal">${ve} fuera de plazo</span>` : ''}</div><div><b>${ub}</b>en estanterías · ${n - ub} sin ubicar</div><div><b>${L.estanterias.length}</b>estanterías</div>${inc ? `<div style="cursor:pointer" id="kInc" title="Ver cuáles"><b class="mal">${inc}</b>con datos incompletos</div>` : ''}`;
+  const ki = $('kInc'); if (ki) ki.onclick = () => { limpiarFiltros(); $('fDisp').value = 'inc'; pintarTabla(); };
 }
 $('cabT').addEventListener('click', e => { const th = e.target.closest('th[data-k]'); if (!th) return; const k = th.dataset.k; ORDEN = { k, dir: ORDEN.k === k ? -ORDEN.dir : 1 }; NUEVO = null; pintarTabla(); });
 $('cuerpoT').addEventListener('change', e => {
@@ -1341,10 +1415,11 @@ $('cuerpoT').addEventListener('change', e => {
   if (k === 'cod' && v && L.juegos.some(x => x !== j && x.cod === v)) snack('Ojo: el código ' + v + ' ya lo tiene otro juego');
   if (k === 'est') { ubicar(j, v ? estDe(v) : null); const b = tr.querySelector('[data-k=balda]'); if (b) b.value = j.balda; }
   else j[k] = v;
-  if (k === 'prestadoA' && v && !j.fPrest) { j.fPrest = hoy(); tr.querySelector('[data-k=fPrest]').value = j.fPrest; }
-  if (k === 'prestadoA' || k === 'fPrest') { tr.classList.toggle('prest', !!j.prestadoA); tr.classList.toggle('vencido', !!j.prestadoA && diasDesde(j.fPrest) > L.opc.diasPrestamo); }
-  if (k === 'prestadoA' && !v && j.fPrest) { L.historial.unshift({ juego: j.id, titulo: j.titulo, persona: e.target.defaultValue, desde: j.fPrest, hasta: hoy() }); j.fPrest = ''; tr.querySelector('[data-k=fPrest]').value = ''; }
-  guardarPaso(); kpis();
+  if (k === 'prestadoA' && v && !e.target.defaultValue) { j.fPrest = j.fPrest && j.fPrest >= (j.fDev || '') ? j.fPrest : hoy(); j.fDev = sumaDias(j.fPrest, L.opc.diasPrestamo); tr.querySelector('[data-k=fPrest]').value = j.fPrest; tr.querySelector('[data-k=fDev]').value = j.fDev; }
+  if (k === 'prestadoA' && !v && e.target.defaultValue) { L.historial.unshift({ juego: j.id, titulo: j.titulo, persona: e.target.defaultValue, desde: j.fPrest, prevista: j.fDev, hasta: hoy() }); j.fDev = hoy(); tr.querySelector('[data-k=fDev]').value = j.fDev; }
+  e.target.defaultValue = e.target.value;
+  const vv = validar(j); if (vv.err[k]) snack('⚠ ' + vv.err[k]);
+  tocado(j); marcarFila(tr, j); guardarPaso(); kpis();
   if (['cat', 'editorial', 'idioma', 'prop'].includes(k)) rellenarFiltros();
 });
 $('cuerpoT').addEventListener('keydown', e => {
@@ -1354,20 +1429,20 @@ $('cuerpoT').addEventListener('keydown', e => {
   e.preventDefault(); e.target.dispatchEvent(new Event('change', { bubbles: true }));
   if (sig) { const i = sig.querySelector(`[data-k="${k}"]`); if (i) { i.focus(); if (i.select) i.select(); } }
 });
-$('cuerpoT').addEventListener('click', e => { if (e.target.dataset.plano == null) return; const j = juegoDe(e.target.closest('tr').dataset.id); if (j) verEnPlano(j); });
-function nuevoJuegoTabla() {
-  const j = juegoNuevo(); L.juegos.push(j); NUEVO = j.id; guardarPaso(); pintarTabla();
-  const i = document.querySelector(`tr[data-id="${j.id}"] [data-k=titulo]`); if (i) { i.focus(); i.closest('.tablaWrap').scrollTop = 0; }
-}
-function limpiarFiltros() { ['fTexto', 'fJug', 'fDur', 'fCat', 'fEstado', 'fEst'].forEach(id => $(id).value = ''); $('fPrest').checked = false; NUEVO = null; }
+$('cuerpoT').addEventListener('click', e => {
+  const tr = e.target.closest('tr[data-id]'); if (!tr) return; const j = juegoDe(tr.dataset.id); if (!j) return;
+  if (e.target.dataset.plano != null) verEnPlano(j); else if (e.target.dataset.ficha != null) abrirFicha(j);
+});
+function nuevoJuegoTabla() { abrirFicha(null); }
+function limpiarFiltros() { ['fTexto', 'fJug', 'fDur', 'fCat', 'fEstado', 'fEst', 'fDisp'].forEach(id => $(id).value = ''); NUEVO = null; }
 $('bNuevoJuego').onclick = nuevoJuegoTabla;
 $('bLimpiar').onclick = () => { limpiarFiltros(); pintarTabla(); };
 ['fTexto', 'fJug', 'fDur'].forEach(id => $(id).addEventListener('input', () => { NUEVO = null; pintarTabla(); }));
-['fCat', 'fEstado', 'fEst', 'fPrest'].forEach(id => $(id).addEventListener('change', () => { NUEVO = null; pintarTabla(); }));
+['fCat', 'fEstado', 'fEst', 'fDisp'].forEach(id => $(id).addEventListener('change', () => { NUEVO = null; pintarTabla(); }));
 $('bMover').onclick = () => {
   if (!MARCA.size) { snack('Marca primero los juegos (casilla de la izquierda)'); return; }
   const e = estDe($('selMover').value);
-  for (const id of MARCA) { const j = juegoDe(id); if (j) ubicar(j, e || null); }
+  for (const id of MARCA) { const j = juegoDe(id); if (j) { ubicar(j, e || null); tocado(j); } }
   snack(MARCA.size + ' juegos ' + (e ? '→ ' + e.cod : 'sin estantería')); MARCA.clear(); guardarPaso(); pintarTabla();
 };
 $('bBorrarMarcados').onclick = async () => {
@@ -1393,14 +1468,15 @@ function parseCsv(t) {
   return filas;
 }
 const ALIAS = {
-  cod: ['cod', 'codigo', 'id', 'n', 'no', 'num', 'numero', 'inventario', 'ref', 'referencia'], titulo: ['titulo', 'nombre', 'juego', 'objectname', 'name', 'title'],
+  cod: ['cod', 'codigo', 'id', 'n', 'no', 'num', 'numero', 'inventario', 'ref', 'referencia'], titulo: ['titulo', 'nombre', 'juego', 'nombredeljuego', 'objectname', 'name', 'title'],
   editorial: ['editorial', 'publisher', 'editor', 'editora'], anio: ['ano', 'anio', 'year', 'yearpublished', 'publicado'],
-  jmin: ['jugmin', 'jugadoresmin', 'minjugadores', 'minplayers', 'min', 'jugadoresminimo', 'minimojugadores'], jmax: ['jugmax', 'jugadoresmax', 'maxjugadores', 'maxplayers', 'max', 'jugadoresmaximo', 'maximojugadores'],
+  jmin: ['jugmin', 'jugadoresmin', 'minjugadores', 'minplayers', 'min', 'jugadoresminimo', 'minimojugadores', 'minimodejugadores'], jmax: ['jugmax', 'jugadoresmax', 'maxjugadores', 'maxplayers', 'max', 'jugadoresmaximo', 'maximojugadores', 'maximodejugadores'],
   jug: ['jugadores', 'players', 'njugadores', 'numjugadores'], dur: ['duracion', 'duracionmin', 'tiempo', 'minutos', 'playingtime', 'maxplaytime', 'duration'],
   edad: ['edad', 'edadmin', 'minage', 'age', 'edadminima'], cat: ['categoria', 'tipo', 'genero', 'category', 'categorias'], idioma: ['idioma', 'language', 'lengua'],
-  estado: ['estado', 'condicion', 'condition'], prop: ['propietario', 'dueno', 'cedido', 'cedidopor', 'owner', 'procedencia'],
-  est: ['estanteria', 'estante', 'ubicacion', 'mueble', 'lugar'], balda: ['balda', 'estantes', 'nivel', 'piso', 'shelf'], lomo: ['lomo', 'lomocm', 'grosor', 'ancho'],
-  prestadoA: ['prestadoa', 'prestado', 'prestamo'], fPrest: ['desde', 'fechaprestamo', 'fecha'], notas: ['notas', 'observaciones', 'comentarios', 'comment', 'comentario'],
+  estado: ['estado', 'condicion', 'condiciondeljuego', 'condition'], prop: ['propietario', 'dueno', 'duenodeljuego', 'cedido', 'cedidopor', 'owner', 'procedencia'],
+  est: ['estanteria', 'estante', 'ubicacion', 'mueble', 'lugar'], balda: ['balda', 'estantes', 'nivel', 'niveldeestante', 'piso', 'shelf'], lomo: ['lomo', 'lomocm', 'grosor', 'ancho'],
+  prestadoA: ['prestadoa', 'prestado', 'prestamo'], fPrest: ['desde', 'entrega', 'fechadeentrega', 'fechaentrega', 'fechaprestamo', 'fecha'], fDev: ['devolucion', 'fechadedevolucion', 'fechadevolucion', 'hasta'],
+  notas: ['notas', 'anotaciones', 'anotacionesextra', 'observaciones', 'comentarios', 'comment', 'comentario'],
 };
 const claveCab = h => { const n = norm(h).replace(/[^a-z0-9]/g, ''); for (const k in ALIAS) if (ALIAS[k].includes(n)) return k; return null; };
 function leerFechaCsv(s) { s = String(s || '').trim(); let m = s.match(/^(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{2,4})$/); if (m) return (m[3].length === 2 ? '20' + m[3] : m[3]) + '-' + m[2].padStart(2, '0') + '-' + m[1].padStart(2, '0'); m = s.match(/^\d{4}-\d{2}-\d{2}/); return m ? m[0] : ''; }
@@ -1418,8 +1494,9 @@ async function importarCsv(file) {
       if (o.jug) { const m = o.jug.match(/(\d+)\s*(?:-|–|a|al|\/)\s*(\d+)/); if (m) { o.jmin = o.jmin || m[1]; o.jmax = o.jmax || m[2]; } else if (/^\d+$/.test(o.jug)) { o.jmin = o.jmin || o.jug; o.jmax = o.jmax || o.jug; } delete o.jug; }
       if (yaEsta(o.titulo, o.editorial)) { rep++; continue; }
       for (const k of NUMERICOS) if (o[k] != null) { const v = num(o[k]); o[k] = isFinite(v) ? v : ''; }
-      if (o.estado) { const e = ESTADOS.find(e => norm(e) === norm(o.estado)); o.estado = e || o.estado; }
+      if (o.estado) { const e = condiciones().find(e => norm(e) === norm(o.estado)); if (e) o.estado = e; else L.opc.condiciones = condiciones().concat([o.estado]); }
       if (o.fPrest) o.fPrest = leerFechaCsv(o.fPrest);
+      if (o.fDev) o.fDev = leerFechaCsv(o.fDev);
       let e = null;
       if (o.est) {
         e = L.estanterias.find(x => norm(x.cod) === norm(o.est) || norm(x.nombre) === norm(o.est));
@@ -1436,8 +1513,8 @@ async function importarCsv(file) {
 }
 function csvCelda(v) { v = v == null ? '' : String(v); return /[;"\n\r]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; }
 function exportarCsv() {
-  const lin = [CAMPOS.map(c => c[1]).join(';')];
-  for (const j of L.juegos.slice().sort((a, b) => a.titulo.localeCompare(b.titulo, 'es'))) lin.push(CAMPOS.map(c => csvCelda(c[0] === 'est' ? codEst(j.est) : c[2] === 'num' && j[c[0]] !== '' ? String(j[c[0]]).replace('.', ',') : c[0] === 'fPrest' ? fFecha(j.fPrest) : j[c[0]])).join(';'));
+  const lin = [CAMPOS.map(c => c[1]).concat(['ID', 'Creado', 'Actualizado']).join(';')];
+  for (const j of L.juegos.slice().sort((a, b) => a.titulo.localeCompare(b.titulo, 'es'))) lin.push(CAMPOS.map(c => csvCelda(c[0] === 'est' ? codEst(j.est) : c[2] === 'num' && j[c[0]] !== '' ? String(j[c[0]]).replace('.', ',') : c[2] === 'fecha' ? fFecha(j[c[0]]) : j[c[0]])).concat([j.id, fHora(j.creado), fHora(j.actualizado)]).join(';'));
   descargar('﻿' + lin.join('\r\n'), nombreArchivo(L.nombre) + '_juegos.csv', 'text/csv;charset=utf-8');
 }
 $('bImpCsvJ').onclick = () => $('fCsv').click();
@@ -1447,27 +1524,30 @@ $('fCsv').onchange = e => { if (e.target.files[0]) importarCsv(e.target.files[0]
 // ════════════════ Préstamos ════════════════
 const etiquetaJuego = j => j.cod + ' · ' + j.titulo;
 function pintarPrestamos() {
-  $('pFecha').value = $('pFecha').value || hoy(); $('oDias').value = L.opc.diasPrestamo;
+  $('pFecha').value = $('pFecha').value || hoy(); $('pDev').value = $('pDev').value || sumaDias($('pFecha').value, L.opc.diasPrestamo); $('oDias').value = L.opc.diasPrestamo;
   $('dlLibres').innerHTML = L.juegos.filter(j => !j.prestadoA && j.estado !== 'Retirado').map(j => `<option value="${esc(etiquetaJuego(j))}">`).join('');
   $('dlPersonas').innerHTML = [...new Set(L.juegos.map(j => j.prestadoA).concat(L.historial.map(h => h.persona)).filter(Boolean))].sort().map(p => `<option value="${esc(p)}">`).join('');
   const pr = L.juegos.filter(j => j.prestadoA).sort((a, b) => (a.fPrest || '').localeCompare(b.fPrest || ''));
   $('nPrest').textContent = pr.length;
-  $('tablaPrest').innerHTML = pr.length ? `<table class="tablaP"><thead><tr><th>Juego</th><th>Persona</th><th>Desde</th><th>Días</th><th></th></tr></thead><tbody>${pr.map(j => { const d = diasDesde(j.fPrest), v = d > L.opc.diasPrestamo; return `<tr><td><b>${esc(j.titulo)}</b> <small style="color:var(--sec)">${esc(j.cod)}${j.est ? ' · ' + esc(ubicacionTxt(j)) : ''}</small></td><td>${esc(j.prestadoA)}</td><td>${fFecha(j.fPrest)}</td><td class="${v ? 'mal' : ''}"><b>${d}</b>${v ? ' ⚠' : ''}</td><td><button class="b chico" data-dev="${j.id}">↩ Devuelto</button></td></tr>`; }).join('')}</tbody></table>` : '<p class="nota" style="margin:0">No hay ningún juego prestado.</p>';
-  $('tablaHist').innerHTML = L.historial.length ? `<table class="tablaP"><thead><tr><th>Juego</th><th>Persona</th><th>Desde</th><th>Devuelto</th><th>Días</th></tr></thead><tbody>${L.historial.slice(0, 300).map(h => `<tr><td>${esc(h.titulo)}</td><td>${esc(h.persona)}</td><td>${fFecha(h.desde)}</td><td>${fFecha(h.hasta)}</td><td>${h.desde && h.hasta ? Math.round((new Date(h.hasta) - new Date(h.desde)) / 864e5) : ''}</td></tr>`).join('')}</tbody></table>${L.historial.length > 300 ? '<p class="nota">Se muestran los 300 últimos.</p>' : ''}` : '<p class="nota" style="margin:0">Aún no hay devoluciones.</p>';
+  $('tablaPrest').innerHTML = pr.length ? `<table class="tablaP"><thead><tr><th>Juego</th><th>Persona</th><th>Entrega</th><th>Devolución</th><th>Días</th><th></th></tr></thead><tbody>${pr.map(j => { const d = diasDesde(j.fPrest), v = vencido(j); return `<tr><td><b>${esc(j.titulo)}</b> <small style="color:var(--sec)">${esc(j.cod)}${j.est ? ' · ' + esc(ubicacionTxt(j)) : ''}</small></td><td>${esc(j.prestadoA)}</td><td>${fFecha(j.fPrest)}</td><td class="${v ? 'mal' : ''}">${fFecha(j.fDev) || '—'}${v ? ' ⚠' : ''}</td><td><b>${d}</b></td><td><button class="b chico" data-dev="${j.id}">↩ Devuelto</button></td></tr>`; }).join('')}</tbody></table>` : '<p class="nota" style="margin:0">No hay ningún juego prestado.</p>';
+  $('tablaHist').innerHTML = L.historial.length ? `<table class="tablaP"><thead><tr><th>Juego</th><th>Persona</th><th>Entrega</th><th>Prevista</th><th>Devuelto</th><th>Días</th></tr></thead><tbody>${L.historial.slice(0, 300).map(h => `<tr><td>${esc(h.titulo)}</td><td>${esc(h.persona)}</td><td>${fFecha(h.desde)}</td><td>${fFecha(h.prevista) || '—'}</td><td class="${h.prevista && h.hasta > h.prevista ? 'mal' : ''}">${fFecha(h.hasta)}</td><td>${h.desde && h.hasta ? Math.round((new Date(h.hasta) - new Date(h.desde)) / 864e5) : ''}</td></tr>`).join('')}</tbody></table>${L.historial.length > 300 ? '<p class="nota">Se muestran los 300 últimos.</p>' : ''}` : '<p class="nota" style="margin:0">Aún no hay devoluciones.</p>';
 }
 $('bPrestar').onclick = () => {
   const t = $('pJuego').value.trim(), per = $('pPersona').value.trim();
   const j = L.juegos.find(j => etiquetaJuego(j) === t) || L.juegos.find(j => norm(j.titulo) === norm(t) && !j.prestadoA);
   if (!j) { snack('Elige un juego de la lista'); return; } if (!per) { snack('¿A quién se lo prestas?'); return; }
   if (j.prestadoA) { snack('Ese juego ya está prestado a ' + j.prestadoA); return; }
-  j.prestadoA = per; j.fPrest = $('pFecha').value || hoy(); $('pJuego').value = ''; $('pPersona').value = '';
+  const fe = $('pFecha').value || hoy(), fd = $('pDev').value || sumaDias(fe, L.opc.diasPrestamo);
+  if (fd < fe) { snack('La fecha de devolución no puede ser anterior a la de entrega'); return; }
+  j.prestadoA = per; j.fPrest = fe; j.fDev = fd; tocado(j); $('pJuego').value = ''; $('pPersona').value = ''; $('pDev').value = '';
   guardarPaso(); pintarPrestamos(); snack('«' + j.titulo + '» prestado a ' + per);
 };
 $('tablaPrest').addEventListener('click', e => {
   const id = e.target.dataset.dev; if (!id) return; const j = juegoDe(id);
-  L.historial.unshift({ juego: j.id, titulo: j.titulo, persona: j.prestadoA, desde: j.fPrest, hasta: hoy() });
-  j.prestadoA = ''; j.fPrest = ''; guardarPaso(); pintarPrestamos(); snack('«' + j.titulo + '» devuelto' + (j.est ? ': va a ' + ubicacionTxt(j) : ''));
+  L.historial.unshift({ juego: j.id, titulo: j.titulo, persona: j.prestadoA, desde: j.fPrest, prevista: j.fDev, hasta: hoy() });
+  j.prestadoA = ''; j.fDev = hoy(); tocado(j); guardarPaso(); pintarPrestamos(); snack('«' + j.titulo + '» devuelto' + (j.est ? ': va a ' + ubicacionTxt(j) : ''));
 });
+$('pFecha').onchange = () => { $('pDev').value = sumaDias($('pFecha').value, L.opc.diasPrestamo); };
 $('oDias').onchange = e => { const n = num(e.target.value); if (n > 0) { L.opc.diasPrestamo = Math.round(n); guardarPaso(); pintarPrestamos(); } };
 
 // ════════════════ Listados (PDF) ════════════════
@@ -1477,7 +1557,7 @@ function svgPlanoImpresion(anchoPx) {
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="${r1(x0)} ${r1(-y0 - h)} ${r1(w)} ${r1(h)}" width="${anchoPx}" height="${Math.round(anchoPx * h / w)}" style="max-height:230mm"><g transform="scale(1,-1)">${svgDxf('#8a96a3')}${svgFondo(true)}${svgEstanterias(true)}</g>${textosEstanterias('#1c2733', '#ffffff')}</svg>`;
 }
 function filaJuego(j, conUbic) { return `<tr><td>${esc(j.cod)}</td><td><b>${esc(j.titulo)}</b>${j.editorial ? ' <span style="color:#6b7684">· ' + esc(j.editorial) + '</span>' : ''}</td><td class="n">${j.jmin || j.jmax ? esc(j.jmin || '?') + (j.jmax && j.jmax !== j.jmin ? '–' + esc(j.jmax) : '') : ''}</td><td class="n">${j.dur ? esc(j.dur) + "'" : ''}</td><td>${esc(j.cat)}</td>${conUbic ? `<td>${esc(ubicacionTxt(j))}</td>` : ''}<td>${esc(j.estado)}${j.prestadoA ? ' · <b>prestado</b>' : ''}</td></tr>`; }
-const cabJuegos = u => `<tr><th>Cód.</th><th>Título</th><th class="n">Jug.</th><th class="n">Dur.</th><th>Categoría</th>${u ? '<th>Ubicación</th>' : ''}<th>Estado</th></tr>`;
+const cabJuegos = u => `<tr><th>Cód.</th><th>Juego</th><th class="n">Jug.</th><th class="n">Dur.</th><th>Categoría</th>${u ? '<th>Ubicación</th>' : ''}<th>Condición</th></tr>`;
 function construirListado() {
   const n = L.juegos.length, f = new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
   let h = `<h1>${esc(L.nombre)}</h1><div class="sub">Ludoteca · ${f}</div>
@@ -1499,7 +1579,7 @@ function construirListado() {
   if ($('lCat').checked) h += `<h2 class="salto">Catálogo alfabético</h2><table>${cabJuegos(true)}${L.juegos.slice().sort((a, b) => a.titulo.localeCompare(b.titulo, 'es')).map(j => filaJuego(j, true)).join('')}</table>`;
   if ($('lPre').checked) {
     const pr = L.juegos.filter(j => j.prestadoA);
-    h += `<h2>Préstamos</h2>` + (pr.length ? `<table><tr><th>Juego</th><th>Persona</th><th>Desde</th><th class="n">Días</th></tr>${pr.map(j => `<tr><td>${esc(j.titulo)}</td><td>${esc(j.prestadoA)}</td><td>${fFecha(j.fPrest)}</td><td class="n" style="${diasDesde(j.fPrest) > L.opc.diasPrestamo ? 'color:#d84343;font-weight:700' : ''}">${diasDesde(j.fPrest)}</td></tr>`).join('')}</table>` : '<p style="color:#6b7684">No hay juegos prestados.</p>');
+    h += `<h2>Préstamos</h2>` + (pr.length ? `<table><tr><th>Juego</th><th>Persona</th><th>Entrega</th><th>Devolución</th><th class="n">Días</th></tr>${pr.map(j => `<tr><td>${esc(j.titulo)}</td><td>${esc(j.prestadoA)}</td><td>${fFecha(j.fPrest)}</td><td style="${vencido(j) ? 'color:#d84343;font-weight:700' : ''}">${fFecha(j.fDev)}</td><td class="n">${diasDesde(j.fPrest)}</td></tr>`).join('')}</table>` : '<p style="color:#6b7684">No hay juegos prestados.</p>');
   }
   if ($('lEtq').checked) for (const e of ests) {
     const js = juegosDe(e);
@@ -1602,16 +1682,18 @@ $('bImpPlano').onclick = () => $('fPlano').click();
 $('fPlano').onchange = e => { if (e.target.files[0]) abrirTrabajo(e.target.files[0]); e.target.value = ''; };
 
 // ════════════════ Archivo ════════════════
-function leerOpc() { $('oLomo').value = fmt(L.opc.lomoDef, 1); $('oAcceso').value = fmt(L.opc.accesoDef); $('oUrl').value = L.opc.url || ''; }
+function leerOpc() { $('oLomo').value = fmt(L.opc.lomoDef, 1); $('oAcceso').value = fmt(L.opc.accesoDef); $('oUrl').value = L.opc.url || ''; $('oCond').value = condiciones().join('\n'); pintarCopias(); }
+$('oCond').onchange = e => { const l = [...new Set(e.target.value.split('\n').map(x => x.trim()).filter(Boolean))]; if (!l.length) { leerOpc(); return; } L.opc.condiciones = l; guardarPaso(); snack(l.length + ' condiciones'); };
 $('oLomo').onchange = e => { const n = num(e.target.value); if (n > 0) { L.opc.lomoDef = n; guardarPaso(); $('txtLomo').textContent = fmt(n, 1); } };
 $('oAcceso').onchange = e => { const n = leerLargo(e.target.value); if (n >= 0) { L.opc.accesoDef = n; guardarPaso(); } };
 $('oUrl').onchange = e => { L.opc.url = e.target.value.trim() || 'distribuidor_eventos.html'; guardarPaso(); };
-function guardarTrabajo() {
+function guardarTrabajo(descargarSiempre) {
   L.nombre = $('nombreTrabajo').value;
+  if (!descargarSiempre && BD.archivo && BD.estadoArchivo === 'ok') { guardarYa().then(() => snack('Guardado en ' + BD.archivo.name)); return; }
   const o = JSON.parse(JSON.stringify(L)); o.fecha = new Date().toISOString(); o.dxfEnts = {};
   for (const d of P().dxfs) o.dxfEnts[d.id] = ENTS[d.id] || [];
-  descargar(JSON.stringify(o), nombreArchivo(L.nombre) + '.json', 'application/json');
-  snack('Ludoteca guardada');
+  descargar(JSON.stringify(o), nombreArchivo(L.nombre) + '_' + hoy() + '.json', 'application/json');
+  snack('Copia descargada (los datos ya están guardados en el navegador)');
 }
 function cargarEstado(o) {
   for (const k in ENTS) delete ENTS[k];
@@ -1619,6 +1701,7 @@ function cargarEstado(o) {
   delete o.dxfEnts; delete o.fecha;
   const base = estadoVacio(); L = Object.assign(base, o); L.opc = Object.assign(estadoVacio().opc, o.opc || {}); L.plano = Object.assign(estadoVacio().plano, o.plano || {});
   L.plano.dxfs = L.plano.dxfs.filter(d => ENTS[d.id]);
+  for (const j of L.juegos) { if (j.fDev == null) j.fDev = ''; if (!j.creado) j.creado = j.actualizado = ahora(); }
 }
 async function abrirTrabajo(file) {
   try {
@@ -1665,21 +1748,22 @@ function cargarEjemplo() {
   const ec = c => L.estanterias.find(e => e.cod === c);
   L.juegos = D.map(d => juegoNuevo({ titulo: d[0], editorial: d[1], anio: d[2], jmin: d[3], jmax: d[4], dur: d[5], edad: d[6], cat: d[7], idioma: 'Español', est: d[8] ? ec(d[8]).id : '', balda: d[9], lomo: d[10] }));
   const cod = t => L.juegos.find(j => j.titulo === t);
-  Object.assign(cod('Wingspan'), { prestadoA: 'Marta', fPrest: hoy() });
+  Object.assign(cod('Wingspan'), { prestadoA: 'Marta', fPrest: hoy(), fDev: sumaDias(hoy(), 15) });
   const viejo = new Date(Date.now() - 20 * 864e5).toISOString().slice(0, 10);
-  Object.assign(cod('Catan'), { prestadoA: 'Jordi', fPrest: viejo });
+  Object.assign(cod('Catan'), { prestadoA: 'Jordi', fPrest: viejo, fDev: sumaDias(viejo, 15) });
+  Object.assign(cod('Dixit'), { prop: 'Laura (socia)', estado: 'Como nuevo', notas: 'Con la expansión Odisea' });
   Object.assign(cod('Saboteur'), { estado: 'Faltan piezas', notas: 'Faltan 2 cartas de camino' });
   MARCA.clear(); SEL = null; pilaDeshacer.length = 0; pilaRehacer.length = 0; ultimaFoto = null; guardarPaso();
   ajustarVista.hecho = false; trasCambioTotal(); verPestana('plano'); ajustarVista();
   snack('Ejemplo cargado: arrastra «Exploding Kittens» a una estantería, o busca un juego arriba a la derecha', 6000);
 }
-$('bGuardar').onclick = guardarTrabajo;
+$('bGuardar').onclick = () => guardarTrabajo();
 $('bAbrir').onclick = () => $('fTrabajo').click();
 $('fTrabajo').onchange = e => { if (e.target.files[0]) abrirTrabajo(e.target.files[0]); e.target.value = ''; };
 $('bDeshacer').onclick = deshacer; $('bRehacer').onclick = rehacer;
 $('nombreTrabajo').addEventListener('change', e => { L.nombre = e.target.value; guardarPaso(); });
 document.querySelectorAll('[data-hacer]').forEach(b => b.onclick = () => ({
-  nuevo: nuevoTrabajo, abrir: () => $('fTrabajo').click(), guardar: guardarTrabajo, ejemplo: cargarEjemplo,
+  nuevo: nuevoTrabajo, abrir: () => $('fTrabajo').click(), guardar: () => guardarTrabajo(true), ejemplo: cargarEjemplo,
   impDxf: () => $('fDxf').click(), impCsv: () => $('fCsv').click(), csv: exportarCsv, plano: exportarPlanoCompartido,
   pdf: () => { verPestana('listados'); $('bPdf').click(); },
 })[b.dataset.hacer]());
@@ -1700,7 +1784,184 @@ addEventListener('drop', e => {
   const cs = fs.find(f => /\.(csv|txt|tsv)$/i.test(f.name)); if (cs) importarCsv(cs);
 });
 
-// Copia automática en el navegador
+
+// ════════════════ Ficha del juego (ver, editar, eliminar) ════════════════
+let FICHA = null; // { j: copia en edición, nuevo }
+const CAMPOS_FICHA = [
+  ['h', 'Juego'], ['titulo', 'Juego', 'txt', 'doble', 1], ['cod', 'Código', 'txt'], ['editorial', 'Editorial', 'txt', '', 0, 'dlEdit'],
+  ['jmin', 'Mínimo de jugadores', 'int', '', 1], ['jmax', 'Máximo de jugadores', 'int', '', 1], ['dur', 'Duración (min)', 'num'], ['edad', 'Edad mínima', 'num'],
+  ['cat', 'Categoría', 'txt', '', 0, 'dlCat'], ['idioma', 'Idioma', 'txt', '', 0, 'dlIdioma'], ['anio', 'Año', 'num'], ['lomo', 'Lomo de la caja (cm)', 'num'],
+  ['h', 'Dueño y condición'], ['prop', 'Dueño del juego', 'txt', 'doble', 1, 'dlProp'], ['estado', 'Condición del juego', 'cond', 'doble', 1],
+  ['h', 'Ubicación'], ['est', 'Estante #', 'est', 'doble', 1], ['balda', 'Nivel de estante (balda)', 'nivel', 'doble', 1],
+  ['h', 'Préstamo'], ['prestadoA', 'Prestado a', 'txt', 'doble', 0, 'dlPersonas'], ['fPrest', 'Fecha de entrega', 'fecha'], ['fDev', 'Fecha de devolución', 'fecha'],
+  ['h', 'Anotaciones'], ['notas', 'Anotaciones extra (expansiones, fundas, piezas, estado de la caja…)', 'area', 'entera'],
+];
+function abrirFicha(j) {
+  const nuevo = !j;
+  FICHA = { nuevo, id: j ? j.id : null, j: JSON.parse(JSON.stringify(j || juegoNuevo({ prop: 'Asociación', estado: condiciones().includes('Bueno') ? 'Bueno' : condiciones()[0] }))) };
+  $('fichaTit').textContent = nuevo ? 'Juego nuevo' : (j.titulo || '(sin título)');
+  $('fichaInfo').innerHTML = nuevo ? 'Los campos con <span class="mal">*</span> son obligatorios' : `ID ${esc(j.id)} · creado ${fHora(j.creado)} · cambiado ${fHora(j.actualizado)}`;
+  $('fBorrar').hidden = nuevo; $('fVerPlano').hidden = nuevo;
+  pintarFicha(); $('ficha').showModal();
+  const t = $('formF').querySelector('[name=titulo]'); if (t) { t.focus(); t.select(); }
+}
+function pintarFicha(errores) {
+  const j = FICHA.j, v = errores || { err: {}, falta: {} };
+  const e = estDe(j.est), personas = [...new Set(L.juegos.map(x => x.prestadoA).concat(L.historial.map(h => h.persona)).filter(Boolean))];
+  $('dlPersonas').innerHTML = personas.sort().map(p => `<option value="${esc(p)}">`).join('');
+  let h = '';
+  for (const [k, t, tipo, ancho, req, dl] of CAMPOS_FICHA) {
+    if (k === 'h') { h += `<h4>${t}</h4>`; continue; }
+    const val = j[k] == null ? '' : j[k], m = v.err[k] || v.falta[k] || '';
+    let ctl;
+    if (tipo === 'cond') { const l = condiciones().includes(val) || !val ? condiciones() : condiciones().concat([val]); ctl = `<select name="${k}">${val ? '' : '<option value="">— elige —</option>'}${l.map(c => `<option ${c === val ? 'selected' : ''}>${esc(c)}</option>`).join('')}</select>`; }
+    else if (tipo === 'est') ctl = `<select name="est">${opcionesEst(val, '— sin estante —')}<option value="__nuevo">＋ Estante nuevo…</option></select>`;
+    else if (tipo === 'nivel') ctl = `<select name="balda" ${e ? '' : 'disabled'}><option value="">${e ? '— elige —' : 'Elige antes el estante'}</option>${e ? Array.from({ length: e.baldas }, (_, i) => `<option value="${i + 1}" ${+val === i + 1 ? 'selected' : ''}>${i + 1}${i === 0 ? ' (arriba)' : i + 1 === e.baldas ? ' (abajo)' : ''} · ${fmt(ocupBalda(e, i + 1))}/${fmt(e.w)} cm</option>`).join('') : ''}</select>`;
+    else if (tipo === 'fecha') ctl = `<input type="date" name="${k}" value="${esc(val)}">`;
+    else if (tipo === 'area') ctl = `<textarea name="${k}">${esc(val)}</textarea>`;
+    else ctl = `<input name="${k}" value="${esc(val)}" ${tipo === 'int' ? 'type="number" min="1" step="1"' : tipo === 'num' ? 'inputmode="decimal"' : ''} ${dl ? `list="${dl}"` : ''}>`;
+    h += `<label class="${ancho || ''} ${v.err[k] ? 'malF' : ''}"><b>${t}${req ? ' <span class="req">*</span>' : ''}</b>${ctl}<span class="msj" style="${v.falta[k] && !v.err[k] ? 'color:var(--aviso)' : ''}">${esc(m)}</span></label>`;
+  }
+  if (!FICHA.nuevo) {
+    const hs = L.historial.filter(x => x.juego === FICHA.id).slice(0, 8);
+    if (hs.length) h += `<h4>Préstamos anteriores</h4><div class="entera nota" style="margin:0">${hs.map(x => `${esc(x.persona)}: ${fFecha(x.desde)} → ${fFecha(x.hasta)}`).join(' · ')}</div>`;
+  }
+  $('formF').innerHTML = h;
+}
+function leerFicha() {
+  const j = FICHA.j;
+  $('formF').querySelectorAll('[name]').forEach(i => { const k = i.name; let v = i.value.trim(); if (k === 'est' && v === '__nuevo') return; if (NUMERICOS.has(k) || k === 'balda') v = v === '' ? '' : (isFinite(num(v)) ? num(v) : v); j[k] = v; });
+  return j;
+}
+$('formF').addEventListener('change', async e => {
+  const n = e.target.name; leerFicha();
+  if (n === 'est' && e.target.value === '__nuevo') {
+    const c = await preguntar('Estante nuevo', 'Código del estante (p. ej. E8). Se crea con 100 × 40 cm y 5 baldas, fuera del plano: colócalo después en 🗺️ Plano.', nuevoCodEst());
+    if (c && c.trim()) {
+      const ex = L.estanterias.find(x => norm(x.cod) === norm(c.trim()));
+      if (ex) FICHA.j.est = ex.id;
+      else { const b = cajaTodo() || { x1: 0, y0: 0 }; const ne = { id: uid(), cod: c.trim().slice(0, 12), nombre: '', x: b.x1 + 150, y: b.y0 + 50, w: 100, f: 40, rot: 0, baldas: 5, acc: L.opc.accesoDef, color: COLORES_EST[L.estanterias.length % COLORES_EST.length] }; L.estanterias.push(ne); FICHA.j.est = ne.id; }
+    }
+    FICHA.j.balda = '';
+  }
+  if (n === 'est') { const es = estDe(FICHA.j.est); if (es && !(+FICHA.j.balda >= 1 && +FICHA.j.balda <= es.baldas)) { const t = FICHA.j.est; FICHA.j.est = ''; FICHA.j.balda = baldaLibre(es, FICHA.j); FICHA.j.est = t; } if (!es) FICHA.j.balda = ''; }
+  if (n === 'prestadoA' && FICHA.j.prestadoA && !juegoDe(FICHA.id || '_')?.prestadoA) { if (!FICHA.j.fPrest || FICHA.j.fPrest < (FICHA.j.fDev || '')) FICHA.j.fPrest = hoy(); FICHA.j.fDev = sumaDias(FICHA.j.fPrest, L.opc.diasPrestamo); }
+  if (n === 'fPrest' && FICHA.j.prestadoA && !FICHA.j.fDev) FICHA.j.fDev = sumaDias(FICHA.j.fPrest, L.opc.diasPrestamo);
+  if (['est', 'prestadoA', 'fPrest'].includes(n)) pintarFicha(validar(FICHA.j));
+});
+$('fGuardar').onclick = () => {
+  const j = leerFicha(), v = validar(j);
+  if (!v.ok) { pintarFicha(v); snack('Revisa los campos en rojo'); return; }
+  if (j.cod && L.juegos.some(x => x.id !== j.id && x.cod === j.cod)) { snack('El código ' + j.cod + ' ya lo tiene otro juego'); return; }
+  const antes = FICHA.nuevo ? null : juegoDe(FICHA.id);
+  if (antes && antes.prestadoA && !j.prestadoA) L.historial.unshift({ juego: j.id, titulo: j.titulo, persona: antes.prestadoA, desde: antes.fPrest, prevista: antes.fDev, hasta: j.fDev && j.fDev >= (antes.fPrest || '') ? j.fDev : hoy() });
+  tocado(j);
+  if (FICHA.nuevo) { L.juegos.push(j); NUEVO = j.id; } else Object.assign(antes, j);
+  $('ficha').close(); guardarPaso(); trasCambioTotal();
+  snack((FICHA.nuevo ? 'Añadido: ' : 'Guardado: ') + j.titulo + (v.completo ? '' : ' · falta ' + Object.values(v.falta).join(', ').toLowerCase()));
+};
+$('fCancelar').onclick = () => $('ficha').close();
+$('ficha').addEventListener('keydown', e => { if (e.key === 'Enter' && e.ctrlKey) $('fGuardar').click(); });
+$('fBorrar').onclick = async () => {
+  const j = juegoDe(FICHA.id); if (!j) return;
+  $('ficha').close();
+  if (!await preguntar('Eliminar juego', `¿Eliminar <b>${esc(j.titulo)}</b> (${esc(j.cod)}) de la base de datos?${j.prestadoA ? '<br><span class="mal">Ahora mismo está prestado a ' + esc(j.prestadoA) + '.</span>' : ''}<br><br>Se puede recuperar con Ctrl+Z o desde las copias diarias.`, null)) { $('ficha').showModal(); return; }
+  L.juegos = L.juegos.filter(x => x !== j); MARCA.delete(j.id); guardarPaso(); trasCambioTotal(); snack('Eliminado: ' + j.titulo);
+};
+$('fVerPlano').onclick = () => { const j = juegoDe(FICHA.id); $('ficha').close(); if (j) verEnPlano(j); };
+
+// ════════════════ Base de datos del navegador (IndexedDB) y archivo vinculado ════════════════
+/* Almacén «datos»: 'actual' = la ludoteca entera (mismo formato que el .json); 'archivo' = el archivo vinculado.
+   Almacén «copias»: una copia por día (AAAA-MM-DD), las 30 últimas. */
+const BD = { db: null, archivo: null, estadoArchivo: '', pendiente: false, ultimo: null, error: '' };
+function abrirBD() {
+  return new Promise(ok => {
+    try {
+      const r = indexedDB.open('eloiaasoft-ludoteca', 1);
+      r.onupgradeneeded = () => { const d = r.result; if (!d.objectStoreNames.contains('datos')) d.createObjectStore('datos'); if (!d.objectStoreNames.contains('copias')) d.createObjectStore('copias'); };
+      r.onsuccess = () => { BD.db = r.result; ok(BD.db); };
+      r.onerror = () => ok(null); r.onblocked = () => ok(null);
+    } catch (e) { ok(null); }
+  });
+}
+function bd(store, modo, fn) {
+  return new Promise(ok => {
+    if (!BD.db) return ok(undefined);
+    try { const t = BD.db.transaction(store, modo), r = fn(t.objectStore(store)); t.oncomplete = () => ok(r && 'result' in r ? r.result : true); t.onerror = () => ok(undefined); } catch (e) { ok(undefined); }
+  });
+}
+const bdGet = (s, k) => bd(s, 'readonly', o => o.get(k));
+const bdPut = (s, k, v) => bd(s, 'readwrite', o => o.put(v, k));
+const bdDel = (s, k) => bd(s, 'readwrite', o => o.delete(k));
+const bdClaves = s => bd(s, 'readonly', o => o.getAllKeys());
+function paquete() {
+  L.nombre = $('nombreTrabajo').value;
+  const o = JSON.parse(JSON.stringify(L)); o.fecha = ahora(); o.dxfEnts = {};
+  for (const d of P().dxfs) o.dxfEnts[d.id] = ENTS[d.id] || [];
+  return o;
+}
+let tGuardado = null, arrancado = false;
+function programarGuardado() { if (!arrancado) return; BD.pendiente = true; pintarEstGuardado(); clearTimeout(tGuardado); tGuardado = setTimeout(guardarYa, 500); }
+async function guardarYa() {
+  clearTimeout(tGuardado);
+  const o = paquete();
+  const ok = await bdPut('datos', 'actual', o);
+  BD.error = ok ? '' : 'No se ha podido guardar en el navegador';
+  if (ok) {
+    await bdPut('copias', hoy(), o);
+    const ks = (await bdClaves('copias') || []).sort(); for (const k of ks.slice(0, Math.max(0, ks.length - 30))) await bdDel('copias', k);
+  }
+  if (BD.archivo && BD.estadoArchivo === 'ok') {
+    try { const w = await BD.archivo.createWritable(); await w.write(JSON.stringify(o)); await w.close(); }
+    catch (e) { BD.estadoArchivo = 'permiso'; console.warn(e); }
+  }
+  copiaAuto();
+  BD.pendiente = false; BD.ultimo = new Date(); pintarEstGuardado();
+  if (pestana === 'archivo') pintarCopias();
+}
+function pintarEstGuardado() {
+  const s = $('estGuardado'); if (!s) return;
+  const t = BD.ultimo ? BD.ultimo.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) : '';
+  let txt, cls;
+  if (!BD.db) { txt = '⚠ Sin base de datos: guarda copias .json'; cls = 'mal'; }
+  else if (BD.error) { txt = '⚠ ' + BD.error; cls = 'mal'; }
+  else if (BD.pendiente) { txt = 'Guardando…'; cls = 'pend'; }
+  else if (BD.archivo && BD.estadoArchivo !== 'ok') { txt = '⚠ Archivo sin conectar: pulsa aquí'; cls = 'mal'; }
+  else { txt = '✔ Guardado' + (t ? ' ' + t : '') + (BD.archivo ? ' · ' + BD.archivo.name : ''); cls = 'ok'; }
+  s.textContent = txt; s.className = 'ver ' + cls;
+  const ta = $('txtArchivo');
+  if (ta) ta.innerHTML = BD.archivo ? `Vinculado a <b>${esc(BD.archivo.name)}</b>${BD.estadoArchivo === 'ok' ? ': cada cambio se escribe en él.' : ' · <span class="mal">hay que volver a dar permiso</span>.'} <a href="#" id="desvincular">Desvincular</a>`
+    : (window.showSaveFilePicker ? 'Para tener los datos también en una carpeta del ordenador (o una carpeta sincronizada con la nube), vincula un archivo .json: cada cambio se escribe en él.' : 'Este navegador no deja escribir en archivos (usa Chrome o Edge). Haz copias con «⬇ Copia .json».');
+  const b = $('bVincular'); if (b) { b.textContent = BD.archivo && BD.estadoArchivo !== 'ok' ? '🔓 Dar permiso' : '🔗 Vincular…'; b.disabled = !window.showSaveFilePicker; }
+  const dv = $('desvincular'); if (dv) dv.onclick = async e => { e.preventDefault(); BD.archivo = null; BD.estadoArchivo = ''; await bdDel('datos', 'archivo'); pintarEstGuardado(); };
+}
+async function vincularArchivo() {
+  try {
+    if (BD.archivo && BD.estadoArchivo !== 'ok') {
+      if (await BD.archivo.requestPermission({ mode: 'readwrite' }) === 'granted') { BD.estadoArchivo = 'ok'; await guardarYa(); snack('Archivo conectado: ' + BD.archivo.name); }
+      return;
+    }
+    const h = await window.showSaveFilePicker({ suggestedName: nombreArchivo(L.nombre) + '.json', types: [{ description: 'Ludoteca (.json)', accept: { 'application/json': ['.json'] } }] });
+    BD.archivo = h; BD.estadoArchivo = 'ok'; await bdPut('datos', 'archivo', h); await guardarYa();
+    snack('Vinculado: cada cambio se guarda también en ' + h.name, 5000);
+  } catch (e) { if (e.name !== 'AbortError') snack('No se ha podido vincular: ' + e.message); }
+}
+async function pintarCopias() {
+  const c = $('listaCopias'); if (!c) return;
+  const ks = ((await bdClaves('copias')) || []).sort().reverse();
+  c.innerHTML = ks.length ? ks.map(k => `<div><span>${fFecha(k)}${k === hoy() ? ' (hoy)' : ''}</span><button class="b chico" data-copia="${k}">Restaurar</button><button class="b chico" data-bajar="${k}" title="Descargar esta copia">⬇</button></div>`).join('') : '<p class="nota" style="margin:0">Aún no hay copias.</p>';
+}
+$('listaCopias').addEventListener('click', async e => {
+  const k = e.target.dataset.copia || e.target.dataset.bajar; if (!k) return;
+  const o = await bdGet('copias', k); if (!o) return;
+  if (e.target.dataset.bajar) { descargar(JSON.stringify(o), nombreArchivo(o.nombre) + '_' + k + '.json', 'application/json'); return; }
+  if (!await preguntar('Restaurar copia', `¿Volver a como estaba la ludoteca el <b>${fFecha(k)}</b> (${(o.juegos || []).length} juegos)? Lo de ahora se puede recuperar con Ctrl+Z.`, null)) return;
+  cargarEstado(JSON.parse(JSON.stringify(o))); MARCA.clear(); SEL = null; guardarPaso(); ajustarVista.hecho = false; trasCambioTotal(); snack('Restaurada la copia del ' + fFecha(k));
+});
+$('bVincular').onclick = vincularArchivo;
+$('estGuardado').onclick = () => { if (BD.archivo && BD.estadoArchivo !== 'ok') vincularArchivo(); else verPestana('archivo'); };
+
+// Copia en localStorage (la lee el Distribuidor con «📥 Traer estanterías»)
 function copiaAuto() {
   try {
     const o = JSON.parse(JSON.stringify(L)); o.dxfEnts = {}; let tam = 0;
@@ -1709,20 +1970,23 @@ function copiaAuto() {
     localStorage.setItem('ludo_auto', JSON.stringify(o));
   } catch (e) {}
 }
-setInterval(copiaAuto, 15000);
-addEventListener('beforeunload', copiaAuto);
+addEventListener('beforeunload', e => { if (BD.pendiente) { guardarYa(); e.preventDefault(); e.returnValue = ''; } });
 
 // ════════════════ Arranque ════════════════
-(function iniciar() {
+(async function iniciar() {
   try { if (localStorage.getItem('dev_tema') === 'o') document.body.classList.add('oscuro'); } catch (e) {}
   $('verPrograma').textContent = 'v' + VERSION;
   let recuperado = false;
-  try { const a = localStorage.getItem('ludo_auto'); if (a) { const o = JSON.parse(a); if (o.formato === FORMATO && (o.juegos.length || o.estanterias.length)) { cargarEstado(o); recuperado = true; } } } catch (e) {}
+  await abrirBD();
+  try { const o = await bdGet('datos', 'actual'); if (o && o.formato === FORMATO) { cargarEstado(o); recuperado = true; } } catch (e) {}
+  if (!recuperado) try { const a = localStorage.getItem('ludo_auto'); if (a) { const o = JSON.parse(a); if (o.formato === FORMATO && (o.juegos.length || o.estanterias.length)) { cargarEstado(o); recuperado = true; } } } catch (e) {}
+  try { const h = await bdGet('datos', 'archivo'); if (h) { BD.archivo = h; BD.estadoArchivo = (h.queryPermission && await h.queryPermission({ mode: 'readwrite' })) === 'granted' ? 'ok' : 'permiso'; } } catch (e) {}
   if (planoVacio(P())) aplicarPlanoClub(); // sin plano: se empieza con el del club
   guardarPaso(); ponerHerr('sel');
   let v = 'juegos'; try { v = localStorage.getItem('ludo_pestana') || 'juegos'; } catch (e) {}
   trasCambioTotal(); verPestana(v);
-  if (recuperado) snack('Recuperada la última ludoteca de este navegador (Archivo → Nueva para empezar de cero)');
+  arrancado = true; if (!recuperado) await guardarYa(); else { BD.ultimo = null; pintarEstGuardado(); }
+  if (BD.archivo && BD.estadoArchivo !== 'ok') snack('Para seguir guardando en ' + BD.archivo.name + ', pulsa el aviso de arriba y da permiso', 7000);
   // ¿Nos ha abierto el Distribuidor? Pedimos el plano; si no llega, se mira el buzón de localStorage
   if (window.opener) { try { window.opener.postMessage({ eloiaasoft: 'listo', app: APP }, '*'); } catch (e) {} }
   setTimeout(() => {
