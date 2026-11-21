@@ -2,7 +2,7 @@
 
 Dos programas para una asociación de juegos de mesa que comparten el mismo plano del local:
 
-- **Ludoteca** (`ludoteca.html`): base de datos de los juegos, estanterías colocadas sobre el plano, préstamos y listados.
+- **Ludoteca** (`ludoteca.html`): control de los juegos del club (de quién es cada uno y en qué estante y nivel está), con fotos de portada, etiquetas QR, estanterías sobre el plano y listados.
 - **Distribuidor de Eventos** (`distribuidor_eventos.html`): reparto de mesas, sillas y personas en la sala para jornadas y torneos.
 
 **Web:** https://eloiaa-hub.github.io/ludoteca/
@@ -14,7 +14,7 @@ Son archivos HTML de un solo fichero: funcionan sin instalar nada y sin internet
 | Archivo | Qué es |
 |---|---|
 | `index.html` | Página principal |
-| `ludoteca.html` | Ludoteca v0.2 |
+| `ludoteca.html` | Ludoteca v0.3 |
 | `manual_ludoteca.html` / `.pdf` | Manual de la Ludoteca: instalación, uso y cómo está hecho |
 | `distribuidor_eventos.html` | Distribuidor de Eventos v0.3 |
 | `manual_distribuidor_eventos.html` / `.pdf` | Manual del Distribuidor de Eventos (v0.3) |
@@ -23,11 +23,14 @@ Son archivos HTML de un solo fichero: funcionan sin instalar nada y sin internet
 
 ## Ludoteca
 
-- **Juegos:** ficha de cada juego (juego, mínimo y máximo de jugadores, dueño, condición, estante #, nivel de estante, fecha de entrega, fecha de devolución y anotaciones, más editorial, duración, edad, categoría, idioma y lomo) con campos obligatorios y comprobaciones (máximo ≥ mínimo, devolución ≥ entrega). Cada juego tiene un ID único y fechas de creación y de último cambio. Tabla editable como una hoja de cálculo, búsqueda por nombre o dueño, filtros por jugadores, duración, condición, estante y disponibilidad. Importa CSV de Excel/LibreOffice o de BoardGameGeek y exporta CSV.
-- **Datos:** se guardan solos en la base de datos del navegador (IndexedDB), con una copia por día (30 días) y, en Chrome/Edge, también en un archivo `.json` vinculado de tu carpeta. Copias `.json` y CSV cuando quieras.
+- **Juegos:** ficha de cada juego con foto de portada: juego, mínimo y máximo de jugadores, dueño (la Asociación o el socio que lo cede), condición, fecha de entrega al club, fecha de devolución al dueño, estante #, nivel y anotaciones, más editorial, duración, edad, categoría, idioma y lomo. Campos obligatorios y comprobaciones (máximo ≥ mínimo, devolución ≥ entrega). ID único y fechas de creación y de último cambio. Tabla editable como una hoja de cálculo, búsqueda, filtros por jugadores, duración, condición, estante, dueño y situación (en el club / devuelto).
+- **Fotos de portada:** desde un archivo, la cámara del móvil, arrastrando la imagen o pegándola. Salen en la tabla, la ficha, los listados y el Excel.
+- **Etiquetas QR** (21 por A4, 63 × 38 mm): al escanearlas se abre la ficha del juego; en un móvil sin datos se ve su dueño y su estante.
+- **Excel (.xlsx) con fotos**, CSV y copia completa en `.json`. Importa CSV de Excel/LibreOffice o de BoardGameGeek.
+- **Datos:** se guardan solos en la base de datos del navegador (IndexedDB), con una copia por día (30 días) y, en Chrome/Edge, también en un archivo `.json` vinculado de tu carpeta.
 - **Plano y estanterías:** DXF del local, estanterías con largo, fondo, baldas, giro y zona de acceso delante; imán entre estanterías; ocupación de cada balda según el lomo de las cajas; arrastrar juegos a una estantería o balda; buscador «¿Dónde está…?».
-- **Préstamos:** fecha de entrega y de devolución prevista, avisos de retraso e historial con la fecha real.
-- **Listados en PDF:** plano, inventario por estantería y balda, catálogo alfabético, préstamos y carteles de estantería.
+- **Listados en PDF:** plano, inventario por estantería y nivel, juegos por dueño, catálogo alfabético y carteles de estantería.
+- **Préstamos a socios (opcional):** ocultos por defecto; se activan en Archivo → Opciones.
 
 ## Instalación
 
@@ -47,6 +50,6 @@ Los dos programas trabajan en centímetros con el eje Y hacia arriba y leen el D
 
 ## Licencia
 
-Programas: [EUPL-1.2](https://eupl.eu/1.2/es/) · Manual: [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/deed.es)
+Programas: [EUPL-1.2](https://eupl.eu/1.2/es/) · Manuales: [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/deed.es) · La Ludoteca incluye [qrcode-generator](https://github.com/kazuhikoarase/qrcode-generator) de Kazuhiko Arase (MIT)
 
 © 2026 Eloi A.A.
