@@ -17,6 +17,7 @@ Son archivos HTML de un solo fichero: funcionan sin instalar nada y sin internet
 | `ludoteca.html` | Ludoteca v0.1 |
 | `distribuidor_eventos.html` | Distribuidor de Eventos v0.3 |
 | `manual_distribuidor_eventos.html` / `.pdf` | Manual del Distribuidor (v0.2) |
+| `planos/AVALON-SALAS-COLORES.dxf` | Plano del local de la asociación (planta baja y altillo, en metros, zonas por colores) |
 | `ejemplos/sala_prueba.dxf` | Un DXF sencillo para probar |
 
 ## Ludoteca
@@ -25,6 +26,10 @@ Son archivos HTML de un solo fichero: funcionan sin instalar nada y sin internet
 - **Plano y estanterías:** DXF del local, estanterías con largo, fondo, baldas, giro y zona de acceso delante; imán entre estanterías; ocupación de cada balda según el lomo de las cajas; arrastrar juegos a una estantería o balda; buscador «¿Dónde está…?».
 - **Préstamos:** con plazo, avisos de retraso e historial.
 - **Listados en PDF:** plano, inventario por estantería y balda, catálogo alfabético, préstamos y carteles de estantería.
+
+## Plano del club
+
+Los dos programas llevan dentro el plano de **Avalon** (planta baja y altillo) y empiezan con él la primera vez. Las 6 zonas de color del plano son las zonas útiles. Para volver a ponerlo: **🏠 Plano del club**. El DXF original está en `planos/`.
 
 ## Plano compartido
 
