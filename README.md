@@ -17,7 +17,7 @@ Son archivos HTML de un solo fichero: funcionan sin instalar nada y sin internet
 | `ludoteca.html` | Ludoteca v0.2 |
 | `manual_ludoteca.html` / `.pdf` | Manual de la Ludoteca: instalación, uso y cómo está hecho |
 | `distribuidor_eventos.html` | Distribuidor de Eventos v0.3 |
-| `manual_distribuidor_eventos.html` / `.pdf` | Manual del Distribuidor (v0.2) |
+| `manual_distribuidor_eventos.html` / `.pdf` | Manual del Distribuidor de Eventos (v0.3) |
 | `planos/AVALON-SALAS-COLORES.dxf` | Plano del local de la asociación (planta baja y altillo, en metros, zonas por colores) |
 | `ejemplos/sala_prueba.dxf` | Un DXF sencillo para probar |
 
