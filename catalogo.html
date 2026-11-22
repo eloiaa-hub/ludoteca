@@ -108,7 +108,11 @@ footer a { color: var(--sec); }
 /* ════════════════════════════════════════════════════════════════════
    Catálogo de juegos (versión para lectores de la Ludoteca)
    © 2026 Eloi A.A. — EUPL-1.2
-   Lee catalogo.json, que publica el editor (ludoteca.html → Publicar para lectores).
+   Lee el catálogo, por este orden:
+     1. ?datos=<url> (para pruebas)
+     2. la rama «datos» del repositorio, donde lo guarda el editor conectado a GitHub:
+        https://raw.githubusercontent.com/<usuario>/<repo>/datos/datos/catalogo.json (y las fotos en datos/fotos/)
+     3. catalogo.json junto a esta página (publicado a mano con «Publicar para lectores»)
    Solo consulta: no guarda ni cambia nada.
    ════════════════════════════════════════════════════════════════════ */
 'use strict';
@@ -116,7 +120,8 @@ const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const norm = s => String(s == null ? '' : s).toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
 const num = v => { const n = parseFloat(String(v).replace(',', '.')); return isFinite(n) ? n : NaN; };
-let C = null; // el catálogo
+let C = null, BASE_URL = location.href; // el catálogo y la dirección de donde vino (para las fotos)
+const urlFoto = f => !f ? '' : /^(data:|https?:)/.test(f) ? f : new URL(f, BASE_URL).href;
 const estDe = id => C && C.estanterias.find(e => e.id === id);
 
 function jugadores(j) { if (!j.jmin && !j.jmax) return ''; return (j.jmin && j.jmax && +j.jmin !== +j.jmax ? j.jmin + '–' + j.jmax : (j.jmin || j.jmax)) + ' jug.'; }
@@ -144,10 +149,10 @@ function filtrados() {
 }
 function pintar() {
   const l = filtrados(), hay = $('q').value || $('fJug').value || $('fDur').value || $('fCat').value || $('fDueno').value || $('fEst').value;
-  $('resumen').innerHTML = `<span>${l.length === C.juegos.length ? C.juegos.length + ' juegos' : l.length + ' de ' + C.juegos.length + ' juegos'}${hay ? ' · <a id="quitar">quitar filtros</a>' : ''}</span><span>Actualizado el ${new Date(C.fecha).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' })}</span>`;
+  $('resumen').innerHTML = `<span>${l.length === C.juegos.length ? C.juegos.length + ' juegos' : l.length + ' de ' + C.juegos.length + ' juegos'}${hay ? ' · <a id="quitar">quitar filtros</a>' : ''}</span><span>Actualizado el ${new Date(C.fecha).toLocaleString('es-ES', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}${C.editadoPor ? ' · ' + esc(C.editadoPor) : ''}</span>`;
   const qq = $('quitar'); if (qq) qq.onclick = () => { ['q', 'fJug', 'fDur', 'fCat', 'fDueno', 'fEst'].forEach(id => $(id).value = ''); pintar(); };
   $('lista').innerHTML = l.length ? l.map(j => `<div class="carta" data-id="${esc(j.id)}" tabindex="0">
-      <div class="img">${j.foto ? `<img src="${j.foto}" alt="" loading="lazy">` : '🎲'}</div>
+      <div class="img">${j.foto ? `<img src="${urlFoto(j.foto)}" alt="" loading="lazy">` : '🎲'}</div>
       <div class="tx"><b>${esc(j.titulo)}</b><span class="dat">${esc(datos(j))}</span>${j.cat ? `<span class="chip">${esc(j.cat)}</span>` : ''}
       <span class="ub">${donde(j) ? '📚 ' + esc(donde(j)) : '📚 sin estante'}</span>${j.prop ? `<span class="du">${esc(j.prop)}</span>` : ''}</div></div>`).join('')
     : '<div class="vacio" style="grid-column:1/-1"><b>Ningún juego con esos filtros</b>Prueba a quitar alguno.</div>';
@@ -177,7 +182,7 @@ function abrir(id, respaldo) {
   const e = estDe(j.est);
   $('fTit').textContent = j.titulo;
   const fila = (t, v) => v ? `<dt>${t}</dt><dd>${esc(v)}</dd>` : '';
-  $('fCuerpo').innerHTML = aviso + `<div class="foto">${j.foto ? `<img src="${j.foto}" alt="Portada de ${esc(j.titulo)}">` : '🎲'}</div>
+  $('fCuerpo').innerHTML = aviso + `<div class="foto">${j.foto ? `<img src="${urlFoto(j.foto)}" alt="Portada de ${esc(j.titulo)}">` : '🎲'}</div>
     <dl>${fila('Jugadores', jugadores(j).replace(' jug.', ''))}${fila('Duración', j.dur ? j.dur + ' minutos' : '')}${fila('Edad', j.edad ? 'desde ' + j.edad + ' años' : '')}${fila('Categoría', j.cat)}${fila('Dueño', j.prop)}${fila('Código', j.cod)}</dl>
     <div class="donde">📚 ${e ? `<b>Estante ${esc(e.cod)}</b>${e.nombre ? ' · ' + esc(e.nombre) : ''}${j.balda ? `<br>Nivel <b>${esc(j.balda)}</b>${e.baldas ? ' de ' + e.baldas + ' (el 1 es el de arriba)' : ''}` : ''}` : (j.ubic ? `<b>${esc(j.ubic)}</b>` : 'Sin estante asignado')}</div>
     ${e ? `<div class="plano">${planoCon(e)}</div>` : ''}
@@ -209,15 +214,32 @@ function usar(o) {
 }
 function sinCatalogo(motivo) {
   $('subtitulo').textContent = 'Sin catálogo';
-  $('lista').innerHTML = `<div class="vacio" style="grid-column:1/-1"><b>Todavía no hay catálogo publicado</b>${esc(motivo)}<br>Quien lleva la ludoteca lo publica desde el editor con «Publicar para lectores».<div class="b"><button class="b" id="bAbrir">📂 Abrir un catalogo.json</button></div></div>`;
+  $('lista').innerHTML = `<div class="vacio" style="grid-column:1/-1"><b>Todavía no hay catálogo publicado</b>${esc(motivo)}<br>Quien lleva la ludoteca lo publica desde el editor (☁️ Guardar en GitHub, o «Publicar para lectores»).<div class="b"><button class="b" id="bAbrir">📂 Abrir un catalogo.json</button></div></div>`;
   $('bAbrir').onclick = () => $('fArchivo').click();
   desdeEnlace();
 }
 $('fArchivo').onchange = e => { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => { try { usar(JSON.parse(r.result)); } catch (err) { alert('No se ha podido abrir: ' + err.message); } }; r.readAsText(f); };
-fetch('catalogo.json', { cache: 'no-cache' })
-  .then(r => { if (!r.ok) throw new Error(r.status === 404 ? 'No se encuentra catalogo.json.' : 'Error ' + r.status); return r.json(); })
-  .then(usar)
-  .catch(e => sinCatalogo(location.protocol === 'file:' ? 'Abierto desde el ordenador: el navegador no deja leer catalogo.json solo.' : e.message));
+function fuentes() {
+  const p = new URLSearchParams(location.search), l = [];
+  if (p.get('datos')) l.push(p.get('datos'));
+  let owner = '', repo = '';
+  if (p.get('repo')) [owner, repo] = p.get('repo').split('/');
+  else if (/\.github\.io$/.test(location.hostname)) { owner = location.hostname.split('.')[0]; const seg = location.pathname.split('/').filter(Boolean); repo = seg.length > 1 || (seg[0] && !/\.html?$/.test(seg[0])) ? seg[0] : owner + '.github.io'; }
+  if (owner && repo) l.push(`${p.get('raw') || 'https://raw.githubusercontent.com'}/${owner}/${repo}/${p.get('rama') || 'datos'}/datos/catalogo.json`);
+  l.push(new URL('catalogo.json', location.href).href);
+  return l;
+}
+(async function cargar() {
+  let ultimo = '';
+  for (const u of fuentes()) {
+    try {
+      const r = await fetch(u + (u.includes('?') ? '&' : '?') + 't=' + Date.now(), { cache: 'no-store' });
+      if (!r.ok) { ultimo = r.status === 404 ? 'No se encuentra el catálogo.' : 'Error ' + r.status; continue; }
+      const o = await r.json(); BASE_URL = u; usar(o); return;
+    } catch (e) { ultimo = e.message; }
+  }
+  sinCatalogo(location.protocol === 'file:' ? 'Abierto desde el ordenador: el navegador no deja leer catalogo.json solo.' : ultimo);
+})();
 </script>
 </body>
 </html>

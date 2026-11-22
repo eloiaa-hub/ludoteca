@@ -269,7 +269,7 @@ body.oscuro .formF .malF input, body.oscuro .formF .malF select { background: #4
 <body>
 <header>
   <h1><svg class="logo" viewBox="0 0 64 64"><rect width="64" height="64" rx="12" fill="#005a9c"/><g fill="#e9d3a8"><rect x="12" y="14" width="8" height="24" rx="1"/><rect x="22" y="18" width="7" height="20" rx="1"/><rect x="31" y="12" width="9" height="26" rx="1"/><rect x="42" y="20" width="10" height="18" rx="1"/></g><rect x="8" y="38" width="48" height="4" fill="#fff"/><rect x="8" y="50" width="48" height="4" fill="#fff"/></svg>
-    Ludoteca <span class="por">— Por Eloi A.A.</span> <span class="ver" id="verPrograma">v0.4</span></h1>
+    Ludoteca <span class="por">— Por Eloi A.A.</span> <span class="ver" id="verPrograma">v0.5</span></h1>
   <input id="nombreTrabajo" value="Ludoteca del club" title="Nombre de la asociación o de la ludoteca: sale en los listados y en el nombre de los archivos">
   <span class="ver" id="estGuardado" title="Dónde y cuándo se han guardado los datos (clic: ver Archivo)">…</span>
   <span class="hueco"></span>
@@ -436,9 +436,26 @@ body.oscuro .formF .malF input, body.oscuro .formF .malF select { background: #4
         <div class="accion"><div class="t"><b>Listados en PDF</b><span>Inventario por estanterías, juegos por dueño, catálogo, carteles y etiquetas QR</span></div><button class="b p" data-hacer="pdf">🖨️ PDF</button></div>
         <div class="accion"><div class="t"><b>Plano compartido</b><span>Plano + estanterías en un .json que abre el Distribuidor de Eventos (por si no van en la misma carpeta)</span></div><button class="b" data-hacer="plano">⬇ .json</button></div>
       </div>
+      <div class="tarjeta puente"><h3>☁️ Guardar en GitHub <span class="etq">pruebas</span></h3>
+        <p class="nota" style="margin:0 0 8px">Los datos se guardan en el repositorio (rama <b>datos</b>), así varias personas editan la misma ludoteca y el catálogo de lectores se actualiza solo. Cada cambio queda en el historial del repositorio.</p>
+        <div id="ghConectado"></div>
+        <div id="ghForm">
+          <div class="campo" style="grid-template-columns:1fr 1.4fr"><label>Repositorio</label><input id="ghRepo" placeholder="usuario/repositorio" value="eloiaa-hub/ludoteca"></div>
+          <div class="campo" style="grid-template-columns:1fr 1.4fr"><label>Rama de los datos</label><input id="ghRama" value="datos"></div>
+          <div class="campo" style="grid-template-columns:1fr 1.4fr"><label>Tu nombre <small>(sale en el historial)</small></label><input id="ghNombre" placeholder="p. ej. Eloi"></div>
+          <div class="campo" style="grid-template-columns:1fr 1.4fr"><label>Token de GitHub</label><input id="ghToken" type="password" autocomplete="off" placeholder="github_pat_… o ghp_…"></div>
+          <details class="nota" style="margin:2px 0 8px"><summary style="cursor:pointer">Cómo crear el token</summary>
+            <ol style="margin:6px 0 0;padding-left:18px;line-height:1.55">
+              <li><b>Dueño del repositorio</b>: github.com → foto → <i>Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token</i>. En <i>Repository access</i> elige <i>Only select repositories</i> → el repositorio; en <i>Permissions → Contents</i>: <b>Read and write</b>. Pon una caducidad.</li>
+              <li><b>Otra persona</b> (añadida como colaboradora del repositorio): <i>Tokens (classic) → Generate new token</i>, marca solo <b>public_repo</b>.</li>
+              <li>Copia el token y pégalo aquí. Se guarda solo en este navegador, nunca en el repositorio. Trátalo como una contraseña.</li>
+            </ol></details>
+          <div class="fila" style="justify-content:flex-end"><button class="b p" id="bGhConectar">☁️ Conectar</button></div>
+        </div>
+      </div>
       <div class="tarjeta puente"><h3>📢 Versión para lectores <span class="etq">catalogo.html</span></h3>
         <p class="nota" style="margin:0 0 6px">Los socios consultan los juegos en <b>catalogo.html</b> (foto, jugadores, duración, edad, categoría, estante y nivel con plano, dueño y anotaciones), sin poder cambiar nada. Los QR de las cajas abren ese catálogo.</p>
-        <div class="accion"><div class="t"><b>Publicar</b><span id="txtPublicado">Genera catalogo.json con los juegos que están en el club. Después hay que subirlo al repositorio de GitHub.</span></div><button class="b p" data-hacer="publicar">📢 Publicar…</button></div>
+        <div class="accion"><div class="t"><b>Publicar</b><span id="txtPublicado">Genera catalogo.json con los juegos que están en el club. Después hay que subirlo al repositorio de GitHub. (Con ☁️ GitHub conectado no hace falta: se actualiza solo.)</span></div><button class="b p" data-hacer="publicar">📢 Publicar…</button></div>
       </div>
       <div class="tarjeta"><h3>Dónde se guardan los datos <span class="etq">base de datos</span></h3>
         <p class="nota" style="margin:0 0 6px">Cada cambio se guarda solo en la <b>base de datos del navegador</b> (IndexedDB): no se pierde al recargar ni al cerrar. Además se hace una <b>copia diaria</b> (se guardan los 30 últimos días).</p>
@@ -482,7 +499,7 @@ body.oscuro .formF .malF input, body.oscuro .formF .malF select { background: #4
    Comparte el plano con el Distribuidor de Eventos (mismas coordenadas)
    ════════════════════════════════════════════════════════════════════ */
 'use strict';
-const VERSION = '0.4', FORMATO = 'trabajo-Ludoteca', APP = 'Ludoteca', OTRA = 'Distribuidor de Eventos', FORMATO_OTRA = 'trabajo-Distribuidor-Eventos';
+const VERSION = '0.5', FORMATO = 'trabajo-Ludoteca', APP = 'Ludoteca', OTRA = 'Distribuidor de Eventos', FORMATO_OTRA = 'trabajo-Distribuidor-Eventos';
 const $ = id => document.getElementById(id);
 const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 const num = v => parseFloat(String(v).replace(',', '.'));
@@ -4075,6 +4092,7 @@ $('oAcceso').onchange = e => { const n = leerLargo(e.target.value); if (n >= 0) 
 $('oUrl').onchange = e => { L.opc.url = e.target.value.trim() || 'distribuidor_eventos.html'; guardarPaso(); };
 function guardarTrabajo(descargarSiempre) {
   L.nombre = $('nombreTrabajo').value;
+  if (!descargarSiempre && GH.on) { ghSubir(true); return; }
   if (!descargarSiempre && BD.archivo && BD.estadoArchivo === 'ok') { guardarYa().then(() => snack('Guardado en ' + BD.archivo.name)); return; }
   descargar(JSON.stringify(paquete(true)), nombreArchivo(L.nombre) + '_' + hoy() + '.json', 'application/json');
   snack('Copia descargada (los datos ya están guardados en el navegador)');
@@ -4101,13 +4119,14 @@ async function abrirTrabajo(file) {
     if (o.eloiaasoft === 'plano') { recibirPuente(o); return; }
     if (o.formato === FORMATO_OTRA) { recibirPuente(puenteDeTrabajoOtro(o)); return; }
     if (o.formato !== FORMATO) { snack('Ese .json no es de la Ludoteca ni del Distribuidor de Eventos'); return; }
+    if (GH.on && !await preguntar('Abrir ludoteca', `Vas a sustituir la ludoteca por la de «${esc(o.nombre || file.name)}» (${(o.juegos || []).length} juegos).` + GH_AVISO(), null)) return;
     cargarEstado(o); MARCA.clear(); SEL = null;
     pilaDeshacer.length = 0; pilaRehacer.length = 0; ultimaFoto = null; guardarPaso();
     ajustarVista.hecho = false; trasCambioTotal(); verPestana('juegos'); snack('Abierta: ' + L.nombre);
   } catch (err) { console.error(err); snack('No se ha podido abrir: ' + err.message); }
 }
 async function nuevoTrabajo() {
-  if (!await preguntar('Ludoteca nueva', 'Se vacían los juegos, sus fotos y las estanterías (se queda el plano del club). ¿Seguro? (Haz antes una copia .json si la necesitas)', null)) return;
+  if (!await preguntar('Ludoteca nueva', 'Se vacían los juegos, sus fotos y las estanterías (se queda el plano del club). ¿Seguro? (Haz antes una copia .json si la necesitas)' + GH_AVISO(), null)) return;
   for (const k in ENTS) delete ENTS[k];
   L = estadoVacio(); aplicarPlanoClub(); borrarFotos(); MARCA.clear(); SEL = null; guardarPaso(); trasCambioTotal(); verPestana('juegos');
 }
@@ -4158,7 +4177,7 @@ $('fTrabajo').onchange = e => { if (e.target.files[0]) abrirTrabajo(e.target.fil
 $('bDeshacer').onclick = deshacer; $('bRehacer').onclick = rehacer;
 $('nombreTrabajo').addEventListener('change', e => { L.nombre = e.target.value; guardarPaso(); });
 document.querySelectorAll('[data-hacer]').forEach(b => b.onclick = () => ({
-  nuevo: nuevoTrabajo, abrir: () => $('fTrabajo').click(), guardar: () => guardarTrabajo(true), ejemplo: cargarEjemplo,
+  nuevo: nuevoTrabajo, abrir: () => $('fTrabajo').click(), guardar: () => guardarTrabajo(true), ejemplo: async () => { if (!GH.on || await preguntar('Cargar ejemplo', 'Se sustituye la ludoteca por la de ejemplo.' + GH_AVISO(), null)) cargarEjemplo(); },
   impDxf: () => $('fDxf').click(), impCsv: () => $('fCsv').click(), csv: exportarCsv, xlsx: exportarXlsx, plano: exportarPlanoCompartido, publicar: publicarCatalogo,
   pdf: () => { verPestana('listados'); $('bPdf').click(); },
 })[b.dataset.hacer]());
@@ -4246,18 +4265,20 @@ function miniatura(url, lado, q) {
     im.onerror = () => ok(''); im.src = url;
   });
 }
-async function construirCatalogo() {
+/** rutas = true: las fotos van como archivos aparte (fotos/<id>.jpg) en lugar de dentro del json */
+async function construirCatalogo(rutas) {
   const js = L.juegos.filter(j => enClub(j) && j.estado !== 'Retirado');
   const juegos = [];
-  for (const j of js) juegos.push({ id: j.id, cod: j.cod, titulo: j.titulo, jmin: j.jmin, jmax: j.jmax, dur: j.dur, edad: j.edad, cat: j.cat, prop: j.prop, notas: j.notas, est: j.est, balda: j.balda, foto: FOTOS[j.id] ? await miniatura(FOTOS[j.id], 240, .78) : '' });
+  for (const j of js) juegos.push({ id: j.id, cod: j.cod, titulo: j.titulo, jmin: j.jmin, jmax: j.jmax, dur: j.dur, edad: j.edad, cat: j.cat, prop: j.prop, notas: j.notas, est: j.est, balda: j.balda, foto: !FOTOS[j.id] ? '' : rutas ? 'fotos/' + j.id + '.jpg?v=' + hashFoto(j.id) : await miniatura(FOTOS[j.id], 240, .78) });
   const usadas = new Set(js.map(j => j.est));
   const estanterias = L.estanterias.map(e => ({ id: e.id, cod: e.cod, nombre: e.nombre || '', baldas: e.baldas, color: e.color, pts: estPts(e).map(p => p.map(r1)), juegos: usadas.has(e.id) }));
   let plano = null; const c = cajaTodo();
   if (c) { const m = 60, x0 = c.x0 - m, y0 = c.y0 - m, w = c.x1 - c.x0 + 2 * m, h = c.y1 - c.y0 + 2 * m; plano = { vb: [r1(x0), r1(-y0 - h), r1(w), r1(h)], svg: `<g transform="scale(1,-1)">${svgDxf('#9aa5b1')}${svgFondo(true)}${svgEstanterias(true, true)}</g>${textosEstanterias('#1c2733', '#ffffff')}` }; }
-  return { formato: 'catalogo-Ludoteca', version: 1, nombre: L.nombre, fecha: ahora(), juegos, estanterias, plano };
+  return { formato: 'catalogo-Ludoteca', version: 1, nombre: L.nombre, fecha: ahora(), editadoPor: GH.on && GH.cfg ? GH.cfg.nombre : '', juegos, estanterias, plano };
 }
 async function publicarCatalogo() {
   L.nombre = $('nombreTrabajo').value;
+  if (GH.on) { snack('Con ☁️ GitHub conectado el catálogo se actualiza solo con cada cambio (tarda hasta 5 minutos en verse)', 6000); return; }
   const sinFoto = L.juegos.filter(j => enClub(j) && !FOTOS[j.id]).length, inc = L.juegos.filter(j => enClub(j) && !validar(j).completo).length;
   const o = await construirCatalogo();
   const texto = JSON.stringify(o);
@@ -4488,7 +4509,7 @@ async function cargarFotosBD() {
   ks.forEach((k, i) => { if (!(k in FOTOS)) FOTOS[k] = vs[i]; });
 }
 let tGuardado = null, arrancado = false;
-function programarGuardado() { if (!arrancado) return; BD.pendiente = true; pintarEstGuardado(); clearTimeout(tGuardado); tGuardado = setTimeout(guardarYa, 500); }
+function programarGuardado() { if (!arrancado) return; BD.pendiente = true; pintarEstGuardado(); clearTimeout(tGuardado); tGuardado = setTimeout(guardarYa, 500); if (GH.on && !GH.aplicando) ghProgramar(); }
 async function guardarYa() {
   clearTimeout(tGuardado);
   const o = paquete(false);
@@ -4515,12 +4536,20 @@ function pintarEstGuardado() {
   const s = $('estGuardado'); if (!s) return;
   const t = BD.ultimo ? BD.ultimo.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) : '';
   let txt, cls;
-  if (!BD.db) { txt = '⚠ Sin base de datos: guarda copias .json'; cls = 'mal'; }
+  if (GH.on) {
+    const tg = GH.ultimo ? GH.ultimo.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' }) : '';
+    if (GH.error) { txt = '⚠ GitHub: ' + GH.error.slice(0, 60); cls = 'mal'; }
+    else if (GH.subiendo) { txt = '☁️ Subiendo a GitHub…'; cls = 'pend'; }
+    else if (GH.pendiente) { txt = '☁️ Cambios por subir…'; cls = 'pend'; }
+    else { txt = '☁️ GitHub ✔' + (tg ? ' ' + tg : ''); cls = 'ok'; }
+    s.textContent = txt; s.className = 'ver ' + cls; s.title = 'Datos en ' + GH.cfg.repo + ' (rama ' + GH.cfg.rama + ')' + (GH.error ? '\n' + GH.error : '');
+    ghPintarTarjeta();
+  } else if (!BD.db) { txt = '⚠ Sin base de datos: guarda copias .json'; cls = 'mal'; }
   else if (BD.error) { txt = '⚠ ' + BD.error; cls = 'mal'; }
   else if (BD.pendiente) { txt = 'Guardando…'; cls = 'pend'; }
   else if (BD.archivo && BD.estadoArchivo !== 'ok') { txt = '⚠ Archivo sin conectar: pulsa aquí'; cls = 'mal'; }
   else { txt = '✔ Guardado' + (t ? ' ' + t : '') + (BD.archivo ? ' · ' + BD.archivo.name : ''); cls = 'ok'; }
-  s.textContent = txt; s.className = 'ver ' + cls;
+  if (!GH.on) { s.textContent = txt; s.className = 'ver ' + cls; s.title = 'Dónde y cuándo se han guardado los datos (clic: ver Archivo)'; ghPintarTarjeta(); }
   const ta = $('txtArchivo');
   if (ta) ta.innerHTML = BD.archivo ? `Vinculado a <b>${esc(BD.archivo.name)}</b>${BD.estadoArchivo === 'ok' ? ': cada cambio se escribe en él.' : ' · <span class="mal">hay que volver a dar permiso</span>.'} <a href="#" id="desvincular">Desvincular</a>`
     : (window.showSaveFilePicker ? 'Para tener los datos también en una carpeta del ordenador (o una carpeta sincronizada con la nube), vincula un archivo .json: cada cambio se escribe en él.' : 'Este navegador no deja escribir en archivos (usa Chrome o Edge). Haz copias con «⬇ Copia .json».');
@@ -4547,11 +4576,258 @@ $('listaCopias').addEventListener('click', async e => {
   const k = e.target.dataset.copia || e.target.dataset.bajar; if (!k) return;
   const o = await bdGet('copias', k); if (!o) return;
   if (e.target.dataset.bajar) { descargar(JSON.stringify(o), nombreArchivo(o.nombre) + '_' + k + '.json', 'application/json'); return; }
-  if (!await preguntar('Restaurar copia', `¿Volver a como estaba la ludoteca el <b>${fFecha(k)}</b> (${(o.juegos || []).length} juegos)? Lo de ahora se puede recuperar con Ctrl+Z.`, null)) return;
+  if (!await preguntar('Restaurar copia', `¿Volver a como estaba la ludoteca el <b>${fFecha(k)}</b> (${(o.juegos || []).length} juegos)? Lo de ahora se puede recuperar con Ctrl+Z.` + GH_AVISO(), null)) return;
   cargarEstado(JSON.parse(JSON.stringify(o))); MARCA.clear(); SEL = null; guardarPaso(); ajustarVista.hecho = false; trasCambioTotal(); snack('Restaurada la copia del ' + fFecha(k));
 });
 $('bVincular').onclick = vincularArchivo;
 $('estGuardado').onclick = () => { if (BD.archivo && BD.estadoArchivo !== 'ok') vincularArchivo(); else verPestana('archivo'); };
+
+// ════════════════ Guardar en GitHub (varios editores; pensado para probar) ════════════════
+/* Los datos viven en una rama aparte del repositorio (por defecto «datos»), para no reconstruir GitHub Pages con cada cambio:
+     datos/ludoteca.json   la ludoteca (sin fotos; el plano del club no se repite)
+     datos/catalogo.json   lo que lee catalogo.html
+     datos/fotos/<id>.jpg  una foto por juego
+   Cada subida es un solo commit (API de Git: blobs → árbol → commit → mover la rama).
+   Si la rama se ha movido desde la última lectura, se lee lo nuevo y se fusiona juego a juego con lo de aquí:
+   cada juego cambiado solo en un lado se queda con ese cambio; si cambió en los dos, gana el último en cambiarse.
+   El token se guarda solo en este navegador (localStorage «ludo_github»), nunca en los datos. */
+const GH = { cfg: null, on: false, head: null, tree: null, base: null, fotoSha: {}, pendiente: false, subiendo: false, aplicando: false, error: '', ultimo: null, t: null, autor: '', fechaRemota: '' };
+const GH_DATOS = 'datos/ludoteca.json', GH_CAT = 'datos/catalogo.json', GH_FOTOS = 'datos/fotos/';
+const GH_AVISO = () => GH.on ? '<br><br><span style="color:var(--aviso)"><b>Estás conectado a GitHub:</b> el cambio se sube y lo verán todos los editores.</span>' : '';
+const ghCfgLeer = () => { try { return JSON.parse(localStorage.getItem('ludo_github') || 'null'); } catch (e) { return null; } };
+const ghCfgGuardar = c => { try { c ? localStorage.setItem('ludo_github', JSON.stringify(c)) : localStorage.removeItem('ludo_github'); } catch (e) {} };
+async function gh(metodo, ruta, cuerpo) {
+  const c = GH.cfg, r = await fetch((c.api || 'https://api.github.com') + '/repos/' + c.repo + ruta, {
+    method: metodo, cache: 'no-store',
+    headers: Object.assign({ Authorization: 'Bearer ' + c.token, Accept: 'application/vnd.github+json' }, cuerpo ? { 'Content-Type': 'application/json' } : {}),
+    body: cuerpo ? JSON.stringify(cuerpo) : undefined,
+  });
+  if (r.status === 404) return null;
+  if (!r.ok) {
+    let m = ''; try { m = (await r.json()).message || ''; } catch (e) {}
+    const e = new Error(r.status === 401 ? 'el token no vale o ha caducado' : r.status === 403 ? 'sin permiso (' + m + ')' : 'error ' + r.status + (m ? ': ' + m : '')); e.status = r.status; throw e;
+  }
+  return r.json();
+}
+function b64DeTexto(t) { const b = new TextEncoder().encode(t); let r = ''; for (let i = 0; i < b.length; i += 0x8000) r += String.fromCharCode.apply(null, b.subarray(i, i + 0x8000)); return btoa(r); }
+function textoDeB64(b) { const s = atob(b.replace(/\s/g, '')), u = new Uint8Array(s.length); for (let i = 0; i < s.length; i++) u[i] = s.charCodeAt(i); return new TextDecoder().decode(u); }
+function hashTxt(s) { let a = 0x811c9dc5, b = 7; for (let i = 0; i < s.length; i++) { const c = s.charCodeAt(i); a = Math.imul(a ^ c, 16777619); b = (Math.imul(b, 31) + c) | 0; } return (a >>> 0).toString(36) + (b >>> 0).toString(36); }
+const FOTOS_H = {};
+function hashFoto(id) { const u = FOTOS[id]; if (!u) return ''; const c = FOTOS_H[id]; if (c && c.u === u) return c.h; const h = hashTxt(u); FOTOS_H[id] = { u, h }; return h; }
+/** La ludoteca tal como se guarda en GitHub (sin fecha ni autor, para poder comparar) */
+function paqueteGH() {
+  const o = paquete(false); delete o.fecha;
+  for (const id of Object.keys(o.dxfEnts)) if (id === 'club-avalon') delete o.dxfEnts[id];
+  o.fotos = {}; for (const j of L.juegos) if (FOTOS[j.id]) o.fotos[j.id] = hashFoto(j.id);
+  return o;
+}
+const limpioGH = o => { const c = JSON.parse(JSON.stringify(o)); delete c.fecha; delete c.editadoPor; return c; };
+const igualJ = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+async function ghLeer() {
+  const ref = await gh('GET', '/git/ref/heads/' + encodeURIComponent(GH.cfg.rama)); if (!ref) return { head: null };
+  const head = ref.object.sha, com = await gh('GET', '/git/commits/' + head);
+  const arbol = await gh('GET', '/git/trees/' + com.tree.sha + '?recursive=1');
+  const fotoSha = {}; let sDatos = null;
+  for (const t of (arbol && arbol.tree) || []) {
+    if (t.path === GH_DATOS) sDatos = t.sha;
+    else if (t.path.startsWith(GH_FOTOS) && t.path.endsWith('.jpg')) fotoSha[t.path.slice(GH_FOTOS.length, -4)] = t.sha;
+  }
+  let datos = null;
+  if (sDatos) { const b = await gh('GET', '/git/blobs/' + sDatos); datos = JSON.parse(textoDeB64(b.content)); }
+  return { head, tree: com.tree.sha, datos, fotoSha, autor: (datos && datos.editadoPor) || '', fecha: (datos && datos.fecha) || (com.author && com.author.date) || '' };
+}
+/** Fusión a tres bandas: B = lo último que se leyó de GitHub, Lc = lo de aquí, Rm = lo que hay ahora en GitHub */
+function fusionarGH(B, Lc, Rm) {
+  const avisos = [];
+  const porId = a => { const m = {}; for (const x of a || []) m[x.id] = x; return m; };
+  const mezcla = (b, l, r, nombre, campoFecha) => {
+    const mb = porId(b), ml = porId(l), mr = porId(r), ids = [...new Set([...(r || []).map(x => x.id), ...(l || []).map(x => x.id)])], out = [];
+    for (const id of ids) {
+      const xb = mb[id], xl = ml[id], xr = mr[id], cl = !igualJ(xl, xb), cr = !igualJ(xr, xb);
+      let v;
+      if (!cl) v = xr; else if (!cr) v = xl;
+      else if (!xl) v = xr; else if (!xr) v = xl;
+      else { v = campoFecha && (xr[campoFecha] || '') > (xl[campoFecha] || '') ? xr : xl; if (!igualJ(xl, xr)) avisos.push(nombre(v)); }
+      if (v) out.push(v);
+    }
+    return out;
+  };
+  const n = JSON.parse(JSON.stringify(Rm));
+  n.juegos = mezcla(B.juegos, Lc.juegos, Rm.juegos, j => '«' + j.titulo + '»', 'actualizado');
+  n.estanterias = mezcla(B.estanterias, Lc.estanterias, Rm.estanterias, e => 'estante ' + e.cod, null);
+  const k = h => [h.juego, h.persona, h.desde, h.hasta].join('|'), vistos = new Set();
+  n.historial = [...(Lc.historial || []), ...(Rm.historial || [])].filter(h => !vistos.has(k(h)) && vistos.add(k(h)));
+  for (const c of ['plano', 'opc', 'nombre', 'externos', 'dxfEnts']) if (!igualJ(Lc[c], B[c])) n[c] = JSON.parse(JSON.stringify(Lc[c]));
+  n.sigCod = Math.max(Lc.sigCod || 1, Rm.sigCod || 1);
+  const fb = B.fotos || {}, fl = Lc.fotos || {}, fr = Rm.fotos || {}; n.fotos = {};
+  for (const id of new Set([...Object.keys(fl), ...Object.keys(fr)])) { const v = fl[id] !== fb[id] ? fl[id] : fr[id]; if (v && n.juegos.some(j => j.id === id)) n.fotos[id] = v; }
+  // dos juegos nuevos con el mismo código (cada editor dio de alta uno): el segundo recibe otro
+  const usados = new Set();
+  for (const j of n.juegos) { if (j.cod && usados.has(j.cod)) { let c; do { c = String(n.sigCod++).padStart(3, '0'); } while (usados.has(c) || n.juegos.some(x => x.cod === c)); avisos.push('«' + j.titulo + '» pasa al código ' + c); j.cod = c; } usados.add(j.cod); }
+  return { n, avisos };
+}
+/** Pone en el programa una ludoteca que viene de GitHub (bajando las fotos que falten) */
+async function ghAplicar(o, fotoSha) {
+  const c = JSON.parse(JSON.stringify(o)), fotos = c.fotos || {};
+  delete c.fotos; delete c.fecha; delete c.editadoPor;
+  if ((c.plano && c.plano.dxfs || []).some(d => d.id === 'club-avalon')) { c.dxfEnts = c.dxfEnts || {}; c.dxfEnts['club-avalon'] = PLANO_CLUB.dxfEnts['club-avalon']; }
+  for (const id in fotos) if (hashFoto(id) !== fotos[id] && fotoSha[id]) {
+    try { const b = await gh('GET', '/git/blobs/' + fotoSha[id]); FOTOS[id] = 'data:image/jpeg;base64,' + b.content.replace(/\s/g, ''); FOTOS_SUC.add(id); } catch (e) { console.warn('foto', id, e); }
+  }
+  for (const id of Object.keys(FOTOS)) if (!fotos[id]) { delete FOTOS[id]; FOTOS_SUC.add(id); }
+  const sel = SEL && SEL.id, abiertaJ = $('ficha').open;
+  GH.aplicando = true;
+  cargarEstado(c);
+  pilaDeshacer.length = 0; pilaRehacer.length = 0; ultimaFoto = fotoEstado(); botonesDeshacer();
+  if (sel && !estDe(sel)) SEL = null;
+  trasCambioTotal(); await guardarYa();
+  GH.aplicando = false;
+  if (abiertaJ) {} // la ficha abierta sigue con su copia; al guardarla se sube
+}
+async function ghGuardarBase() { await bdPut('datos', 'ghBase', { repo: GH.cfg.repo, rama: GH.cfg.rama, head: GH.head, tree: GH.tree, base: GH.base, fotoSha: GH.fotoSha }); }
+/** Trae lo nuevo de GitHub; si aquí también hay cambios, los fusiona (y quedan pendientes de subir) */
+async function ghTraer() {
+  const r = await ghLeer();
+  if (!r.head) throw new Error('no existe la rama ' + GH.cfg.rama);
+  if (r.head === GH.head) return false;
+  const remoto = r.datos ? limpioGH(r.datos) : null, loc = paqueteGH();
+  const cambioLocal = !GH.base || !igualJ(loc, GH.base);
+  let nuevo = remoto, avisos = [];
+  if (!remoto) nuevo = loc;
+  else if (cambioLocal && GH.base) ({ n: nuevo, avisos } = fusionarGH(GH.base, loc, remoto));
+  else if (cambioLocal && !GH.base) nuevo = remoto;
+  GH.head = r.head; GH.tree = r.tree; GH.fotoSha = r.fotoSha; GH.base = remoto; GH.autor = r.autor; GH.fechaRemota = r.fecha;
+  if (remoto && !igualJ(nuevo, loc)) await ghAplicar(nuevo, r.fotoSha);
+  await ghGuardarBase();
+  GH.pendiente = !!remoto && !igualJ(paqueteGH(), remoto) || !remoto;
+  if (avisos.length) snack('Cambios de otro editor juntados con los tuyos. Cambiado a la vez en los dos sitios (se queda el último): ' + avisos.slice(0, 4).join(', ') + (avisos.length > 4 ? '…' : ''), 9000);
+  else if (remoto && !cambioLocal) snack('☁️ Datos actualizados desde GitHub' + (r.autor ? ' (último cambio: ' + r.autor + ')' : ''), 4000);
+  return true;
+}
+function resumenCambios(B, Lc) {
+  if (!B) return 'primera subida';
+  const mb = {}; for (const j of B.juegos || []) mb[j.id] = j;
+  const ml = {}; for (const j of Lc.juegos) ml[j.id] = j;
+  const alta = Lc.juegos.filter(j => !mb[j.id]), baja = (B.juegos || []).filter(j => !ml[j.id]), cambio = Lc.juegos.filter(j => mb[j.id] && !igualJ(j, mb[j.id]) || (Lc.fotos[j.id] || '') !== ((B.fotos || {})[j.id] || ''));
+  const t = [];
+  const nom = l => l.slice(0, 3).map(j => j.titulo).join(', ') + (l.length > 3 ? ' y ' + (l.length - 3) + ' más' : '');
+  if (alta.length) t.push('alta de ' + nom(alta)); if (baja.length) t.push('elimina ' + nom(baja)); if (cambio.length) t.push('cambia ' + nom(cambio));
+  if (!igualJ(B.estanterias, Lc.estanterias)) t.push('estanterías');
+  if (!igualJ(B.plano, Lc.plano)) t.push('plano');
+  return t.join('; ') || 'opciones';
+}
+function ghProgramar(ms) { GH.pendiente = true; pintarEstGuardado(); clearTimeout(GH.t); GH.t = setTimeout(() => ghSubir(), ms || 5000); }
+async function ghSubir(avisar) {
+  if (!GH.on) return;
+  if (GH.subiendo) { ghProgramar(3000); return; }
+  clearTimeout(GH.t); GH.subiendo = true; GH.error = ''; pintarEstGuardado();
+  try {
+    for (let intento = 0; intento < 5; intento++) {
+      L.nombre = $('nombreTrabajo').value;
+      const loc = paqueteGH();
+      if (GH.head && GH.base && igualJ(loc, GH.base)) { GH.pendiente = false; if (avisar) snack('Todo subido a GitHub'); break; }
+      const arbol = [], nuevasFotos = {};
+      const blob = async b64 => (await gh('POST', '/git/blobs', { content: b64, encoding: 'base64' })).sha;
+      const fb = (GH.base && GH.base.fotos) || {};
+      for (const id in loc.fotos) if (loc.fotos[id] !== fb[id] || !GH.fotoSha[id]) { const sh = await blob(FOTOS[id].split(',')[1]); nuevasFotos[id] = sh; arbol.push({ path: GH_FOTOS + id + '.jpg', mode: '100644', type: 'blob', sha: sh }); }
+      for (const id in GH.fotoSha) if (!loc.fotos[id]) arbol.push({ path: GH_FOTOS + id + '.jpg', mode: '100644', type: 'blob', sha: null });
+      const datos = Object.assign({}, loc, { fecha: ahora(), editadoPor: GH.cfg.nombre });
+      arbol.push({ path: GH_DATOS, mode: '100644', type: 'blob', sha: await blob(b64DeTexto(JSON.stringify(datos))) });
+      arbol.push({ path: GH_CAT, mode: '100644', type: 'blob', sha: await blob(b64DeTexto(JSON.stringify(await construirCatalogo(true)))) });
+      const t = await gh('POST', '/git/trees', { base_tree: GH.tree, tree: arbol });
+      const c = await gh('POST', '/git/commits', { message: 'Ludoteca · ' + GH.cfg.nombre + ': ' + resumenCambios(GH.base, loc), tree: t.sha, parents: [GH.head] });
+      try { await gh('PATCH', '/git/refs/heads/' + encodeURIComponent(GH.cfg.rama), { sha: c.sha, force: false }); }
+      catch (e) { if (e.status === 422 || e.status === 409) { await ghTraer(); continue; } throw e; }
+      GH.head = c.sha; GH.tree = t.sha; GH.base = loc; GH.autor = GH.cfg.nombre; GH.fechaRemota = datos.fecha;
+      for (const id in nuevasFotos) GH.fotoSha[id] = nuevasFotos[id];
+      for (const id of Object.keys(GH.fotoSha)) if (!loc.fotos[id]) delete GH.fotoSha[id];
+      await ghGuardarBase();
+      GH.pendiente = !igualJ(paqueteGH(), GH.base); GH.ultimo = new Date();
+      if (avisar) snack('Subido a GitHub');
+      break;
+    }
+  } catch (e) { GH.error = e.message; console.warn(e); if (avisar) snack('No se ha podido subir a GitHub: ' + e.message, 7000); }
+  GH.subiendo = false; pintarEstGuardado();
+  if (GH.pendiente && !GH.error) ghProgramar(4000);
+  else if (GH.error) { clearTimeout(GH.t); GH.t = setTimeout(() => ghSubir(), 30000); }
+}
+/** Cada 45 s mira si otro editor ha subido algo (si aquí no hay nada a medias) */
+async function ghSondear() {
+  if (!GH.on || GH.subiendo || GH.pendiente || document.hidden || $('ficha').open || $('dlg').open || ARRASTRE) return;
+  try { const ref = await gh('GET', '/git/ref/heads/' + encodeURIComponent(GH.cfg.rama)); if (ref && ref.object.sha !== GH.head) { GH.subiendo = true; pintarEstGuardado(); await ghTraer(); } GH.error = ''; }
+  catch (e) { GH.error = e.message; }
+  GH.subiendo = false; pintarEstGuardado();
+  if (GH.pendiente) ghProgramar(2000);
+}
+setInterval(ghSondear, 45000);
+document.addEventListener('visibilitychange', () => { if (!document.hidden) ghSondear(); });
+async function ghConectar() {
+  const ant = ghCfgLeer() || {};
+  const cfg = { repo: $('ghRepo').value.trim().replace(/^https?:\/\/github\.com\//, '').replace(/\.git$/, '').replace(/\/+$/, ''), rama: $('ghRama').value.trim() || 'datos', nombre: $('ghNombre').value.trim(), token: $('ghToken').value.trim(), api: ant.api || 'https://api.github.com' };
+  if (!/^[\w.-]+\/[\w.-]+$/.test(cfg.repo)) { snack('Escribe el repositorio como usuario/repositorio'); return; }
+  if (!cfg.nombre) { snack('Escribe tu nombre: sale en el historial de cambios'); return; }
+  if (!cfg.token) { snack('Pega el token de GitHub'); return; }
+  GH.cfg = cfg; $('bGhConectar').disabled = true; $('bGhConectar').textContent = 'Conectando…';
+  try {
+    const repo = await gh('GET', '');
+    if (!repo) throw new Error('no encuentro ' + cfg.repo + ' (o el token no tiene acceso)');
+    if (repo.permissions && !repo.permissions.push) throw new Error('ese token no puede escribir en ' + cfg.repo);
+    if (!await gh('GET', '/git/ref/heads/' + encodeURIComponent(cfg.rama))) {
+      const def = await gh('GET', '/git/ref/heads/' + (repo.default_branch || 'main'));
+      await gh('POST', '/git/refs', { ref: 'refs/heads/' + cfg.rama, sha: def.object.sha });
+    }
+    const r = await ghLeer();
+    const nLoc = L.juegos.length;
+    if (r.datos) {
+      const nRem = (r.datos.juegos || []).length;
+      if (nLoc && !await preguntar('☁️ Datos en GitHub', `En el repositorio ya hay una ludoteca con <b>${nRem} juegos</b>${r.autor ? ' (último cambio de ' + esc(r.autor) + (r.fecha ? ', ' + fHora(r.fecha) : '') + ')' : ''}.<br><br>¿La cargo en este navegador? Lo que hay ahora aquí (${nLoc} juegos) se descarga antes como copia .json, por si acaso.`, null)) throw new Error('cancelado');
+      if (nLoc) guardarTrabajo(true);
+      GH.head = r.head; GH.tree = r.tree; GH.fotoSha = r.fotoSha; GH.base = limpioGH(r.datos); GH.autor = r.autor; GH.fechaRemota = r.fecha;
+      await ghAplicar(GH.base, r.fotoSha);
+    } else {
+      if (!await preguntar('☁️ Primera subida', `El repositorio aún no tiene datos de la ludoteca.<br><br>¿Subo la de este navegador (<b>${nLoc} juegos</b>, ${Object.keys(FOTOS).length} fotos)? Desde ese momento, todos los editores trabajarán sobre ella.`, null)) throw new Error('cancelado');
+      GH.head = r.head; GH.tree = r.tree; GH.fotoSha = r.fotoSha; GH.base = null;
+    }
+    GH.on = true; GH.error = ''; ghCfgGuardar(cfg); await ghGuardarBase();
+    $('ghToken').value = '';
+    pintarEstGuardado(); verPestana(pestana);
+    await ghSubir();
+    snack('☁️ Conectado a ' + cfg.repo + ': los cambios se suben solos', 5000);
+  } catch (e) {
+    if (e.message !== 'cancelado') snack('No se ha podido conectar: ' + e.message, 8000);
+    if (!GH.on) GH.cfg = null;
+  }
+  $('bGhConectar').disabled = false; $('bGhConectar').textContent = '☁️ Conectar';
+}
+async function ghDesconectar() {
+  if (GH.pendiente && !await preguntar('Desconectar de GitHub', 'Hay cambios sin subir. Si desconectas, se quedan solo en este navegador. ¿Desconectar?', null)) return;
+  GH.on = false; GH.cfg = null; GH.head = null; GH.base = null; clearTimeout(GH.t);
+  ghCfgGuardar(null); await bdDel('datos', 'ghBase');
+  pintarEstGuardado(); snack('Desconectado de GitHub. Los datos siguen en este navegador; el token se ha borrado.');
+}
+function ghPintarTarjeta() {
+  const c = $('ghConectado'); if (!c) return;
+  $('ghForm').hidden = GH.on;
+  if (!GH.on) { c.innerHTML = ''; const a = ghCfgLeer(); if (a && !$('ghNombre').value) { if (a.repo) $('ghRepo').value = a.repo; if (a.rama) $('ghRama').value = a.rama; if (a.nombre) $('ghNombre').value = a.nombre; } return; }
+  const u = 'https://github.com/' + GH.cfg.repo;
+  c.innerHTML = `<p style="margin:0 0 6px">Conectado a <b>${esc(GH.cfg.repo)}</b> (rama <b>${esc(GH.cfg.rama)}</b>) como <b>${esc(GH.cfg.nombre)}</b>.</p>
+    <p class="nota" style="margin:0 0 8px">${GH.fechaRemota ? 'Último cambio en GitHub: ' + fHora(GH.fechaRemota) + (GH.autor ? ' (' + esc(GH.autor) + ')' : '') + '. ' : ''}${GH.error ? '<span class="mal">' + esc(GH.error) + '</span>' : ''}</p>
+    <div class="fila"><button class="b chico" id="bGhTraer">⟳ Traer cambios ahora</button><a class="b chico" href="${u}/commits/${encodeURIComponent(GH.cfg.rama)}" target="_blank" rel="noopener">📜 Historial</a><span class="hueco"></span><button class="b chico peligro" id="bGhDesc">Desconectar</button></div>`;
+  $('bGhTraer').onclick = async () => { GH.subiendo = true; pintarEstGuardado(); try { const h = await ghTraer(); GH.error = ''; if (!h) snack('No hay cambios nuevos en GitHub'); } catch (e) { GH.error = e.message; } GH.subiendo = false; pintarEstGuardado(); if (GH.pendiente) ghProgramar(1000); };
+  $('bGhDesc').onclick = ghDesconectar;
+}
+$('bGhConectar').onclick = ghConectar;
+/** Al arrancar: si este navegador estaba conectado, se sigue conectado y se traen los cambios */
+async function ghArrancar() {
+  const cfg = ghCfgLeer(); if (!cfg || !cfg.token) { ghPintarTarjeta(); return; }
+  GH.cfg = cfg; GH.on = true;
+  const b = await bdGet('datos', 'ghBase');
+  if (b && b.repo === cfg.repo && b.rama === cfg.rama) { GH.head = b.head; GH.tree = b.tree; GH.base = b.base; GH.fotoSha = b.fotoSha || {}; }
+  pintarEstGuardado();
+  try { GH.subiendo = true; await ghTraer(); GH.error = ''; } catch (e) { GH.error = e.message; }
+  GH.subiendo = false; pintarEstGuardado();
+  if (GH.pendiente || !GH.base) ghProgramar(1500);
+}
 
 // Copia en localStorage (la lee el Distribuidor con «📥 Traer estanterías»)
 function copiaAuto() {
@@ -4562,7 +4838,7 @@ function copiaAuto() {
     localStorage.setItem('ludo_auto', JSON.stringify(o));
   } catch (e) {}
 }
-addEventListener('beforeunload', e => { if (BD.pendiente) { guardarYa(); e.preventDefault(); e.returnValue = ''; } });
+addEventListener('beforeunload', e => { if (BD.pendiente || (GH.on && (GH.pendiente || GH.subiendo))) { guardarYa(); e.preventDefault(); e.returnValue = ''; } });
 
 // ════════════════ Arranque ════════════════
 (async function iniciar() {
@@ -4582,6 +4858,7 @@ addEventListener('beforeunload', e => { if (BD.pendiente) { guardarYa(); e.preve
   if (BD.archivo && BD.estadoArchivo !== 'ok') snack('Para seguir guardando en ' + BD.archivo.name + ', pulsa el aviso de arriba y da permiso', 7000);
   abrirDesdeQR();
   addEventListener('hashchange', abrirDesdeQR);
+  ghArrancar();
   // ¿Nos ha abierto el Distribuidor? Pedimos el plano; si no llega, se mira el buzón de localStorage
   if (window.opener) { try { window.opener.postMessage({ eloiaasoft: 'listo', app: APP }, '*'); } catch (e) {} }
   setTimeout(() => {

@@ -2,7 +2,7 @@
 
 Programas para una asociación de juegos de mesa que comparten el mismo plano del local:
 
-- **Catálogo de juegos** (`catalogo.html`): versión para los socios, solo consulta, pensada para el móvil. Lee `catalogo.json`, que publica el editor.
+- **Catálogo de juegos** (`catalogo.html`): versión para los socios, solo consulta, pensada para el móvil. Lee los datos de la rama `datos` (los sube el editor conectado a GitHub) o, si no hay, `catalogo.json`.
 
 - **Ludoteca, editor** (`ludoteca.html`): control de los juegos del club (de quién es cada uno y en qué estante y nivel está), con fotos de portada, etiquetas QR, estanterías sobre el plano y listados.
 - **Distribuidor de Eventos** (`distribuidor_eventos.html`): reparto de mesas, sillas y personas en la sala para jornadas y torneos.
@@ -18,7 +18,7 @@ Son archivos HTML de un solo fichero: funcionan sin instalar nada y sin internet
 | `index.html` | Página principal |
 | `catalogo.html` | Catálogo de juegos para los socios (lectores) |
 | `catalogo.json` | Datos del catálogo; lo genera el editor con «Publicar para lectores» y se sube aquí |
-| `ludoteca.html` | Ludoteca (editor) v0.4 |
+| `ludoteca.html` | Ludoteca (editor) v0.5 |
 | `manual_ludoteca.html` / `.pdf` | Manual de la Ludoteca: instalación, uso y cómo está hecho |
 | `distribuidor_eventos.html` | Distribuidor de Eventos v0.3 |
 | `manual_distribuidor_eventos.html` / `.pdf` | Manual del Distribuidor de Eventos (v0.3) |
@@ -30,6 +30,7 @@ Son archivos HTML de un solo fichero: funcionan sin instalar nada y sin internet
 - **Juegos:** ficha de cada juego con foto de portada: juego, mínimo y máximo de jugadores, dueño (la Asociación o el socio que lo cede), condición, fecha de entrega al club, fecha de devolución al dueño, estante #, nivel y anotaciones, más editorial, duración, edad, categoría, idioma y lomo. Campos obligatorios y comprobaciones (máximo ≥ mínimo, devolución ≥ entrega). ID único y fechas de creación y de último cambio. Tabla editable como una hoja de cálculo, búsqueda, filtros por jugadores, duración, condición, estante, dueño y situación (en el club / devuelto).
 - **Fotos de portada:** desde un archivo, la cámara del móvil, arrastrando la imagen o pegándola. Salen en la tabla, la ficha, los listados y el Excel.
 - **Etiquetas QR** (21 por A4, 63 × 38 mm): al escanearlas se abre la ficha del juego en el catálogo, con su estante marcado en el plano.
+- **☁️ Guardar en GitHub (v0.5, para pruebas):** varios editores sobre la misma ludoteca. Cada uno conecta en *Archivo* con su token (dueño: fine-grained, solo este repo, *Contents: Read and write*; colaboradores: classic con `public_repo`). Los cambios se suben solos como commits a la rama `datos` (`datos/ludoteca.json`, `datos/catalogo.json`, `datos/fotos/`), se juntan juego a juego si dos personas editan a la vez y el catálogo los lee directamente (hasta 5 min de caché). El token se queda en el navegador de cada uno.
 - **Publicar para lectores:** genera `catalogo.json` (juegos en el club, miniaturas y plano). Se sube al repo con *Add file → Upload files* y el catálogo se actualiza en uno o dos minutos.
 - **Excel (.xlsx) con fotos**, CSV y copia completa en `.json`. Importa CSV de Excel/LibreOffice o de BoardGameGeek.
 - **Datos:** se guardan solos en la base de datos del navegador (IndexedDB), con una copia por día (30 días) y, en Chrome/Edge, también en un archivo `.json` vinculado de tu carpeta.
